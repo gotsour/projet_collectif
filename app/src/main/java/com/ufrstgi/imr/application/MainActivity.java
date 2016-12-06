@@ -1,5 +1,6 @@
 package com.ufrstgi.imr.application;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,9 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private ServerHTTP serverHTTP;
+    private final static int PORT = 8080;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,11 +90,29 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-
+            Intent myIntent = new Intent(MainActivity.this, AccessPoint.class);
+            this.startActivity(myIntent);
+            finish();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        serverHTTP = new ServerHTTP(PORT, getApplicationContext());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(serverHTTP != null) {
+            serverHTTP.stop();
+        }
+    }
+
+
 }
