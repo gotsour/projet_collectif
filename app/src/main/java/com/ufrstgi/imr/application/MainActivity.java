@@ -1,9 +1,13 @@
 package com.ufrstgi.imr.application;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,6 +53,21 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // On cherche le Switch pour activer Access Point
+        final Switch switchAP = (Switch) findViewById(R.id.switchAP);
+        switchAP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    switchAP.setText("Access Point ON");
+                    createWifiAccessPoint();
+                }else{
+                    switchAP.setText("Access Point OFF");
+                    createWifiAccessPoint();
+                }
+            }
+        });
     }
 
     @Override
@@ -90,9 +114,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-            Intent myIntent = new Intent(MainActivity.this, AccessPoint.class);
-            this.startActivity(myIntent);
-            finish();
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -111,6 +133,54 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
         if(serverHTTP != null) {
             serverHTTP.stop();
+        }
+    }
+
+    private void createWifiAccessPoint() {
+        WifiManager wifiManager = (WifiManager)getBaseContext().getSystemService(Context.WIFI_SERVICE);
+        if(wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(false);
+        } else {
+            wifiManager.setWifiEnabled(true);
+        }
+        Method[] wmMethods = wifiManager.getClass().getDeclaredMethods();
+        boolean methodFound=false;
+        for(Method method: wmMethods){
+            if(method.getName().equals("setWifiApEnabled")){
+                methodFound=true;
+                WifiConfiguration wifiConfiguration = new WifiConfiguration();
+                wifiConfiguration.SSID = "Projet";
+                wifiConfiguration.hiddenSSID = false;
+                try {
+                    boolean apstatus = (Boolean) method.invoke(wifiManager, wifiConfiguration, true);
+                    for (Method isWifiApEnabledmethod: wmMethods)
+                    {
+                        if(isWifiApEnabledmethod.getName().equals("isWifiApEnabled")){
+                            while (!(Boolean) isWifiApEnabledmethod.invoke(wifiManager)) {};
+                            for(Method method1: wmMethods){
+                                if(method1.getName().equals("getWifiApState")){
+                                    int apstate;
+                                    apstate=(Integer) method1.invoke(wifiManager);
+                                }
+                            }
+                        }
+                    }
+                    if(apstatus) {
+                        Log.d("AccesPoint", "Access Point Success !");
+                    } else {
+                        Log.d("AccesPoint", "Access Point Failed");
+                    }
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        if(!methodFound){
+            Log.d("AccesPoint", "cannot configure an access point");
         }
     }
 
