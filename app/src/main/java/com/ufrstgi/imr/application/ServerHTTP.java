@@ -1,22 +1,28 @@
 package com.ufrstgi.imr.application;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 
+
 /**
- * Created by westi on 06/12/2016.
+ * Created by Thomas Westermann on 06/12/2016.
+ * Université de Franche-Comté
+ * thomas.westermann@orange.fr
+ * Application Projet_collectif
  */
 
 public class ServerHTTP extends NanoHTTPD {
@@ -46,7 +52,7 @@ public class ServerHTTP extends NanoHTTPD {
 
             InputStream index = context.getResources().openRawResource(R.raw.index);
             BufferedReader reader = new BufferedReader(new InputStreamReader(index));
-            String line = "";
+            String line;
             while ((line = reader.readLine()) != null) {
                 answer += line;
             }
@@ -57,7 +63,7 @@ public class ServerHTTP extends NanoHTTPD {
         }
 
 
-        Map<String, String> files = new HashMap<String, String>();
+        Map<String, String> files = new HashMap<>();
         Method method = session.getMethod();
         if (Method.PUT.equals(method) || Method.POST.equals(method)) {
             try {
@@ -70,12 +76,53 @@ public class ServerHTTP extends NanoHTTPD {
         }
         // get the POST body
         String postBody = session.getQueryParameterString();
-        Log.d("POST", postBody);
-        // or you can access the POST request's parameters
-        String postParameter = session.getParms().get("parameter");
-
+        handleRequest(postBody);
 
         return new NanoHTTPD.Response(answer);
+    }
+
+
+    /**
+     * Traite les requêtes en provenance de l'ESP8266
+     * @param postBody URL que l'on souhaite traiter
+     */
+    private void handleRequest(String postBody) {
+        try {
+            String message = getRequest("message", postBody);
+            String fichier = getRequest("fichier", postBody);
+        } catch (UnsupportedEncodingException e) {
+            Log.d("ERROR", "L'URL a mal été décodée");
+            e.printStackTrace();
+        }
+    }
+
+    private static Map<String, List<String>> splitQuery(String url) throws UnsupportedEncodingException {
+        final Map<String, List<String>> query_pairs = new LinkedHashMap<>();
+        final String[] pairs = url.split("&");
+        for (String pair : pairs) {
+            final int idx = pair.indexOf("=");
+            final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
+            if (!query_pairs.containsKey(key)) {
+                query_pairs.put(key, new LinkedList<String>());
+            }
+            final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "UTF-8") : null;
+            query_pairs.get(key).add(value);
+        }
+        return query_pairs;
+    }
+
+    /**
+     * Retourne une String suivant l'URL et le paramètre demandé
+     * @param argument Argument que l'on sohaite décoder dans URL
+     * @param postBody URL que l'on souhaite décoder
+     * @return String correspondant à l'argument souhaité dans l'URL
+     * @throws UnsupportedEncodingException
+     */
+    private String getRequest(String argument, String postBody) throws UnsupportedEncodingException {
+        final Map<String, List<String>> query_pairs = splitQuery(postBody);
+        String decoded = query_pairs.get(argument).toString().replaceAll("\\[", "").replaceAll("\\]","");
+        Log.d(argument, decoded);
+        return decoded;
     }
 
 

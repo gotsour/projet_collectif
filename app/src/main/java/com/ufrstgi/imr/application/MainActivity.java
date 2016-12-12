@@ -2,7 +2,11 @@ package com.ufrstgi.imr.application;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +32,8 @@ public class MainActivity extends AppCompatActivity
 
     private ServerHTTP serverHTTP;
     private final static int PORT = 8080;
+    WifiManager wifiManager;
+    Switch switchAP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +61,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // On cherche le Switch pour activer Access Point
-        final Switch switchAP = (Switch) findViewById(R.id.switchAP);
+        switchAP = (Switch) findViewById(R.id.switchAP);
+        wifiManager = (WifiManager)getBaseContext().getSystemService(Context.WIFI_SERVICE);
         switchAP.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -131,13 +138,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPause() {
         super.onPause();
-        if(serverHTTP != null) {
+        /*if(serverHTTP != null) {
             serverHTTP.stop();
-        }
+        }*/
     }
 
     private void createWifiAccessPoint() {
-        WifiManager wifiManager = (WifiManager)getBaseContext().getSystemService(Context.WIFI_SERVICE);
         if(wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(false);
         } else {
