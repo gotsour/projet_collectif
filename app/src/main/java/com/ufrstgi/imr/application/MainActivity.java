@@ -21,7 +21,7 @@ import android.widget.Switch;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
+/*test duduf */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
