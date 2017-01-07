@@ -19,8 +19,17 @@ import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
+
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.ufrstgi.imr.application.storage.model.Colis;
+import com.ufrstgi.imr.application.storage.model.Niveau;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+
 /*test duduf */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +52,43 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // TEST DB FLOW
+        FlowManager.init(new FlowConfig.Builder(this).build());
+        Niveau niveau1= new Niveau();
+        niveau1.setNom("niveau 1");
+        niveau1.save();
+
+        Colis colis1=new Colis();
+        colis1.setNiveau(niveau1);
+        colis1.setVolume("20");
+        colis1.setNiveauBatteri("99");
+        colis1.save();
+
+        Colis colis2=new Colis();
+        colis2.setNiveau(niveau1);
+        colis2.setVolume("200");
+        colis2.setNiveauBatteri("60");
+        colis2.save();
+
+        Colis colis3=new Colis();
+        colis3.setNiveau(niveau1);
+        colis3.setVolume("200880");
+        colis3.setNiveauBatteri("80");
+        colis3.save();
+
+        List<Colis> colis = SQLite.select().
+                from(Colis.class).
+                queryList();
+
+        Log.d("test","##############################");
+        //Log.d("test",colis.toString());
+        for(int i=0; i<colis.size();i++){
+            Log.d("test","##############################"+colis.get(i).toString());
+        }
+
+        /// FIN test DB FLOW
+
     }
 
     @Override
