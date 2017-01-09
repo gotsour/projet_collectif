@@ -9,21 +9,21 @@ package com.ufrstgi.imr.application.objet;
 
 public class Tournee {
 
-    private long id_tournee;
+    private int id_tournee;
     private String id_chauffeur;
     private String id_camion;
 
-    public Tournee(long id_tournee, String id_chauffeur, String id_camion) {
+    public Tournee(int id_tournee, String id_chauffeur, String id_camion) {
         this.id_tournee = id_tournee;
         this.id_chauffeur = id_chauffeur;
         this.id_camion = id_camion;
     }
 
-    public long getId_tournee() {
+    public int getId_tournee() {
         return id_tournee;
     }
 
-    public void setId_tournee(long id_tournee) {
+    public void setId_tournee(int id_tournee) {
         this.id_tournee = id_tournee;
     }
 

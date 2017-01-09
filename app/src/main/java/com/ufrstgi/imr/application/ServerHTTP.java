@@ -90,6 +90,7 @@ public class ServerHTTP extends NanoHTTPD {
         try {
             String message = getRequest("message", postBody);
             String fichier = getRequest("fichier", postBody);
+            String latitude = getRequest("latitude", postBody);
         } catch (UnsupportedEncodingException e) {
             Log.d("ERROR", "L'URL a mal été décodée");
             e.printStackTrace();

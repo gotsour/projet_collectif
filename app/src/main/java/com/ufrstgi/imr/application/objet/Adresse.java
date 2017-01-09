@@ -9,29 +9,27 @@ package com.ufrstgi.imr.application.objet;
 
 public class Adresse {
 
-    private long id_adresse;
+    private int id_adresse;
     private String rue;
-    private String batiment;
-    private String quai;
     private int code_postal;
     private String ville;
     private String pays;
+    private int id_latlng;
 
-    public Adresse(long id_adresse, String rue, String batiment, String quai, int code_postal, String ville, String pays) {
+    public Adresse(int id_adresse, String rue, int code_postal, String ville, String pays, int id_latlng) {
         this.id_adresse = id_adresse;
         this.rue = rue;
-        this.batiment = batiment;
-        this.quai = quai;
         this.code_postal = code_postal;
         this.ville = ville;
         this.pays = pays;
+        this.id_latlng = id_latlng;
     }
 
-    public long getId_adresse() {
+    public int getId_adresse() {
         return id_adresse;
     }
 
-    public void setId_adresse(long id_adresse) {
+    public void setId_adresse(int id_adresse) {
         this.id_adresse = id_adresse;
     }
 
@@ -41,22 +39,6 @@ public class Adresse {
 
     public void setRue(String rue) {
         this.rue = rue;
-    }
-
-    public String getBatiment() {
-        return batiment;
-    }
-
-    public void setBatiment(String batiment) {
-        this.batiment = batiment;
-    }
-
-    public String getQuai() {
-        return quai;
-    }
-
-    public void setQuai(String quai) {
-        this.quai = quai;
     }
 
     public int getCode_postal() {
@@ -81,5 +63,13 @@ public class Adresse {
 
     public void setPays(String pays) {
         this.pays = pays;
+    }
+
+    public int getId_latlng() {
+        return id_latlng;
+    }
+
+    public void setId_latlng(int id_latlng) {
+        this.id_latlng = id_latlng;
     }
 }

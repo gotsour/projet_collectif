@@ -18,19 +18,18 @@ public class PositionChauffeurManager {
 
     private static final String TABLE_NAME = "positionChauffeur";
     public static final String KEY_ID_POSITION_CHAUFFEUR = "id_position_chauffeur";
-    public static final String KEY_LATITUDE_CHAUFFEUR = "latitude_chauffeur";
-    public static final String KEY_LONGITUDE_CHAUFFEUR = "longitude_chauffeur";
     public static final String KEY_DATE_HEURE_CHAUFFEUR= "date_heure_chauffeur";
     public static final String KEY_ID_CHAUFFEUR= "id_chauffeur";
+    public static final String KEY_ID_LATLNG= "id_latlng";
 
     public static final String CREATE_TABLE_POSITION_CHAUFFEUR =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_POSITION_CHAUFFEUR+" INTEGER primary key," +
-                    " "+KEY_LATITUDE_CHAUFFEUR+" REAL," +
-                    " "+KEY_LONGITUDE_CHAUFFEUR+" REAL," +
                     " "+KEY_DATE_HEURE_CHAUFFEUR+" TEXT," +
                     " "+KEY_ID_CHAUFFEUR+" TEXT," +
-                    " FOREIGN KEY("+KEY_ID_CHAUFFEUR+") REFERENCES chauffeur("+KEY_ID_CHAUFFEUR+") " +
+                    " "+KEY_ID_LATLNG+" TEXT," +
+                    " FOREIGN KEY("+KEY_ID_CHAUFFEUR+") REFERENCES chauffeur("+KEY_ID_CHAUFFEUR+")," +
+                    " FOREIGN KEY("+KEY_ID_LATLNG+") REFERENCES latlng("+KEY_ID_LATLNG+") " +
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
@@ -54,10 +53,9 @@ public class PositionChauffeurManager {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_POSITION_CHAUFFEUR, positionChauffeur.getId_position_chauffeur());
-        values.put(KEY_LATITUDE_CHAUFFEUR, positionChauffeur.getLatitude_chauffeur());
-        values.put(KEY_LONGITUDE_CHAUFFEUR, positionChauffeur.getLongitude_chauffeur());
         values.put(KEY_DATE_HEURE_CHAUFFEUR, positionChauffeur.getDate_heure_chauffeur());
         values.put(KEY_ID_CHAUFFEUR, positionChauffeur.getId_chauffeur());
+        values.put(KEY_ID_LATLNG, positionChauffeur.getId_latlng());
 
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
@@ -70,10 +68,9 @@ public class PositionChauffeurManager {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_POSITION_CHAUFFEUR, positionChauffeur.getId_position_chauffeur());
-        values.put(KEY_LATITUDE_CHAUFFEUR, positionChauffeur.getLatitude_chauffeur());
-        values.put(KEY_LONGITUDE_CHAUFFEUR, positionChauffeur.getLongitude_chauffeur());
         values.put(KEY_DATE_HEURE_CHAUFFEUR, positionChauffeur.getDate_heure_chauffeur());
         values.put(KEY_ID_CHAUFFEUR, positionChauffeur.getId_chauffeur());
+        values.put(KEY_ID_LATLNG, positionChauffeur.getId_latlng());
 
         String where = KEY_ID_POSITION_CHAUFFEUR+" = ?";
         String[] whereArgs = {positionChauffeur.getId_position_chauffeur()+""};
@@ -91,18 +88,17 @@ public class PositionChauffeurManager {
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public PositionChauffeur getPositionChauffeur(Long id) {
+    public PositionChauffeur getPositionChauffeur(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        PositionChauffeur p = new PositionChauffeur(0,0,0,"","");
+        PositionChauffeur p = new PositionChauffeur(0,"","",0);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_POSITION_CHAUFFEUR+"="+id, null);
         if (c.moveToFirst()) {
-            p.setId_position_chauffeur(c.getLong(c.getColumnIndex(KEY_ID_POSITION_CHAUFFEUR)));
-            p.setLatitude_chauffeur(c.getFloat(c.getColumnIndex(KEY_LATITUDE_CHAUFFEUR)));
-            p.setLongitude_chauffeur(c.getFloat(c.getColumnIndex(KEY_LONGITUDE_CHAUFFEUR)));
+            p.setId_position_chauffeur(c.getInt(c.getColumnIndex(KEY_ID_POSITION_CHAUFFEUR)));
             p.setDate_heure_chauffeur(c.getString(c.getColumnIndex(KEY_DATE_HEURE_CHAUFFEUR)));
             p.setId_chauffeur(c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR)));
+            p.setId_latlng(c.getInt(c.getColumnIndex(KEY_ID_LATLNG)));
 
             c.close();
         }

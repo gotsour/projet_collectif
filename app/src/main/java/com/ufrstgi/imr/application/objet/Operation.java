@@ -9,56 +9,58 @@ package com.ufrstgi.imr.application.objet;
 
 public class Operation {
 
-    private long id_operation;
-    private String heure_theorique_operation;
-    private String heure_reelle_operation;
-    private String date_limite_operation;
+    private int id_operation;
+    private String date_theorique;
+    private String date_reelle;
+    private String date_limite;
     private int estLivraison;
-    private int estReception;
-    private long id_adresse;
-    private long id_client;
+    private String quai;
+    private String batiment;
+    private int id_adresse;
+    private int id_client;
 
-    public Operation(long id_operation, String heure_theorique_operation, String heure_reelle_operation, String date_limite_operation, int estLivraison, int estReception, long id_adresse, long id_client) {
+    public Operation(int id_operation, String date_theorique, String date_reelle, String date_limite, int estLivraison, String quai, String batiment, int id_adresse, int id_client) {
         this.id_operation = id_operation;
-        this.heure_theorique_operation = heure_theorique_operation;
-        this.heure_reelle_operation = heure_reelle_operation;
-        this.date_limite_operation = date_limite_operation;
+        this.date_theorique = date_theorique;
+        this.date_reelle = date_reelle;
+        this.date_limite = date_limite;
         this.estLivraison = estLivraison;
-        this.estReception = estReception;
+        this.quai = quai;
+        this.batiment = batiment;
         this.id_adresse = id_adresse;
         this.id_client = id_client;
     }
 
-    public long getId_operation() {
+    public int getId_operation() {
         return id_operation;
     }
 
-    public void setId_operation(long id_operation) {
+    public void setId_operation(int id_operation) {
         this.id_operation = id_operation;
     }
 
-    public String getHeure_theorique_operation() {
-        return heure_theorique_operation;
+    public String getDate_theorique() {
+        return date_theorique;
     }
 
-    public void setHeure_theorique_operation(String heure_theorique_operation) {
-        this.heure_theorique_operation = heure_theorique_operation;
+    public void setDate_theorique(String date_theorique) {
+        this.date_theorique = date_theorique;
     }
 
-    public String getHeure_reelle_operation() {
-        return heure_reelle_operation;
+    public String getDate_reelle() {
+        return date_reelle;
     }
 
-    public void setHeure_reelle_operation(String heure_reelle_operation) {
-        this.heure_reelle_operation = heure_reelle_operation;
+    public void setDate_reelle(String date_reelle) {
+        this.date_reelle = date_reelle;
     }
 
-    public String getDate_limite_operation() {
-        return date_limite_operation;
+    public String getDate_limite() {
+        return date_limite;
     }
 
-    public void setDate_limite_operation(String date_limite_operation) {
-        this.date_limite_operation = date_limite_operation;
+    public void setDate_limite(String date_limite) {
+        this.date_limite = date_limite;
     }
 
     public int getEstLivraison() {
@@ -69,27 +71,35 @@ public class Operation {
         this.estLivraison = estLivraison;
     }
 
-    public int getEstReception() {
-        return estReception;
+    public String getQuai() {
+        return quai;
     }
 
-    public void setEstReception(int estReception) {
-        this.estReception = estReception;
+    public void setQuai(String quai) {
+        this.quai = quai;
     }
 
-    public long getId_adresse() {
+    public String getBatiment() {
+        return batiment;
+    }
+
+    public void setBatiment(String batiment) {
+        this.batiment = batiment;
+    }
+
+    public int getId_adresse() {
         return id_adresse;
     }
 
-    public void setId_adresse(long id_adresse) {
+    public void setId_adresse(int id_adresse) {
         this.id_adresse = id_adresse;
     }
 
-    public long getId_client() {
+    public int getId_client() {
         return id_client;
     }
 
-    public void setId_client(long id_client) {
+    public void setId_client(int id_client) {
         this.id_client = id_client;
     }
 }

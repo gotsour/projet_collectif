@@ -9,23 +9,23 @@ package com.ufrstgi.imr.application.objet;
 
 public class Personne {
 
-    private long id_personne;
+    private int id_personne;
     private String nom_personne;
     private String prenom_personne;
     private String telephone_personne;
 
-    public Personne(long id_personne, String nom_personne, String prenom_personne, String telephone_personne) {
+    public Personne(int id_personne, String nom_personne, String prenom_personne, String telephone_personne) {
         this.id_personne = id_personne;
         this.nom_personne = nom_personne;
         this.prenom_personne = prenom_personne;
         this.telephone_personne = telephone_personne;
     }
 
-    public long getId_personne() {
+    public int getId_personne() {
         return id_personne;
     }
 
-    public void setId_personne(long id_personne) {
+    public void setId_personne(int id_personne) {
         this.id_personne = id_personne;
     }
 

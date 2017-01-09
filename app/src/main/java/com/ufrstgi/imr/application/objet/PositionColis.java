@@ -9,42 +9,24 @@ package com.ufrstgi.imr.application.objet;
 
 public class PositionColis {
 
-    private long id_position_colis;
-    private float latitude_colis;
-    private float longitude_colis;
+    private int id_position_colis;
     private String date_heure_colis;
-    private long id_colis;
+    private int id_colis;
+    private int id_latlng;
 
-    public PositionColis(long id_position_colis, float latitude_colis, float longitude_colis, String date_heure_colis, long id_colis) {
+    public PositionColis(int id_position_colis, String date_heure_colis, int id_colis, int id_latlng) {
         this.id_position_colis = id_position_colis;
-        this.latitude_colis = latitude_colis;
-        this.longitude_colis = longitude_colis;
         this.date_heure_colis = date_heure_colis;
         this.id_colis = id_colis;
+        this.id_latlng = id_latlng;
     }
 
-    public long getId_position_colis() {
+    public int getId_position_colis() {
         return id_position_colis;
     }
 
-    public void setId_position_colis(long id_position_colis) {
+    public void setId_position_colis(int id_position_colis) {
         this.id_position_colis = id_position_colis;
-    }
-
-    public float getLatitude_colis() {
-        return latitude_colis;
-    }
-
-    public void setLatitude_colis(float latitude_colis) {
-        this.latitude_colis = latitude_colis;
-    }
-
-    public float getLongitude_colis() {
-        return longitude_colis;
-    }
-
-    public void setLongitude_colis(float longitude_colis) {
-        this.longitude_colis = longitude_colis;
     }
 
     public String getDate_heure_colis() {
@@ -55,11 +37,19 @@ public class PositionColis {
         this.date_heure_colis = date_heure_colis;
     }
 
-    public long getId_colis() {
+    public int getId_colis() {
         return id_colis;
     }
 
-    public void setId_colis(long id_colis) {
+    public void setId_colis(int id_colis) {
         this.id_colis = id_colis;
+    }
+
+    public int getId_latlng() {
+        return id_latlng;
+    }
+
+    public void setId_latlng(int id_latlng) {
+        this.id_latlng = id_latlng;
     }
 }

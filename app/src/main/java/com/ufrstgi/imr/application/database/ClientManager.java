@@ -92,18 +92,18 @@ public class ClientManager {
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public Client getClient(Long id) {
+    public Client getClient(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
         Client cl = new Client(0,"","",0,0);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_CLIENT+"="+id, null);
         if (c.moveToFirst()) {
-            cl.setId_client(c.getLong(c.getColumnIndex(KEY_ID_CLIENT)));
+            cl.setId_client(c.getInt(c.getColumnIndex(KEY_ID_CLIENT)));
             cl.setNom_client(c.getString(c.getColumnIndex(KEY_NOM_CLIENT)));
             cl.setTelephone_client(c.getString(c.getColumnIndex(KEY_TELEPHONE_CLIENT)));
-            cl.setId_adresse(c.getLong(c.getColumnIndex(KEY_ID_ADRESSE)));
-            cl.setId_personne(c.getLong(c.getColumnIndex(KEY_ID_PERSONNE)));
+            cl.setId_adresse(c.getInt(c.getColumnIndex(KEY_ID_ADRESSE)));
+            cl.setId_personne(c.getInt(c.getColumnIndex(KEY_ID_PERSONNE)));
 
             c.close();
         }

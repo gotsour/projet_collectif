@@ -9,23 +9,23 @@ package com.ufrstgi.imr.application.objet;
 
 public class Horaire {
 
-    private long id_horaire;
+    private int id_horaire;
     private String heure_debut;
     private String heure_fin;
     private String id_chauffeur;
 
-    public Horaire(long id_horaire, String heure_debut, String heure_fin, String id_chauffeur) {
+    public Horaire(int id_horaire, String heure_debut, String heure_fin, String id_chauffeur) {
         this.id_horaire = id_horaire;
         this.heure_debut = heure_debut;
         this.heure_fin = heure_fin;
         this.id_chauffeur = id_chauffeur;
     }
 
-    public long getId_horaire() {
+    public int getId_horaire() {
         return id_horaire;
     }
 
-    public void setId_horaire(long id_horaire) {
+    public void setId_horaire(int id_horaire) {
         this.id_horaire = id_horaire;
     }
 

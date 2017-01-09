@@ -83,14 +83,14 @@ public class TourneeManager {
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public Tournee getTournee(Long id) {
+    public Tournee getTournee(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
         Tournee t = new Tournee(0,"","");
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_TOURNEE+"="+id, null);
         if (c.moveToFirst()) {
-            t.setId_tournee(c.getLong(c.getColumnIndex(KEY_ID_TOURNEE)));
+            t.setId_tournee(c.getInt(c.getColumnIndex(KEY_ID_TOURNEE)));
             t.setId_chauffeur(c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR)));
             t.setId_camion(c.getString(c.getColumnIndex(KEY_ID_CAMION)));
 

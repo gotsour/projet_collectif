@@ -86,14 +86,14 @@ public class HoraireManager {
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public Horaire getHoraire(Long id) {
+    public Horaire getHoraire(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
         Horaire h = new Horaire(0,"","","");
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_HORAIRE+"="+id, null);
         if (c.moveToFirst()) {
-            h.setId_horaire(c.getLong(c.getColumnIndex(KEY_ID_HORAIRE)));
+            h.setId_horaire(c.getInt(c.getColumnIndex(KEY_ID_HORAIRE)));
             h.setHeure_debut(c.getString(c.getColumnIndex(KEY_HEURE_DEBUT)));
             h.setHeure_fin(c.getString(c.getColumnIndex(KEY_HEURE_FIN)));
             h.setId_chauffeur(c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR)));

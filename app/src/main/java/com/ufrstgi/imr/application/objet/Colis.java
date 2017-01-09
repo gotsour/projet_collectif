@@ -9,7 +9,7 @@ package com.ufrstgi.imr.application.objet;
 
 public class Colis {
 
-    private long id_colis;
+    private int id_colis;
     private float poids_colis;
     private float volume_colis;
     private float niveau_batterie_colis;
@@ -17,12 +17,12 @@ public class Colis {
     private float capacite_choc_colis;
 
     /* Clefs étrangères */
-    private long id_niveau;
-    private long id_operation;
-    private long id_tournee;
-    private long id_client;
+    private int id_niveau;
+    private int id_operation;
+    private int id_tournee;
+    private int id_client;
 
-    public Colis(long id_colis, float poids_colis, float volume_colis, float niveau_batterie_colis, float temperature_colis, float capacite_choc_colis, long id_niveau, long id_operation, long id_tournee, long id_client) {
+    public Colis(int id_colis, float poids_colis, float volume_colis, float niveau_batterie_colis, float temperature_colis, float capacite_choc_colis, int id_niveau, int id_operation, int id_tournee, int id_client) {
         this.id_colis = id_colis;
         this.poids_colis = poids_colis;
         this.volume_colis = volume_colis;
@@ -35,11 +35,11 @@ public class Colis {
         this.id_client = id_client;
     }
 
-    public long getId_colis() {
+    public int getId_colis() {
         return id_colis;
     }
 
-    public void setId_colis(long id_colis) {
+    public void setId_colis(int id_colis) {
         this.id_colis = id_colis;
     }
 
@@ -83,35 +83,35 @@ public class Colis {
         this.capacite_choc_colis = capacite_choc_colis;
     }
 
-    public long getId_niveau() {
+    public int getId_niveau() {
         return id_niveau;
     }
 
-    public void setId_niveau(long id_niveau) {
+    public void setId_niveau(int id_niveau) {
         this.id_niveau = id_niveau;
     }
 
-    public long getId_operation() {
+    public int getId_operation() {
         return id_operation;
     }
 
-    public void setId_operation(long id_operation) {
+    public void setId_operation(int id_operation) {
         this.id_operation = id_operation;
     }
 
-    public long getId_tournee() {
+    public int getId_tournee() {
         return id_tournee;
     }
 
-    public void setId_tournee(long id_tournee) {
+    public void setId_tournee(int id_tournee) {
         this.id_tournee = id_tournee;
     }
 
-    public long getId_client() {
+    public int getId_client() {
         return id_client;
     }
 
-    public void setId_client(long id_client) {
+    public void setId_client(int id_client) {
         this.id_client = id_client;
     }
 }

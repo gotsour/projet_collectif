@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.ufrstgi.imr.application.objet.Chauffeur;
+import com.ufrstgi.imr.application.objet.Personne;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.
@@ -32,9 +33,11 @@ public class ChauffeurManager {
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
+    Context context;
 
     public ChauffeurManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
+        this.context = context;
     }
 
     public void open() {
@@ -54,7 +57,7 @@ public class ChauffeurManager {
         values.put(KEY_ID_CHAUFFEUR, chauffeur.getId_chauffeur());
         values.put(KEY_MOT_DE_PASSE, chauffeur.getMot_de_passe());
         values.put(KEY_NIVEAU_BATTERIE_TERMINAL, chauffeur.getNiveau_batterie_terminal());
-        values.put(KEY_ID_PERSONNE, chauffeur.getId_personne());
+        values.put(KEY_ID_PERSONNE, chauffeur.getPersonne().getId_personne());
 
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
@@ -69,7 +72,7 @@ public class ChauffeurManager {
         values.put(KEY_ID_CHAUFFEUR, chauffeur.getId_chauffeur());
         values.put(KEY_MOT_DE_PASSE, chauffeur.getMot_de_passe());
         values.put(KEY_NIVEAU_BATTERIE_TERMINAL, chauffeur.getNiveau_batterie_terminal());
-        values.put(KEY_ID_PERSONNE, chauffeur.getId_personne());
+        values.put(KEY_ID_PERSONNE, chauffeur.getPersonne().getId_personne());
 
         String where = KEY_ID_CHAUFFEUR+" = ?";
         String[] whereArgs = {chauffeur.getId_chauffeur()+""};
@@ -90,14 +93,22 @@ public class ChauffeurManager {
     public Chauffeur getChauffeur(String id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Chauffeur ch = new Chauffeur("","",0,0);
+        Personne p = new Personne(0,"","","");
+        Chauffeur ch = new Chauffeur("","",0,p);
 
-        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_CHAUFFEUR+"="+id, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_CHAUFFEUR+"='"+id+"'", null);
         if (c.moveToFirst()) {
             ch.setId_chauffeur(c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR)));
             ch.setMot_de_passe(c.getString(c.getColumnIndex(KEY_MOT_DE_PASSE)));
             ch.setNiveau_batterie_terminal(c.getFloat(c.getColumnIndex(KEY_NIVEAU_BATTERIE_TERMINAL)));
-            ch.setId_personne(c.getLong(c.getColumnIndex(KEY_ID_PERSONNE)));
+
+            int id_personne = c.getInt(c.getColumnIndex(KEY_ID_PERSONNE));
+            PersonneManager personneManager = new PersonneManager(context);
+            personneManager.open();
+            p = personneManager.getPersonne(id_personne);
+            personneManager.close();
+
+            ch.setPersonne(p);
 
             c.close();
         }

@@ -84,14 +84,14 @@ public class PersonneManager {
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public Personne getPersonne(long id) {
+    public Personne getPersonne(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
         Personne p = new Personne(0,"","","");
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_PERSONNE+"="+id, null);
         if (c.moveToFirst()) {
-            p.setId_personne(c.getLong(c.getColumnIndex(KEY_ID_PERSONNE)));
+            p.setId_personne(c.getInt(c.getColumnIndex(KEY_ID_PERSONNE)));
             p.setNom_personne(c.getString(c.getColumnIndex(KEY_NOM_PERSONNE)));
             p.setPrenom_personne(c.getString(c.getColumnIndex(KEY_PRENOM_PERSONNE)));
             p.setTelephone_personne(c.getString(c.getColumnIndex(KEY_TELEPHONE_PERSONNE)));

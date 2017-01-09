@@ -18,22 +18,24 @@ public class OperationManager {
 
     private static final String TABLE_NAME = "operation";
     public static final String KEY_ID_OPERATION = "id_operation";
-    public static final String KEY_HEURE_THEORIQUE_OPERATION = "heure_theorique_operation";
-    public static final String KEY_HEURE_REELLE_OPERATION = "heure_relle_operation";
-    public static final String KEY_DATE_LIMITE_OPERATION = "date_limite_operation";
+    public static final String KEY_DATE_THEORIQUE = "date_theorique";
+    public static final String KEY_DATE_REELLE= "heure_relle_operation";
+    public static final String KEY_DATE_LIMITE= "date_limite_operation";
     public static final String KEY_EST_LIVRAISON= "estLivraison";
-    public static final String KEY_EST_RECEPTION= "estReception";
+    public static final String KEY_QUAI= "quai";
+    public static final String KEY_BATIMENT= "batiment";
     public static final String KEY_ID_ADRESSE= "id_adresse";
     public static final String KEY_ID_CLIENT= "id_client";
 
     public static final String CREATE_TABLE_OPERATION =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_OPERATION+" INTEGER primary key," +
-                    " "+KEY_HEURE_THEORIQUE_OPERATION+" TEXT," +
-                    " "+KEY_HEURE_REELLE_OPERATION+" TEXT," +
-                    " "+KEY_DATE_LIMITE_OPERATION+" TEXT," +
+                    " "+KEY_DATE_THEORIQUE+" TEXT," +
+                    " "+KEY_DATE_REELLE+" TEXT," +
+                    " "+KEY_DATE_LIMITE+" TEXT," +
                     " "+KEY_EST_LIVRAISON+" INTEGER," +
-                    " "+KEY_EST_RECEPTION+" INTEGER," +
+                    " "+KEY_QUAI+" TEXT," +
+                    " "+KEY_BATIMENT+" TEXT," +
                     " "+KEY_ID_ADRESSE+" INTEGER," +
                     " "+KEY_ID_CLIENT+" INTEGER," +
                     " FOREIGN KEY("+KEY_ID_ADRESSE+") REFERENCES adresse("+KEY_ID_ADRESSE+")," +
@@ -61,11 +63,12 @@ public class OperationManager {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_OPERATION, operation.getId_operation());
-        values.put(KEY_HEURE_THEORIQUE_OPERATION, operation.getHeure_theorique_operation());
-        values.put(KEY_HEURE_REELLE_OPERATION, operation.getHeure_reelle_operation());
-        values.put(KEY_DATE_LIMITE_OPERATION, operation.getDate_limite_operation());
+        values.put(KEY_DATE_THEORIQUE, operation.getDate_theorique());
+        values.put(KEY_DATE_REELLE, operation.getDate_reelle());
+        values.put(KEY_DATE_LIMITE, operation.getDate_limite());
         values.put(KEY_EST_LIVRAISON, operation.getEstLivraison());
-        values.put(KEY_EST_RECEPTION, operation.getEstReception());
+        values.put(KEY_QUAI, operation.getQuai());
+        values.put(KEY_BATIMENT, operation.getBatiment());
         values.put(KEY_ID_ADRESSE, operation.getId_adresse());
         values.put(KEY_ID_CLIENT, operation.getId_client());
 
@@ -80,11 +83,12 @@ public class OperationManager {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_OPERATION, operation.getId_operation());
-        values.put(KEY_HEURE_THEORIQUE_OPERATION, operation.getDate_limite_operation());
-        values.put(KEY_HEURE_REELLE_OPERATION, operation.getHeure_reelle_operation());
-        values.put(KEY_DATE_LIMITE_OPERATION, operation.getDate_limite_operation());
+        values.put(KEY_DATE_THEORIQUE, operation.getDate_theorique());
+        values.put(KEY_DATE_REELLE, operation.getDate_reelle());
+        values.put(KEY_DATE_LIMITE, operation.getDate_limite());
         values.put(KEY_EST_LIVRAISON, operation.getEstLivraison());
-        values.put(KEY_EST_RECEPTION, operation.getEstReception());
+        values.put(KEY_QUAI, operation.getQuai());
+        values.put(KEY_BATIMENT, operation.getBatiment());
         values.put(KEY_ID_ADRESSE, operation.getId_adresse());
         values.put(KEY_ID_CLIENT, operation.getId_client());
 
@@ -104,21 +108,22 @@ public class OperationManager {
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public Operation getOperation(Long id) {
+    public Operation getOperation(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Operation o = new Operation(0,"","","",0,0,0,0);
+        Operation o = new Operation(0,"","","",0,"","",0,0);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_OPERATION+"="+id, null);
         if (c.moveToFirst()) {
-            o.setId_operation(c.getLong(c.getColumnIndex(KEY_ID_OPERATION)));
-            o.setHeure_theorique_operation(c.getString(c.getColumnIndex(KEY_HEURE_THEORIQUE_OPERATION)));
-            o.setHeure_reelle_operation(c.getString(c.getColumnIndex(KEY_HEURE_REELLE_OPERATION)));
-            o.setDate_limite_operation(c.getString(c.getColumnIndex(KEY_DATE_LIMITE_OPERATION)));
+            o.setId_operation(c.getInt(c.getColumnIndex(KEY_ID_OPERATION)));
+            o.setDate_theorique(c.getString(c.getColumnIndex(KEY_DATE_THEORIQUE)));
+            o.setDate_reelle(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
+            o.setDate_limite(c.getString(c.getColumnIndex(KEY_DATE_LIMITE)));
             o.setEstLivraison(c.getInt(c.getColumnIndex(KEY_EST_LIVRAISON)));
-            o.setEstReception(c.getInt(c.getColumnIndex(KEY_EST_RECEPTION)));
-            o.setId_adresse(c.getLong(c.getColumnIndex(KEY_ID_ADRESSE)));
-            o.setId_client(c.getLong(c.getColumnIndex(KEY_ID_CLIENT)));
+            o.setQuai(c.getString(c.getColumnIndex(KEY_QUAI)));
+            o.setBatiment(c.getString(c.getColumnIndex(KEY_BATIMENT)));
+            o.setId_adresse(c.getInt(c.getColumnIndex(KEY_ID_ADRESSE)));
+            o.setId_client(c.getInt(c.getColumnIndex(KEY_ID_CLIENT)));
 
             c.close();
         }

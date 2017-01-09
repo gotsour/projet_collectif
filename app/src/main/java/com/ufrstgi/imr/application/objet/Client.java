@@ -9,13 +9,13 @@ package com.ufrstgi.imr.application.objet;
 
 public class Client {
 
-    private long id_client;
+    private int id_client;
     private String nom_client;
     private String telephone_client;
-    private long id_adresse;
-    private long id_personne;
+    private int id_adresse;
+    private int id_personne;
 
-    public Client(long id_client, String nom_client, String telephone_client, long id_adresse, long id_personne) {
+    public Client(int id_client, String nom_client, String telephone_client, int id_adresse, int id_personne) {
         this.id_client = id_client;
         this.nom_client = nom_client;
         this.telephone_client = telephone_client;
@@ -23,11 +23,11 @@ public class Client {
         this.id_personne = id_personne;
     }
 
-    public long getId_client() {
+    public int getId_client() {
         return id_client;
     }
 
-    public void setId_client(long id_client) {
+    public void setId_client(int id_client) {
         this.id_client = id_client;
     }
 
@@ -47,19 +47,19 @@ public class Client {
         this.telephone_client = telephone_client;
     }
 
-    public long getId_adresse() {
+    public int getId_adresse() {
         return id_adresse;
     }
 
-    public void setId_adresse(long id_adresse) {
+    public void setId_adresse(int id_adresse) {
         this.id_adresse = id_adresse;
     }
 
-    public long getId_personne() {
+    public int getId_personne() {
         return id_personne;
     }
 
-    public void setId_personne(long id_personne) {
+    public void setId_personne(int id_personne) {
         this.id_personne = id_personne;
     }
 }

@@ -5,31 +5,32 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ufrstgi.imr.application.objet.Latlng;
 import com.ufrstgi.imr.application.objet.Niveau;
 
 /**
- * Created by Thomas Westermann on 07/01/2017.
+ * Created by Thomas Westermann on 09/01/2017.
  * Université de Franche-Comté
  * thomas.westermann@orange.fr
  * Application Projet_collectif
  */
 
-public class NiveauManager {
+public class LatlngManager {
 
-    private static final String TABLE_NAME = "niveau";
-    public static final String KEY_ID_NIVEAU = "id_niveau";
-    public static final String KEY_LIBELLE_NIVEAU = "libelle_niveau";
-    public static final String KEY_PRIX= "prix";
-    public static final String CREATE_TABLE_NIVEAU =
+    private static final String TABLE_NAME = "latlng";
+    public static final String KEY_ID_LATLNG = "id_latlng";
+    public static final String KEY_LATITUDE= "latitude";
+    public static final String KEY_LONGITUDE= "longitude";
+    public static final String CREATE_TABLE_LATLNG =
             "CREATE TABLE "+TABLE_NAME+ " (" +
-                    " "+KEY_ID_NIVEAU+" INTEGER primary key," +
-                    " "+KEY_LIBELLE_NIVEAU+" TEXT," +
-                    " "+KEY_PRIX+" REAL" +
+                    " "+KEY_ID_LATLNG+" INTEGER primary key," +
+                    " "+KEY_LATITUDE+" REAL," +
+                    " "+KEY_LONGITUDE+" REAL" +
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
 
-    public NiveauManager(Context context) {
+    public LatlngManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
     }
 
@@ -43,59 +44,59 @@ public class NiveauManager {
         db.close();
     }
 
-    public long addNiveau(Niveau niveau) {
+    public long addLatlng(Latlng latlng) {
         // Ajout d'un enregistrement dans la table
 
         ContentValues values = new ContentValues();
-        values.put(KEY_LIBELLE_NIVEAU, niveau.getLibelle_niveau());
-        values.put(KEY_PRIX, niveau.getPrix());
+        values.put(KEY_LATITUDE, latlng.getLatitude());
+        values.put(KEY_LONGITUDE, latlng.getLongitude());
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
         return db.insert(TABLE_NAME,null,values);
     }
 
-    public int updateNiveau(Niveau niveau) {
+    public int updateLatlng(Latlng latlng) {
         // modification d'un enregistrement
         // valeur de retour : (int) nombre de lignes affectées par la requête
 
         ContentValues values = new ContentValues();
-        values.put(KEY_LIBELLE_NIVEAU, niveau.getLibelle_niveau());
-        values.put(KEY_PRIX, niveau.getPrix());
+        values.put(KEY_LATITUDE, latlng.getLatitude());
+        values.put(KEY_LONGITUDE, latlng.getLongitude());
 
-        String where = KEY_ID_NIVEAU+" = ?";
-        String[] whereArgs = {niveau.getId_niveau()+""};
+        String where = KEY_ID_LATLNG+" = ?";
+        String[] whereArgs = {latlng.getId_latlng()+""};
 
         return db.update(TABLE_NAME, values, where, whereArgs);
     }
 
-    public int deleteNiveau(Niveau niveau) {
+    public int deleteLatlng(Latlng latlng) {
         // suppression d'un enregistrement
         // valeur de retour : (int) nombre de lignes affectées par la clause WHERE, 0 sinon
 
-        String where = KEY_ID_NIVEAU+" = ?";
-        String[] whereArgs = {niveau.getId_niveau()+""};
+        String where = KEY_ID_LATLNG+" = ?";
+        String[] whereArgs = {latlng.getId_latlng()+""};
 
         return db.delete(TABLE_NAME, where, whereArgs);
     }
 
-    public Niveau getNiveau(int id) {
+    public Latlng getLatlng(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Niveau n=new Niveau(0,"",0);
+        Latlng l=new Latlng(0,0,0);
 
-        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_NIVEAU+"="+id, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_LATLNG+"="+id, null);
         if (c.moveToFirst()) {
-            n.setId_niveau(c.getInt(c.getColumnIndex(KEY_ID_NIVEAU)));
-            n.setLibelle_niveau(c.getString(c.getColumnIndex(KEY_LIBELLE_NIVEAU)));
-            n.setPrix(c.getFloat(c.getColumnIndex(KEY_PRIX)));
+            l.setId_latlng(c.getInt(c.getColumnIndex(KEY_ID_LATLNG)));
+            l.setLatitude(c.getFloat(c.getColumnIndex(KEY_LATITUDE)));
+            l.setLongitude(c.getFloat(c.getColumnIndex(KEY_LONGITUDE)));
 
             c.close();
         }
 
-        return n;
+        return l;
     }
 
-    public Cursor getAllNiveau() {
+    public Cursor getAllLatlng() {
         // sélection de tous les enregistrements de la table
         return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
     }

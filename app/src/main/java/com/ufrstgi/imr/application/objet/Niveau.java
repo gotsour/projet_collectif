@@ -9,21 +9,21 @@ package com.ufrstgi.imr.application.objet;
 
 public class Niveau {
 
-    private long id_niveau;
+    private int id_niveau;
     private String libelle_niveau;
     private float prix;
 
-    public Niveau(long id_niveau, String libelle_niveau, float prix) {
+    public Niveau(int id_niveau, String libelle_niveau, float prix) {
         this.id_niveau = id_niveau;
         this. libelle_niveau = libelle_niveau;
         this.prix = prix;
     }
 
-    public long getId_niveau() {
+    public int getId_niveau() {
         return id_niveau;
     }
 
-    public void setId_niveau(long id_niveau) {
+    public void setId_niveau(int id_niveau) {
         this.id_niveau = id_niveau;
     }
 

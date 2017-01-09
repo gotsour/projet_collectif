@@ -12,9 +12,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.ufrstgi.imr.application.database.ChauffeurManager;
 import com.ufrstgi.imr.application.database.HoraireManager;
 import com.ufrstgi.imr.application.database.MySQLite;
 import com.ufrstgi.imr.application.database.PersonneManager;
+import com.ufrstgi.imr.application.objet.Chauffeur;
 import com.ufrstgi.imr.application.objet.Horaire;
 import com.ufrstgi.imr.application.objet.Personne;
 
@@ -42,25 +44,22 @@ public class MainActivity extends AppCompatActivity
 
 
         /* Test BDD */
+
         PersonneManager p = new PersonneManager(this);
         p.open();
-        p.addPersonne(new Personne(0,"Westermann","Thomas","0621065701"));
-
-        // Listing des enregistrements de la table
-        Cursor c = p.getAllPersonne();
-        if (c.moveToFirst()) {
-            do {
-                Log.d("test",
-                        c.getInt(c.getColumnIndex(PersonneManager.KEY_ID_PERSONNE)) + "," +
-                                c.getString(c.getColumnIndex(PersonneManager.KEY_NOM_PERSONNE)) + "," +
-                                c.getString(c.getColumnIndex(PersonneManager.KEY_PRENOM_PERSONNE)) + "," +
-                                c.getString(c.getColumnIndex(PersonneManager.KEY_TELEPHONE_PERSONNE))
-                );
-            } while (c.moveToNext());
-        }
-        c.close(); // fermeture du curseur
-
+        Personne personne = new Personne(1,"Westermann","Thomas","0621065701");
+        p.addPersonne(personne);
         p.close();
+
+        ChauffeurManager ch = new ChauffeurManager(this);
+        ch.open();
+        ch.addChauffeur(new Chauffeur("TEST","",56,personne));
+
+        Chauffeur test = ch.getChauffeur("TEST");
+        ch.close();
+
+        Log.d("Test", test.getPersonne().getNom_personne());
+
     }
 
     @Override
