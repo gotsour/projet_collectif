@@ -93,7 +93,7 @@ public class CamionManager {
 
         Camion cam = new Camion("","",0,0,0);
 
-        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_CAMION+"="+id, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_CAMION+"='"+id+"'", null);
         if (c.moveToFirst()) {
             cam.setId_camion(c.getString(c.getColumnIndex(KEY_ID_CAMION)));
             cam.setNom_camion(c.getString(c.getColumnIndex(KEY_NOM_CAMION)));

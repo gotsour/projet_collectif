@@ -35,7 +35,6 @@ public class MySQLite extends SQLiteOpenHelper {
 
         // Tables primaires = 0 clefs étrangères
         sqLiteDatabase.execSQL(NiveauManager.CREATE_TABLE_NIVEAU);
-        sqLiteDatabase.execSQL(AdresseManager.CREATE_TABLE_ADRESSE);
         sqLiteDatabase.execSQL(PersonneManager.CREATE_TABLE_PERSONNE);
         sqLiteDatabase.execSQL(CamionManager.CREATE_TABLE_CAMION);
         sqLiteDatabase.execSQL(LatlngManager.CREATE_TABLE_LATLNG);
