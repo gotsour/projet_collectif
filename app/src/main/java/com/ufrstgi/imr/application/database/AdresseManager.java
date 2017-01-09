@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.ufrstgi.imr.application.objet.Adresse;
+import com.ufrstgi.imr.application.objet.Latlng;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.
@@ -36,9 +37,11 @@ public class AdresseManager {
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
+    Context context;
 
     public AdresseManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
+        this.context = context;
     }
 
     public void open() {
@@ -59,7 +62,7 @@ public class AdresseManager {
         values.put(KEY_CODE_POSTAL, adresse.getCode_postal());
         values.put(KEY_VILLE, adresse.getVille());
         values.put(KEY_PAYS, adresse.getPays());
-        values.put(KEY_ID_LATLNG, adresse.getId_latlng());
+        values.put(KEY_ID_LATLNG, adresse.getLatlng().getId_latlng());
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
         return db.insert(TABLE_NAME,null,values);
@@ -74,7 +77,7 @@ public class AdresseManager {
         values.put(KEY_CODE_POSTAL, adresse.getCode_postal());
         values.put(KEY_VILLE, adresse.getVille());
         values.put(KEY_PAYS, adresse.getPays());
-        values.put(KEY_ID_LATLNG, adresse.getId_latlng());
+        values.put(KEY_ID_LATLNG, adresse.getLatlng().getId_latlng());
 
         String where = KEY_ID_ADRESSE+" = ?";
         String[] whereArgs = {adresse.getId_adresse()+""};
@@ -95,7 +98,8 @@ public class AdresseManager {
     public Adresse getAdresse(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Adresse a=new Adresse(0,"",0,"","",0);
+        Latlng latlng = new Latlng(0,0,0);
+        Adresse a=new Adresse(0,"",0,"","",latlng);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_ADRESSE+"="+id, null);
         if (c.moveToFirst()) {
@@ -104,7 +108,13 @@ public class AdresseManager {
             a.setCode_postal(c.getInt(c.getColumnIndex(KEY_CODE_POSTAL)));
             a.setVille(c.getString(c.getColumnIndex(KEY_VILLE)));
             a.setPays(c.getString(c.getColumnIndex(KEY_PAYS)));
-            a.setId_latlng(c.getInt(c.getColumnIndex(KEY_ID_LATLNG)));
+
+            int id_latlng = c.getInt(c.getColumnIndex(KEY_ID_LATLNG));
+            LatlngManager latlngManager = new LatlngManager(context);
+            latlngManager.open();
+            latlng = latlngManager.getLatlng(id_latlng);
+            latlngManager.close();
+            a.setLatlng(latlng);
 
             c.close();
         }

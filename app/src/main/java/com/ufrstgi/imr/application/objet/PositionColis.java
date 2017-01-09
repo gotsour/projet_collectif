@@ -11,14 +11,14 @@ public class PositionColis {
 
     private int id_position_colis;
     private String date_heure_colis;
-    private int id_colis;
-    private int id_latlng;
+    private Colis colis;
+    private Latlng latlng;
 
-    public PositionColis(int id_position_colis, String date_heure_colis, int id_colis, int id_latlng) {
+    public PositionColis(int id_position_colis, String date_heure_colis, Colis colis, Latlng latlng) {
         this.id_position_colis = id_position_colis;
         this.date_heure_colis = date_heure_colis;
-        this.id_colis = id_colis;
-        this.id_latlng = id_latlng;
+        this.colis = colis;
+        this.latlng = latlng;
     }
 
     public int getId_position_colis() {
@@ -37,19 +37,19 @@ public class PositionColis {
         this.date_heure_colis = date_heure_colis;
     }
 
-    public int getId_colis() {
-        return id_colis;
+    public Colis getColis() {
+        return colis;
     }
 
-    public void setId_colis(int id_colis) {
-        this.id_colis = id_colis;
+    public void setColis(Colis colis) {
+        this.colis = colis;
     }
 
-    public int getId_latlng() {
-        return id_latlng;
+    public Latlng getLatlng() {
+        return latlng;
     }
 
-    public void setId_latlng(int id_latlng) {
-        this.id_latlng = id_latlng;
+    public void setLatlng(Latlng latlng) {
+        this.latlng = latlng;
     }
 }

@@ -5,7 +5,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ufrstgi.imr.application.objet.Adresse;
+import com.ufrstgi.imr.application.objet.Camion;
+import com.ufrstgi.imr.application.objet.Chauffeur;
+import com.ufrstgi.imr.application.objet.Client;
 import com.ufrstgi.imr.application.objet.Colis;
+import com.ufrstgi.imr.application.objet.Latlng;
+import com.ufrstgi.imr.application.objet.Niveau;
+import com.ufrstgi.imr.application.objet.Operation;
+import com.ufrstgi.imr.application.objet.Personne;
+import com.ufrstgi.imr.application.objet.Tournee;
 
 /**
  * Created by Thomas Westermann on 07/01/2017.
@@ -47,9 +56,11 @@ public class ColisManager {
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
+    Context context;
 
     public ColisManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
+        this.context = context;
     }
 
     public void open() {
@@ -72,10 +83,10 @@ public class ColisManager {
         values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
         values.put(KEY_TEMPERATURE_COLIS, colis.getTemperature_colis());
         values.put(KEY_CAPACITE_CHOC_COLIS, colis.getCapacite_choc_colis());
-        values.put(KEY_ID_NIVEAU, colis.getId_niveau());
-        values.put(KEY_ID_OPERATION, colis.getId_operation());
-        values.put(KEY_ID_TOURNEE, colis.getId_tournee());
-        values.put(KEY_ID_CLIENT, colis.getId_client());
+        values.put(KEY_ID_NIVEAU, colis.getNiveau().getId_niveau());
+        values.put(KEY_ID_OPERATION, colis.getOperation().getId_operation());
+        values.put(KEY_ID_TOURNEE, colis.getTournee().getId_tournee());
+        values.put(KEY_ID_CLIENT, colis.getClient().getId_client());
 
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
@@ -93,10 +104,10 @@ public class ColisManager {
         values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
         values.put(KEY_TEMPERATURE_COLIS, colis.getTemperature_colis());
         values.put(KEY_CAPACITE_CHOC_COLIS, colis.getCapacite_choc_colis());
-        values.put(KEY_ID_NIVEAU, colis.getId_niveau());
-        values.put(KEY_ID_OPERATION, colis.getId_operation());
-        values.put(KEY_ID_TOURNEE, colis.getId_tournee());
-        values.put(KEY_ID_CLIENT, colis.getId_client());
+        values.put(KEY_ID_NIVEAU, colis.getNiveau().getId_niveau());
+        values.put(KEY_ID_OPERATION, colis.getOperation().getId_operation());
+        values.put(KEY_ID_TOURNEE, colis.getTournee().getId_tournee());
+        values.put(KEY_ID_CLIENT, colis.getClient().getId_client());
 
         String where = KEY_ID_OPERATION+" = ?";
         String[] whereArgs = {colis.getId_colis()+""};
@@ -117,7 +128,16 @@ public class ColisManager {
     public Colis getColis(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Colis co = new Colis(0,0,0,0,0,0,0,0,0,0);
+        Niveau niveau = new Niveau(0,"",0);
+        Latlng latlng = new Latlng(0,0,0);
+        Adresse adresse = new Adresse(0,"",0,"","",latlng);
+        Personne personne = new Personne(0,"","","");
+        Client client = new Client(0,"","",adresse,personne);
+        Operation operation = new Operation(0,"","","",0,"","",adresse,client);
+        Chauffeur chauffeur = new Chauffeur("","",0,personne);
+        Camion camion = new Camion("","",0,0,0);
+        Tournee tournee = new Tournee(0,chauffeur,camion);
+        Colis co = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_COLIS+"="+id, null);
         if (c.moveToFirst()) {
@@ -127,10 +147,34 @@ public class ColisManager {
             co.setNiveau_batterie_colis(c.getFloat(c.getColumnIndex(KEY_NIVEAU_BATTERIE_COLIS)));
             co.setTemperature_colis(c.getFloat(c.getColumnIndex(KEY_TEMPERATURE_COLIS)));
             co.setCapacite_choc_colis(c.getFloat(c.getColumnIndex(KEY_CAPACITE_CHOC_COLIS)));
-            co.setId_niveau(c.getInt(c.getColumnIndex(KEY_ID_NIVEAU)));
-            co.setId_operation(c.getInt(c.getColumnIndex(KEY_ID_OPERATION)));
-            co.setId_tournee(c.getInt(c.getColumnIndex(KEY_ID_TOURNEE)));
-            co.setId_client(c.getInt(c.getColumnIndex(KEY_ID_CLIENT)));
+
+            int id_niveau = c.getInt(c.getColumnIndex(KEY_ID_NIVEAU));
+            NiveauManager niveauManager = new NiveauManager(context);
+            niveauManager.open();
+            niveau = niveauManager.getNiveau(id_niveau);
+            niveauManager.close();
+            co.setNiveau(niveau);
+
+            int id_operation = c.getInt(c.getColumnIndex(KEY_ID_OPERATION));
+            OperationManager operationManager = new OperationManager(context);
+            operationManager.open();
+            operation = operationManager.getOperation(id_operation);
+            operationManager.close();
+            co.setOperation(operation);
+
+            int id_tournee = c.getInt(c.getColumnIndex(KEY_ID_TOURNEE));
+            TourneeManager tourneeManager = new TourneeManager(context);
+            tourneeManager.open();
+            tournee = tourneeManager.getTournee(id_tournee);
+            tourneeManager.close();
+            co.setTournee(tournee);
+
+            int id_client = c.getInt(c.getColumnIndex(KEY_ID_CLIENT));
+            ClientManager clientManager = new ClientManager(context);
+            clientManager.open();
+            client = clientManager.getClient(id_client);
+            clientManager.close();
+            co.setClient(client);
 
             c.close();
         }

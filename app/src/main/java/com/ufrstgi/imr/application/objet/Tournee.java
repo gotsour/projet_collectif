@@ -10,13 +10,13 @@ package com.ufrstgi.imr.application.objet;
 public class Tournee {
 
     private int id_tournee;
-    private String id_chauffeur;
-    private String id_camion;
+    private Chauffeur chauffeur;
+    private Camion camion;
 
-    public Tournee(int id_tournee, String id_chauffeur, String id_camion) {
+    public Tournee(int id_tournee, Chauffeur chauffeur, Camion camion) {
         this.id_tournee = id_tournee;
-        this.id_chauffeur = id_chauffeur;
-        this.id_camion = id_camion;
+        this.chauffeur = chauffeur;
+        this.camion = camion;
     }
 
     public int getId_tournee() {
@@ -27,19 +27,19 @@ public class Tournee {
         this.id_tournee = id_tournee;
     }
 
-    public String getId_chauffeur() {
-        return id_chauffeur;
+    public Chauffeur getChauffeur() {
+        return chauffeur;
     }
 
-    public void setId_chauffeur(String id_chauffeur) {
-        this.id_chauffeur = id_chauffeur;
+    public void setChauffeur(Chauffeur chauffeur) {
+        this.chauffeur = chauffeur;
     }
 
-    public String getId_camion() {
-        return id_camion;
+    public Camion getCamion() {
+        return camion;
     }
 
-    public void setId_camion(String id_camion) {
-        this.id_camion = id_camion;
+    public void setCamion(Camion camion) {
+        this.camion = camion;
     }
 }

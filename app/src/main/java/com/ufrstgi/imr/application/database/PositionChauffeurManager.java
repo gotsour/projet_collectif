@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ufrstgi.imr.application.objet.Chauffeur;
+import com.ufrstgi.imr.application.objet.Latlng;
+import com.ufrstgi.imr.application.objet.Personne;
 import com.ufrstgi.imr.application.objet.PositionChauffeur;
 
 /**
@@ -33,9 +36,11 @@ public class PositionChauffeurManager {
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
+    Context context;
 
     public PositionChauffeurManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
+        this.context = context;
     }
 
     public void open() {
@@ -54,8 +59,8 @@ public class PositionChauffeurManager {
         ContentValues values = new ContentValues();
         values.put(KEY_ID_POSITION_CHAUFFEUR, positionChauffeur.getId_position_chauffeur());
         values.put(KEY_DATE_HEURE_CHAUFFEUR, positionChauffeur.getDate_heure_chauffeur());
-        values.put(KEY_ID_CHAUFFEUR, positionChauffeur.getId_chauffeur());
-        values.put(KEY_ID_LATLNG, positionChauffeur.getId_latlng());
+        values.put(KEY_ID_CHAUFFEUR, positionChauffeur.getChauffeur().getId_chauffeur());
+        values.put(KEY_ID_LATLNG, positionChauffeur.getLatlng().getId_latlng());
 
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
@@ -69,8 +74,8 @@ public class PositionChauffeurManager {
         ContentValues values = new ContentValues();
         values.put(KEY_ID_POSITION_CHAUFFEUR, positionChauffeur.getId_position_chauffeur());
         values.put(KEY_DATE_HEURE_CHAUFFEUR, positionChauffeur.getDate_heure_chauffeur());
-        values.put(KEY_ID_CHAUFFEUR, positionChauffeur.getId_chauffeur());
-        values.put(KEY_ID_LATLNG, positionChauffeur.getId_latlng());
+        values.put(KEY_ID_CHAUFFEUR, positionChauffeur.getChauffeur().getId_chauffeur());
+        values.put(KEY_ID_LATLNG, positionChauffeur.getLatlng().getId_latlng());
 
         String where = KEY_ID_POSITION_CHAUFFEUR+" = ?";
         String[] whereArgs = {positionChauffeur.getId_position_chauffeur()+""};
@@ -91,14 +96,29 @@ public class PositionChauffeurManager {
     public PositionChauffeur getPositionChauffeur(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        PositionChauffeur p = new PositionChauffeur(0,"","",0);
+        Personne personne = new Personne(0,"","","");
+        Chauffeur chauffeur = new Chauffeur("","",0,personne);
+        Latlng latlng = new Latlng(0,0,0);
+        PositionChauffeur p = new PositionChauffeur(0,"",chauffeur,latlng);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_POSITION_CHAUFFEUR+"="+id, null);
         if (c.moveToFirst()) {
             p.setId_position_chauffeur(c.getInt(c.getColumnIndex(KEY_ID_POSITION_CHAUFFEUR)));
             p.setDate_heure_chauffeur(c.getString(c.getColumnIndex(KEY_DATE_HEURE_CHAUFFEUR)));
-            p.setId_chauffeur(c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR)));
-            p.setId_latlng(c.getInt(c.getColumnIndex(KEY_ID_LATLNG)));
+
+            String id_chauffeur = c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR));
+            ChauffeurManager chauffeurManager = new ChauffeurManager(context);
+            chauffeurManager.open();
+            chauffeur = chauffeurManager.getChauffeur(id_chauffeur);
+            chauffeurManager.close();
+            p.setChauffeur(chauffeur);
+
+            int id_latlng = c.getInt(c.getColumnIndex(KEY_ID_LATLNG));
+            LatlngManager latlngManager = new LatlngManager(context);
+            latlngManager.open();
+            latlng = latlngManager.getLatlng(id_latlng);
+            latlngManager.close();
+            p.setLatlng(latlng);
 
             c.close();
         }

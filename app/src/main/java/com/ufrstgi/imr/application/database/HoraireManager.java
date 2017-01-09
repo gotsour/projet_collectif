@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ufrstgi.imr.application.objet.Chauffeur;
 import com.ufrstgi.imr.application.objet.Horaire;
+import com.ufrstgi.imr.application.objet.Personne;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.
@@ -32,9 +34,11 @@ public class HoraireManager {
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
+    Context context;
 
     public HoraireManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
+        this.context = context;
     }
 
     public void open() {
@@ -54,7 +58,7 @@ public class HoraireManager {
         values.put(KEY_ID_HORAIRE, horaire.getId_horaire());
         values.put(KEY_HEURE_DEBUT, horaire.getHeure_debut());
         values.put(KEY_HEURE_FIN, horaire.getHeure_fin());
-        values.put(KEY_ID_CHAUFFEUR, horaire.getId_chauffeur());
+        values.put(KEY_ID_CHAUFFEUR, horaire.getChauffeur().getId_chauffeur());
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
         return db.insert(TABLE_NAME,null,values);
@@ -68,7 +72,7 @@ public class HoraireManager {
         values.put(KEY_ID_HORAIRE, horaire.getId_horaire());
         values.put(KEY_HEURE_DEBUT, horaire.getHeure_debut());
         values.put(KEY_HEURE_FIN, horaire.getHeure_fin());
-        values.put(KEY_ID_CHAUFFEUR, horaire.getId_chauffeur());
+        values.put(KEY_ID_CHAUFFEUR, horaire.getChauffeur().getId_chauffeur());
 
         String where = KEY_ID_HORAIRE+" = ?";
         String[] whereArgs = {horaire.getId_horaire()+""};
@@ -89,14 +93,22 @@ public class HoraireManager {
     public Horaire getHoraire(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Horaire h = new Horaire(0,"","","");
+        Personne personne = new Personne(0,"","","");
+        Chauffeur chauffeur = new Chauffeur("","",0,personne);
+        Horaire h = new Horaire(0,"","",chauffeur);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_HORAIRE+"="+id, null);
         if (c.moveToFirst()) {
             h.setId_horaire(c.getInt(c.getColumnIndex(KEY_ID_HORAIRE)));
             h.setHeure_debut(c.getString(c.getColumnIndex(KEY_HEURE_DEBUT)));
             h.setHeure_fin(c.getString(c.getColumnIndex(KEY_HEURE_FIN)));
-            h.setId_chauffeur(c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR)));
+
+            String id_chauffeur = c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR));
+            ChauffeurManager chauffeurManager = new ChauffeurManager(context);
+            chauffeurManager.open();
+            chauffeur = chauffeurManager.getChauffeur(id_chauffeur);
+            chauffeurManager.close();
+            h.setChauffeur(chauffeur);
 
             c.close();
         }

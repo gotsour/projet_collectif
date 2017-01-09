@@ -17,22 +17,22 @@ public class Colis {
     private float capacite_choc_colis;
 
     /* Clefs étrangères */
-    private int id_niveau;
-    private int id_operation;
-    private int id_tournee;
-    private int id_client;
+    private Niveau niveau;
+    private Operation operation;
+    private  Tournee tournee;
+    private Client client;
 
-    public Colis(int id_colis, float poids_colis, float volume_colis, float niveau_batterie_colis, float temperature_colis, float capacite_choc_colis, int id_niveau, int id_operation, int id_tournee, int id_client) {
+    public Colis(int id_colis, float poids_colis, float volume_colis, float niveau_batterie_colis, float temperature_colis, float capacite_choc_colis, Niveau niveau, Operation operation, Tournee tournee, Client client) {
         this.id_colis = id_colis;
         this.poids_colis = poids_colis;
         this.volume_colis = volume_colis;
         this.niveau_batterie_colis = niveau_batterie_colis;
         this.temperature_colis = temperature_colis;
         this.capacite_choc_colis = capacite_choc_colis;
-        this.id_niveau = id_niveau;
-        this.id_operation = id_operation;
-        this.id_tournee = id_tournee;
-        this.id_client = id_client;
+        this.niveau = niveau;
+        this.operation = operation;
+        this.tournee = tournee;
+        this.client = client;
     }
 
     public int getId_colis() {
@@ -83,35 +83,35 @@ public class Colis {
         this.capacite_choc_colis = capacite_choc_colis;
     }
 
-    public int getId_niveau() {
-        return id_niveau;
+    public Niveau getNiveau() {
+        return niveau;
     }
 
-    public void setId_niveau(int id_niveau) {
-        this.id_niveau = id_niveau;
+    public void setNiveau(Niveau niveau) {
+        this.niveau = niveau;
     }
 
-    public int getId_operation() {
-        return id_operation;
+    public Operation getOperation() {
+        return operation;
     }
 
-    public void setId_operation(int id_operation) {
-        this.id_operation = id_operation;
+    public void setOperation(Operation operation) {
+        this.operation = operation;
     }
 
-    public int getId_tournee() {
-        return id_tournee;
+    public Tournee getTournee() {
+        return tournee;
     }
 
-    public void setId_tournee(int id_tournee) {
-        this.id_tournee = id_tournee;
+    public void setTournee(Tournee tournee) {
+        this.tournee = tournee;
     }
 
-    public int getId_client() {
-        return id_client;
+    public Client getClient() {
+        return client;
     }
 
-    public void setId_client(int id_client) {
-        this.id_client = id_client;
+    public void setClient(Client client) {
+        this.client = client;
     }
 }

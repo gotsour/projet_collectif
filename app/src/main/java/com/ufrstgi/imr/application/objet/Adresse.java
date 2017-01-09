@@ -14,15 +14,15 @@ public class Adresse {
     private int code_postal;
     private String ville;
     private String pays;
-    private int id_latlng;
+    private Latlng latlng;
 
-    public Adresse(int id_adresse, String rue, int code_postal, String ville, String pays, int id_latlng) {
+    public Adresse(int id_adresse, String rue, int code_postal, String ville, String pays, Latlng latlng) {
         this.id_adresse = id_adresse;
         this.rue = rue;
         this.code_postal = code_postal;
         this.ville = ville;
         this.pays = pays;
-        this.id_latlng = id_latlng;
+        this.latlng = latlng;
     }
 
     public int getId_adresse() {
@@ -65,11 +65,11 @@ public class Adresse {
         this.pays = pays;
     }
 
-    public int getId_latlng() {
-        return id_latlng;
+    public Latlng getLatlng() {
+        return latlng;
     }
 
-    public void setId_latlng(int id_latlng) {
-        this.id_latlng = id_latlng;
+    public void setLatlng(Latlng latlng) {
+        this.latlng = latlng;
     }
 }

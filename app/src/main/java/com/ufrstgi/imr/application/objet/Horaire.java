@@ -12,13 +12,13 @@ public class Horaire {
     private int id_horaire;
     private String heure_debut;
     private String heure_fin;
-    private String id_chauffeur;
+    private Chauffeur chauffeur;
 
-    public Horaire(int id_horaire, String heure_debut, String heure_fin, String id_chauffeur) {
+    public Horaire(int id_horaire, String heure_debut, String heure_fin, Chauffeur chauffeur) {
         this.id_horaire = id_horaire;
         this.heure_debut = heure_debut;
         this.heure_fin = heure_fin;
-        this.id_chauffeur = id_chauffeur;
+        this.chauffeur = chauffeur;
     }
 
     public int getId_horaire() {
@@ -45,11 +45,11 @@ public class Horaire {
         this.heure_fin = heure_fin;
     }
 
-    public String getId_chauffeur() {
-        return id_chauffeur;
+    public Chauffeur getChauffeur() {
+        return chauffeur;
     }
 
-    public void setId_chauffeur(String id_chauffeur) {
-        this.id_chauffeur = id_chauffeur;
+    public void setChauffeur(Chauffeur chauffeur) {
+        this.chauffeur = chauffeur;
     }
 }

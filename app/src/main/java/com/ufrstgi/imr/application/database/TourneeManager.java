@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ufrstgi.imr.application.objet.Camion;
+import com.ufrstgi.imr.application.objet.Chauffeur;
+import com.ufrstgi.imr.application.objet.Personne;
 import com.ufrstgi.imr.application.objet.Tournee;
 
 /**
@@ -31,9 +34,11 @@ public class TourneeManager {
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
+    Context context;
 
     public TourneeManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
+        this.context = context;
     }
 
     public void open() {
@@ -51,8 +56,8 @@ public class TourneeManager {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_TOURNEE, tournee.getId_tournee());
-        values.put(KEY_ID_CHAUFFEUR, tournee.getId_chauffeur());
-        values.put(KEY_ID_CAMION, tournee.getId_camion());
+        values.put(KEY_ID_CHAUFFEUR, tournee.getChauffeur().getId_chauffeur());
+        values.put(KEY_ID_CAMION, tournee.getCamion().getId_camion());
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
         return db.insert(TABLE_NAME,null,values);
@@ -64,8 +69,8 @@ public class TourneeManager {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_TOURNEE, tournee.getId_tournee());
-        values.put(KEY_ID_CHAUFFEUR, tournee.getId_chauffeur());
-        values.put(KEY_ID_CAMION, tournee.getId_camion());
+        values.put(KEY_ID_CHAUFFEUR, tournee.getChauffeur().getId_chauffeur());
+        values.put(KEY_ID_CAMION, tournee.getCamion().getId_camion());
 
         String where = KEY_ID_TOURNEE+" = ?";
         String[] whereArgs = {tournee.getId_tournee()+""};
@@ -86,13 +91,28 @@ public class TourneeManager {
     public Tournee getTournee(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Tournee t = new Tournee(0,"","");
+        Personne personne = new Personne(0,"","","");
+        Chauffeur chauffeur = new Chauffeur("","",0,personne);
+        Camion camion = new Camion("","",0,0,0);
+        Tournee t = new Tournee(0,chauffeur,camion);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_TOURNEE+"="+id, null);
         if (c.moveToFirst()) {
             t.setId_tournee(c.getInt(c.getColumnIndex(KEY_ID_TOURNEE)));
-            t.setId_chauffeur(c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR)));
-            t.setId_camion(c.getString(c.getColumnIndex(KEY_ID_CAMION)));
+
+            String id_chauffeur = c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR));
+            ChauffeurManager chauffeurManager= new ChauffeurManager(context);
+            chauffeurManager.open();
+            chauffeur = chauffeurManager.getChauffeur(id_chauffeur);
+            chauffeurManager.close();
+            t.setChauffeur(chauffeur);
+
+            String id_camion = c.getString(c.getColumnIndex(KEY_ID_CAMION));
+            CamionManager camionManager= new CamionManager(context);
+            camionManager.open();
+            camion = camionManager.getCamion(id_camion);
+            camionManager.close();
+            t.setCamion(camion);
 
             c.close();
         }

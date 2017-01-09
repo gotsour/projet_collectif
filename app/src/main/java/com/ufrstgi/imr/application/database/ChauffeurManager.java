@@ -107,7 +107,6 @@ public class ChauffeurManager {
             personneManager.open();
             p = personneManager.getPersonne(id_personne);
             personneManager.close();
-
             ch.setPersonne(p);
 
             c.close();

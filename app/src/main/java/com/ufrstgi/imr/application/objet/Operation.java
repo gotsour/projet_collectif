@@ -16,10 +16,10 @@ public class Operation {
     private int estLivraison;
     private String quai;
     private String batiment;
-    private int id_adresse;
-    private int id_client;
+    private Adresse adresse;
+    private Client client;
 
-    public Operation(int id_operation, String date_theorique, String date_reelle, String date_limite, int estLivraison, String quai, String batiment, int id_adresse, int id_client) {
+    public Operation(int id_operation, String date_theorique, String date_reelle, String date_limite, int estLivraison, String quai, String batiment, Adresse adresse, Client client) {
         this.id_operation = id_operation;
         this.date_theorique = date_theorique;
         this.date_reelle = date_reelle;
@@ -27,8 +27,8 @@ public class Operation {
         this.estLivraison = estLivraison;
         this.quai = quai;
         this.batiment = batiment;
-        this.id_adresse = id_adresse;
-        this.id_client = id_client;
+        this.adresse = adresse;
+        this.client = client;
     }
 
     public int getId_operation() {
@@ -87,19 +87,19 @@ public class Operation {
         this.batiment = batiment;
     }
 
-    public int getId_adresse() {
-        return id_adresse;
+    public Adresse getAdresse() {
+        return adresse;
     }
 
-    public void setId_adresse(int id_adresse) {
-        this.id_adresse = id_adresse;
+    public void setAdresse(Adresse adresse) {
+        this.adresse = adresse;
     }
 
-    public int getId_client() {
-        return id_client;
+    public Client getClient() {
+        return client;
     }
 
-    public void setId_client(int id_client) {
-        this.id_client = id_client;
+    public void setClient(Client client) {
+        this.client = client;
     }
 }

@@ -5,7 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ufrstgi.imr.application.objet.Adresse;
 import com.ufrstgi.imr.application.objet.Client;
+import com.ufrstgi.imr.application.objet.Latlng;
+import com.ufrstgi.imr.application.objet.Personne;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.
@@ -35,9 +38,11 @@ public class ClientManager {
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
+    Context context;
 
     public ClientManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
+        this.context = context;
     }
 
     public void open() {
@@ -57,8 +62,8 @@ public class ClientManager {
         values.put(KEY_ID_CLIENT, client.getId_client());
         values.put(KEY_NOM_CLIENT, client.getNom_client());
         values.put(KEY_TELEPHONE_CLIENT, client.getTelephone_client());
-        values.put(KEY_ID_ADRESSE, client.getId_adresse());
-        values.put(KEY_ID_PERSONNE, client.getId_personne());
+        values.put(KEY_ID_ADRESSE, client.getAdresse().getId_adresse());
+        values.put(KEY_ID_PERSONNE, client.getPersonne().getId_personne());
 
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
@@ -73,8 +78,8 @@ public class ClientManager {
         values.put(KEY_ID_CLIENT, client.getId_client());
         values.put(KEY_NOM_CLIENT, client.getNom_client());
         values.put(KEY_TELEPHONE_CLIENT, client.getTelephone_client());
-        values.put(KEY_ID_ADRESSE, client.getId_adresse());
-        values.put(KEY_ID_PERSONNE, client.getId_personne());
+        values.put(KEY_ID_ADRESSE, client.getAdresse().getId_adresse());
+        values.put(KEY_ID_PERSONNE, client.getPersonne().getId_personne());
 
         String where = KEY_ID_CLIENT+" = ?";
         String[] whereArgs = {client.getId_client()+""};
@@ -95,15 +100,30 @@ public class ClientManager {
     public Client getClient(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Client cl = new Client(0,"","",0,0);
+        Latlng latlng = new Latlng(0,0,0);
+        Adresse adresse = new Adresse(0,"",0,"","",latlng);
+        Personne personne = new Personne(0,"","","");
+        Client cl = new Client(0,"","",adresse,personne);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_CLIENT+"="+id, null);
         if (c.moveToFirst()) {
             cl.setId_client(c.getInt(c.getColumnIndex(KEY_ID_CLIENT)));
             cl.setNom_client(c.getString(c.getColumnIndex(KEY_NOM_CLIENT)));
             cl.setTelephone_client(c.getString(c.getColumnIndex(KEY_TELEPHONE_CLIENT)));
-            cl.setId_adresse(c.getInt(c.getColumnIndex(KEY_ID_ADRESSE)));
-            cl.setId_personne(c.getInt(c.getColumnIndex(KEY_ID_PERSONNE)));
+
+            int id_adresse = c.getInt(c.getColumnIndex(KEY_ID_ADRESSE));
+            AdresseManager adresseManager= new AdresseManager(context);
+            adresseManager.open();
+            adresse = adresseManager.getAdresse(id_adresse);
+            adresseManager.close();
+            cl.setAdresse(adresse);
+
+            int id_personne = c.getInt(c.getColumnIndex(KEY_ID_PERSONNE));
+            PersonneManager personneManager= new PersonneManager(context);
+            personneManager.open();
+            personne = personneManager.getPersonne(id_personne);
+            personneManager.close();
+            cl.setPersonne(personne);
 
             c.close();
         }

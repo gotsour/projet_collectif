@@ -5,7 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ufrstgi.imr.application.objet.Adresse;
+import com.ufrstgi.imr.application.objet.Client;
+import com.ufrstgi.imr.application.objet.Latlng;
 import com.ufrstgi.imr.application.objet.Operation;
+import com.ufrstgi.imr.application.objet.Personne;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.
@@ -43,9 +47,11 @@ public class OperationManager {
                     ");";
     private MySQLite maBaseSQLite;
     private SQLiteDatabase db;
+    Context context;
 
     public OperationManager(Context context) {
         maBaseSQLite = MySQLite.getInstance(context);
+        this.context = context;
     }
 
     public void open() {
@@ -69,8 +75,8 @@ public class OperationManager {
         values.put(KEY_EST_LIVRAISON, operation.getEstLivraison());
         values.put(KEY_QUAI, operation.getQuai());
         values.put(KEY_BATIMENT, operation.getBatiment());
-        values.put(KEY_ID_ADRESSE, operation.getId_adresse());
-        values.put(KEY_ID_CLIENT, operation.getId_client());
+        values.put(KEY_ID_ADRESSE, operation.getAdresse().getId_adresse());
+        values.put(KEY_ID_CLIENT, operation.getClient().getId_client());
 
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
@@ -89,8 +95,8 @@ public class OperationManager {
         values.put(KEY_EST_LIVRAISON, operation.getEstLivraison());
         values.put(KEY_QUAI, operation.getQuai());
         values.put(KEY_BATIMENT, operation.getBatiment());
-        values.put(KEY_ID_ADRESSE, operation.getId_adresse());
-        values.put(KEY_ID_CLIENT, operation.getId_client());
+        values.put(KEY_ID_ADRESSE, operation.getAdresse().getId_adresse());
+        values.put(KEY_ID_CLIENT, operation.getClient().getId_client());
 
         String where = KEY_ID_OPERATION+" = ?";
         String[] whereArgs = {operation.getId_operation()+""};
@@ -111,7 +117,11 @@ public class OperationManager {
     public Operation getOperation(int id) {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Operation o = new Operation(0,"","","",0,"","",0,0);
+        Latlng latlng = new Latlng(0,0,0);
+        Adresse adresse = new Adresse(0,"",0,"","",latlng);
+        Personne personne = new Personne(0,"","","");
+        Client client = new Client(0,"","",adresse,personne);
+        Operation o = new Operation(0,"","","",0,"","",adresse,client);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_OPERATION+"="+id, null);
         if (c.moveToFirst()) {
@@ -122,8 +132,20 @@ public class OperationManager {
             o.setEstLivraison(c.getInt(c.getColumnIndex(KEY_EST_LIVRAISON)));
             o.setQuai(c.getString(c.getColumnIndex(KEY_QUAI)));
             o.setBatiment(c.getString(c.getColumnIndex(KEY_BATIMENT)));
-            o.setId_adresse(c.getInt(c.getColumnIndex(KEY_ID_ADRESSE)));
-            o.setId_client(c.getInt(c.getColumnIndex(KEY_ID_CLIENT)));
+
+            int id_adresse = c.getInt(c.getColumnIndex(KEY_ID_ADRESSE));
+            AdresseManager adresseManager = new AdresseManager(context);
+            adresseManager.open();
+            adresse = adresseManager.getAdresse(id_adresse);
+            adresseManager.close();
+            o.setAdresse(adresse);
+
+            int id_client = c.getInt(c.getColumnIndex(KEY_ID_CLIENT));
+            ClientManager clientManager = new ClientManager(context);
+            clientManager.open();
+            client = clientManager.getClient(id_client);
+            clientManager.close();
+            o.setClient(client);
 
             c.close();
         }

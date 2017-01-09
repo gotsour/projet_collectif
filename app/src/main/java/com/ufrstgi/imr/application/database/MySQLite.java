@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.ufrstgi.imr.application.objet.PositionChauffeur;
+
 /**
  * Created by Thomas Westermann on 07/01/2017.
  * Université de Franche-Comté
@@ -30,8 +32,30 @@ public class MySQLite extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         // Création de la base de données
         // on exécute ici les requêtes de création des tables
+
+        // Tables primaires = 0 clefs étrangères
+        sqLiteDatabase.execSQL(NiveauManager.CREATE_TABLE_NIVEAU);
+        sqLiteDatabase.execSQL(AdresseManager.CREATE_TABLE_ADRESSE);
         sqLiteDatabase.execSQL(PersonneManager.CREATE_TABLE_PERSONNE);
+        sqLiteDatabase.execSQL(CamionManager.CREATE_TABLE_CAMION);
+        sqLiteDatabase.execSQL(LatlngManager.CREATE_TABLE_LATLNG);
+
+        // Tables secondaires = 1 clef etrangère
         sqLiteDatabase.execSQL(ChauffeurManager.CREATE_TABLE_CHAUFFEUR);
+        sqLiteDatabase.execSQL(HoraireManager.CREATE_TABLE_HORAIRE);
+        sqLiteDatabase.execSQL(AdresseManager.CREATE_TABLE_ADRESSE);
+
+        // Tables tertiaires = 2 clefs etrangeres
+        sqLiteDatabase.execSQL(PositionChauffeurManager.CREATE_TABLE_POSITION_CHAUFFEUR);
+        sqLiteDatabase.execSQL(TourneeManager.CREATE_TABLE_TOURNEE);
+        sqLiteDatabase.execSQL(ClientManager.CREATE_TABLE_CLIENT);
+        sqLiteDatabase.execSQL(OperationManager.CREATE_TABLE_OPERATION);
+
+        // Table Colis
+        sqLiteDatabase.execSQL(ColisManager.CREATE_TABLE_COLIS);
+
+        // Table Position Colis
+        sqLiteDatabase.execSQL(PositionColisManager.CREATE_TABLE_POSITION_COLIS);
     }
 
     @Override
