@@ -24,9 +24,9 @@ public class TourneeManager {
     public static final String CREATE_TABLE_TOURNEE =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_TOURNEE+" INTEGER primary key," +
-                    " "+KEY_ID_CHAUFFEUR+" TEXT" +
-                    " "+KEY_ID_CAMION+" TEXT" +
-                    " FOREIGN KEY("+KEY_ID_CHAUFFEUR+") REFERENCES chauffeur("+KEY_ID_CHAUFFEUR+") " +
+                    " "+KEY_ID_CHAUFFEUR+" TEXT," +
+                    " "+KEY_ID_CAMION+" TEXT," +
+                    " FOREIGN KEY("+KEY_ID_CHAUFFEUR+") REFERENCES chauffeur("+KEY_ID_CHAUFFEUR+")," +
                     " FOREIGN KEY("+KEY_ID_CAMION+") REFERENCES camion("+KEY_ID_CAMION+") " +
                     ");";
     private MySQLite maBaseSQLite;

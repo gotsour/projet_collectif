@@ -1,6 +1,7 @@
 package com.ufrstgi.imr.application;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,7 +9,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+
+import com.ufrstgi.imr.application.database.HoraireManager;
+import com.ufrstgi.imr.application.database.MySQLite;
+import com.ufrstgi.imr.application.database.PersonneManager;
+import com.ufrstgi.imr.application.objet.Horaire;
+import com.ufrstgi.imr.application.objet.Personne;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,6 +39,28 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        /* Test BDD */
+        PersonneManager p = new PersonneManager(this);
+        p.open();
+        p.addPersonne(new Personne(0,"Westermann","Thomas","0621065701"));
+
+        // Listing des enregistrements de la table
+        Cursor c = p.getAllPersonne();
+        if (c.moveToFirst()) {
+            do {
+                Log.d("test",
+                        c.getInt(c.getColumnIndex(PersonneManager.KEY_ID_PERSONNE)) + "," +
+                                c.getString(c.getColumnIndex(PersonneManager.KEY_NOM_PERSONNE)) + "," +
+                                c.getString(c.getColumnIndex(PersonneManager.KEY_PRENOM_PERSONNE)) + "," +
+                                c.getString(c.getColumnIndex(PersonneManager.KEY_TELEPHONE_PERSONNE))
+                );
+            } while (c.moveToNext());
+        }
+        c.close(); // fermeture du curseur
+
+        p.close();
     }
 
     @Override

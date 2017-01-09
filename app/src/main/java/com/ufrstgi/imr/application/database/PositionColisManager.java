@@ -26,10 +26,10 @@ public class PositionColisManager {
     public static final String CREATE_TABLE_POSITION_COLIS =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_POSITION_COLIS+" INTEGER primary key," +
-                    " "+KEY_LATITUDE_COLIS+" REAL" +
-                    " "+KEY_LONGITUDE_COLIS+" REAL" +
-                    " "+KEY_DATE_HEURE_COLIS+" TEXT" +
-                    " "+KEY_ID_COLIS+" INTEGER" +
+                    " "+KEY_LATITUDE_COLIS+" REAL," +
+                    " "+KEY_LONGITUDE_COLIS+" REAL," +
+                    " "+KEY_DATE_HEURE_COLIS+" TEXT," +
+                    " "+KEY_ID_COLIS+" INTEGER," +
                     " FOREIGN KEY("+KEY_ID_COLIS+") REFERENCES colis("+KEY_ID_COLIS+") " +
                     ");";
     private MySQLite maBaseSQLite;

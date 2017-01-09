@@ -31,18 +31,18 @@ public class ColisManager {
     public static final String CREATE_TABLE_COLIS =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_COLIS+" INTEGER primary key," +
-                    " "+KEY_POIDS_COLIS+" REAL" +
-                    " "+KEY_VOLUME_COLIS+" REAL" +
-                    " "+KEY_NIVEAU_BATTERIE_COLIS+" REAL" +
-                    " "+KEY_TEMPERATURE_COLIS+" REAL" +
-                    " "+KEY_CAPACITE_CHOC_COLIS+" REAL" +
-                    " "+KEY_ID_NIVEAU+" INTEGER" +
-                    " "+KEY_ID_OPERATION+" INTEGER" +
-                    " "+KEY_ID_TOURNEE+" INTEGER" +
-                    " "+KEY_ID_CLIENT+" INTEGER" +
-                    " FOREIGN KEY("+KEY_ID_NIVEAU+") REFERENCES niveau("+KEY_ID_NIVEAU+") " +
-                    " FOREIGN KEY("+KEY_ID_OPERATION+") REFERENCES operation("+KEY_ID_OPERATION+") " +
-                    " FOREIGN KEY("+KEY_ID_TOURNEE+") REFERENCES tournee("+KEY_ID_TOURNEE+") " +
+                    " "+KEY_POIDS_COLIS+" REAL," +
+                    " "+KEY_VOLUME_COLIS+" REAL," +
+                    " "+KEY_NIVEAU_BATTERIE_COLIS+" REAL," +
+                    " "+KEY_TEMPERATURE_COLIS+" REAL," +
+                    " "+KEY_CAPACITE_CHOC_COLIS+" REAL," +
+                    " "+KEY_ID_NIVEAU+" INTEGER," +
+                    " "+KEY_ID_OPERATION+" INTEGER," +
+                    " "+KEY_ID_TOURNEE+" INTEGER," +
+                    " "+KEY_ID_CLIENT+" INTEGER," +
+                    " FOREIGN KEY("+KEY_ID_NIVEAU+") REFERENCES niveau("+KEY_ID_NIVEAU+")," +
+                    " FOREIGN KEY("+KEY_ID_OPERATION+") REFERENCES operation("+KEY_ID_OPERATION+")," +
+                    " FOREIGN KEY("+KEY_ID_TOURNEE+") REFERENCES tournee("+KEY_ID_TOURNEE+")," +
                     " FOREIGN KEY("+KEY_ID_CLIENT+") REFERENCES client("+KEY_ID_CLIENT+") " +
                     ");";
     private MySQLite maBaseSQLite;

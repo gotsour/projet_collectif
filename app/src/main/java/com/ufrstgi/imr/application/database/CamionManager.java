@@ -26,9 +26,9 @@ public class CamionManager {
     public static final String CREATE_TABLE_CAMION =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_CAMION+" TEXT primary key," +
-                    " "+KEY_NOM_CAMION+" TEXT" +
-                    " "+KEY_VOLUME_CAMION+" REAL" +
-                    " "+KEY_TAILLE_CAMION+" REAL" +
+                    " "+KEY_NOM_CAMION+" TEXT," +
+                    " "+KEY_VOLUME_CAMION+" REAL," +
+                    " "+KEY_TAILLE_CAMION+" REAL," +
                     " "+KEY_POIDS_CHARGEMENT_CAMION+" REAL" +
                     ");";
     private MySQLite maBaseSQLite;

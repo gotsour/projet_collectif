@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.ufrstgi.imr.application.objet.Personne;
 
@@ -25,8 +26,8 @@ public class PersonneManager {
     public static final String CREATE_TABLE_PERSONNE =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_PERSONNE+" INTEGER primary key," +
-                    " "+KEY_NOM_PERSONNE+" TEXT" +
-                    " "+KEY_PRENOM_PERSONNE+" TEXT" +
+                    " "+KEY_NOM_PERSONNE+" TEXT," +
+                    " "+KEY_PRENOM_PERSONNE+" TEXT," +
                     " "+KEY_TELEPHONE_PERSONNE+" TEXT" +
                     ");";
     private MySQLite maBaseSQLite;

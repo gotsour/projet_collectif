@@ -30,7 +30,7 @@ public class MySQLite extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         // Création de la base de données
         // on exécute ici les requêtes de création des tables
-        sqLiteDatabase.execSQL(NiveauManager.CREATE_TABLE_NIVEAU); // création table "niveau"
+        sqLiteDatabase.execSQL(PersonneManager.CREATE_TABLE_PERSONNE);
     }
 
     @Override

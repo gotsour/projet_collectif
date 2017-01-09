@@ -29,14 +29,14 @@ public class OperationManager {
     public static final String CREATE_TABLE_OPERATION =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_OPERATION+" INTEGER primary key," +
-                    " "+KEY_HEURE_THEORIQUE_OPERATION+" TEXT" +
-                    " "+KEY_HEURE_REELLE_OPERATION+" TEXT" +
-                    " "+KEY_DATE_LIMITE_OPERATION+" TEXT" +
-                    " "+KEY_EST_LIVRAISON+" INTEGER" +
-                    " "+KEY_EST_RECEPTION+" INTEGER" +
-                    " "+KEY_ID_ADRESSE+" INTEGER" +
-                    " "+KEY_ID_CLIENT+" INTEGER" +
-                    " FOREIGN KEY("+KEY_ID_ADRESSE+") REFERENCES adresse("+KEY_ID_ADRESSE+") " +
+                    " "+KEY_HEURE_THEORIQUE_OPERATION+" TEXT," +
+                    " "+KEY_HEURE_REELLE_OPERATION+" TEXT," +
+                    " "+KEY_DATE_LIMITE_OPERATION+" TEXT," +
+                    " "+KEY_EST_LIVRAISON+" INTEGER," +
+                    " "+KEY_EST_RECEPTION+" INTEGER," +
+                    " "+KEY_ID_ADRESSE+" INTEGER," +
+                    " "+KEY_ID_CLIENT+" INTEGER," +
+                    " FOREIGN KEY("+KEY_ID_ADRESSE+") REFERENCES adresse("+KEY_ID_ADRESSE+")," +
                     " FOREIGN KEY("+KEY_ID_CLIENT+") REFERENCES client("+KEY_ID_CLIENT+") " +
                     ");";
     private MySQLite maBaseSQLite;

@@ -22,12 +22,12 @@ public class HoraireManager {
     public static final String KEY_HEURE_FIN = "heure_fin";
     public static final String KEY_ID_CHAUFFEUR = "id_chauffeur";
 
-    public static final String CREATE_TABLE_OPERATION =
+    public static final String CREATE_TABLE_HORAIRE =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_HORAIRE+" INTEGER primary key," +
-                    " "+KEY_HEURE_DEBUT+" TEXT" +
-                    " "+KEY_HEURE_FIN+" TEXT" +
-                    " "+KEY_ID_CHAUFFEUR+" TEXT" +
+                    " "+KEY_HEURE_DEBUT+" TEXT," +
+                    " "+KEY_HEURE_FIN+" TEXT," +
+                    " "+KEY_ID_CHAUFFEUR+" TEXT," +
                     " FOREIGN KEY("+KEY_ID_CHAUFFEUR+") REFERENCES chauffeur("+KEY_ID_CHAUFFEUR+") " +
                     ");";
     private MySQLite maBaseSQLite;

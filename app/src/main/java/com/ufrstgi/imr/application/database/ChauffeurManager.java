@@ -25,9 +25,9 @@ public class ChauffeurManager {
     public static final String CREATE_TABLE_CHAUFFEUR =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_CHAUFFEUR+" TEXT primary key," +
-                    " "+KEY_MOT_DE_PASSE+" TEXT" +
-                    " "+KEY_NIVEAU_BATTERIE_TERMINAL+" REAL" +
-                    " "+KEY_ID_PERSONNE+" INTEGER" +
+                    " "+KEY_MOT_DE_PASSE+" TEXT," +
+                    " "+KEY_NIVEAU_BATTERIE_TERMINAL+" REAL," +
+                    " "+KEY_ID_PERSONNE+" INTEGER," +
                     " FOREIGN KEY("+KEY_ID_PERSONNE+") REFERENCES personne("+KEY_ID_PERSONNE+") " +
                     ");";
     private MySQLite maBaseSQLite;

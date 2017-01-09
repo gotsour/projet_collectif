@@ -28,11 +28,11 @@ public class AdresseManager {
     public static final String CREATE_TABLE_ADRESSE =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_ADRESSE+" INTEGER primary key," +
-                    " "+KEY_RUE+" TEXT" +
-                    " "+KEY_BATIMENT+" TEXT" +
-                    " "+KEY_QUAI+" TEXT" +
-                    " "+KEY_CODE_POSTAL+" INTEGER" +
-                    " "+KEY_VILLE+" TEXT" +
+                    " "+KEY_RUE+" TEXT," +
+                    " "+KEY_BATIMENT+" TEXT," +
+                    " "+KEY_QUAI+" TEXT," +
+                    " "+KEY_CODE_POSTAL+" INTEGER," +
+                    " "+KEY_VILLE+" TEXT," +
                     " "+KEY_PAYS+" TEXT" +
                     ");";
     private MySQLite maBaseSQLite;

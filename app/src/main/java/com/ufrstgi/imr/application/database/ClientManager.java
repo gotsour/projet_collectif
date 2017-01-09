@@ -26,11 +26,11 @@ public class ClientManager {
     public static final String CREATE_TABLE_CLIENT =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_CLIENT+" INTEGER primary key," +
-                    " "+KEY_NOM_CLIENT+" TEXT" +
-                    " "+KEY_TELEPHONE_CLIENT+" TEXT" +
-                    " "+KEY_ID_ADRESSE+" INTEGER" +
-                    " "+KEY_ID_PERSONNE+" INTEGER" +
-                    " FOREIGN KEY("+KEY_ID_ADRESSE+") REFERENCES adresse("+KEY_ID_ADRESSE+") " +
+                    " "+KEY_NOM_CLIENT+" TEXT," +
+                    " "+KEY_TELEPHONE_CLIENT+" TEXT," +
+                    " "+KEY_ID_ADRESSE+" INTEGER," +
+                    " "+KEY_ID_PERSONNE+" INTEGER," +
+                    " FOREIGN KEY("+KEY_ID_ADRESSE+") REFERENCES adresse("+KEY_ID_ADRESSE+")," +
                     " FOREIGN KEY("+KEY_ID_PERSONNE+") REFERENCES personne("+KEY_ID_PERSONNE+") " +
                     ");";
     private MySQLite maBaseSQLite;

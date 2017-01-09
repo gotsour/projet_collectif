@@ -23,7 +23,7 @@ public class NiveauManager {
     public static final String CREATE_TABLE_NIVEAU =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_NIVEAU+" INTEGER primary key," +
-                    " "+KEY_LIBELLE_NIVEAU+" TEXT" +
+                    " "+KEY_LIBELLE_NIVEAU+" TEXT," +
                     " "+KEY_PRIX+" REAL" +
                     ");";
     private MySQLite maBaseSQLite;

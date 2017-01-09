@@ -26,10 +26,10 @@ public class PositionChauffeurManager {
     public static final String CREATE_TABLE_POSITION_CHAUFFEUR =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_POSITION_CHAUFFEUR+" INTEGER primary key," +
-                    " "+KEY_LATITUDE_CHAUFFEUR+" REAL" +
-                    " "+KEY_LONGITUDE_CHAUFFEUR+" REAL" +
-                    " "+KEY_DATE_HEURE_CHAUFFEUR+" TEXT" +
-                    " "+KEY_ID_CHAUFFEUR+" TEXT" +
+                    " "+KEY_LATITUDE_CHAUFFEUR+" REAL," +
+                    " "+KEY_LONGITUDE_CHAUFFEUR+" REAL," +
+                    " "+KEY_DATE_HEURE_CHAUFFEUR+" TEXT," +
+                    " "+KEY_ID_CHAUFFEUR+" TEXT," +
                     " FOREIGN KEY("+KEY_ID_CHAUFFEUR+") REFERENCES chauffeur("+KEY_ID_CHAUFFEUR+") " +
                     ");";
     private MySQLite maBaseSQLite;
