@@ -1,11 +1,11 @@
-package com.ufrstgi.imr.application.database;
+package com.ufrstgi.imr.application.database.local;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.ufrstgi.imr.application.objet.Camion;
+import com.ufrstgi.imr.application.object.Camion;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.

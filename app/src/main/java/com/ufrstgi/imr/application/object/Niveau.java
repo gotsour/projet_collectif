@@ -1,4 +1,4 @@
-package com.ufrstgi.imr.application.objet;
+package com.ufrstgi.imr.application.object;
 
 /**
  * Created by Thomas Westermann on 07/01/2017.

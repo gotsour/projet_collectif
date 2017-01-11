@@ -1,4 +1,4 @@
-package com.ufrstgi.imr.application.objet;
+package com.ufrstgi.imr.application.object;
 
 /**
  * Created by Thomas Westermann on 11/01/2017.
@@ -7,11 +7,11 @@ package com.ufrstgi.imr.application.objet;
  * Application Projet_collectif
  */
 
-public class Livraison extends Operation {
+public class Reception extends Operation {
 
-    private String nom_operation = "Livraison";
+    private String nom_operation = "Réception";
 
-    public Livraison(int id_operation, String date_theorique, String date_reelle, String date_limite, int estLivraison, String quai, String batiment, Adresse adresse, Client client) {
+    public Reception(int id_operation, String date_theorique, String date_reelle, String date_limite, int estLivraison, String quai, String batiment, Adresse adresse, Client client) {
         super(id_operation, date_theorique, date_reelle, date_limite, estLivraison, quai, batiment, adresse, client);
     }
 

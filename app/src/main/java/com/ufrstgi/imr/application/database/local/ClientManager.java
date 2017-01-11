@@ -1,14 +1,14 @@
-package com.ufrstgi.imr.application.database;
+package com.ufrstgi.imr.application.database.local;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.ufrstgi.imr.application.objet.Adresse;
-import com.ufrstgi.imr.application.objet.Client;
-import com.ufrstgi.imr.application.objet.Latlng;
-import com.ufrstgi.imr.application.objet.Personne;
+import com.ufrstgi.imr.application.object.Adresse;
+import com.ufrstgi.imr.application.object.Client;
+import com.ufrstgi.imr.application.object.Latlng;
+import com.ufrstgi.imr.application.object.Personne;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.

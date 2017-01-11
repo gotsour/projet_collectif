@@ -1,21 +1,21 @@
-package com.ufrstgi.imr.application.database;
+package com.ufrstgi.imr.application.database.local;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.ufrstgi.imr.application.objet.Adresse;
-import com.ufrstgi.imr.application.objet.Camion;
-import com.ufrstgi.imr.application.objet.Chauffeur;
-import com.ufrstgi.imr.application.objet.Client;
-import com.ufrstgi.imr.application.objet.Colis;
-import com.ufrstgi.imr.application.objet.Latlng;
-import com.ufrstgi.imr.application.objet.Niveau;
-import com.ufrstgi.imr.application.objet.Operation;
-import com.ufrstgi.imr.application.objet.Personne;
-import com.ufrstgi.imr.application.objet.PositionColis;
-import com.ufrstgi.imr.application.objet.Tournee;
+import com.ufrstgi.imr.application.object.Adresse;
+import com.ufrstgi.imr.application.object.Camion;
+import com.ufrstgi.imr.application.object.Chauffeur;
+import com.ufrstgi.imr.application.object.Client;
+import com.ufrstgi.imr.application.object.Colis;
+import com.ufrstgi.imr.application.object.Latlng;
+import com.ufrstgi.imr.application.object.Niveau;
+import com.ufrstgi.imr.application.object.Operation;
+import com.ufrstgi.imr.application.object.Personne;
+import com.ufrstgi.imr.application.object.PositionColis;
+import com.ufrstgi.imr.application.object.Tournee;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.

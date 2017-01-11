@@ -1,10 +1,8 @@
-package com.ufrstgi.imr.application.database;
+package com.ufrstgi.imr.application.database.local;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.ufrstgi.imr.application.objet.PositionChauffeur;
 
 /**
  * Created by Thomas Westermann on 07/01/2017.

@@ -1,7 +1,6 @@
 package com.ufrstgi.imr.application;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,34 +11,32 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.ufrstgi.imr.application.database.AdresseManager;
-import com.ufrstgi.imr.application.database.CamionManager;
-import com.ufrstgi.imr.application.database.ChauffeurManager;
-import com.ufrstgi.imr.application.database.ClientManager;
-import com.ufrstgi.imr.application.database.ColisManager;
-import com.ufrstgi.imr.application.database.HoraireManager;
-import com.ufrstgi.imr.application.database.LatlngManager;
-import com.ufrstgi.imr.application.database.MySQLite;
-import com.ufrstgi.imr.application.database.NiveauManager;
-import com.ufrstgi.imr.application.database.OperationManager;
-import com.ufrstgi.imr.application.database.PersonneManager;
-import com.ufrstgi.imr.application.database.PositionChauffeurManager;
-import com.ufrstgi.imr.application.database.PositionColisManager;
-import com.ufrstgi.imr.application.database.TourneeManager;
-import com.ufrstgi.imr.application.objet.Adresse;
-import com.ufrstgi.imr.application.objet.Camion;
-import com.ufrstgi.imr.application.objet.Chauffeur;
-import com.ufrstgi.imr.application.objet.Client;
-import com.ufrstgi.imr.application.objet.Colis;
-import com.ufrstgi.imr.application.objet.Horaire;
-import com.ufrstgi.imr.application.objet.Latlng;
-import com.ufrstgi.imr.application.objet.Livraison;
-import com.ufrstgi.imr.application.objet.Niveau;
-import com.ufrstgi.imr.application.objet.Operation;
-import com.ufrstgi.imr.application.objet.Personne;
-import com.ufrstgi.imr.application.objet.PositionChauffeur;
-import com.ufrstgi.imr.application.objet.PositionColis;
-import com.ufrstgi.imr.application.objet.Tournee;
+import com.ufrstgi.imr.application.database.local.AdresseManager;
+import com.ufrstgi.imr.application.database.local.CamionManager;
+import com.ufrstgi.imr.application.database.local.ChauffeurManager;
+import com.ufrstgi.imr.application.database.local.ClientManager;
+import com.ufrstgi.imr.application.database.local.ColisManager;
+import com.ufrstgi.imr.application.database.local.HoraireManager;
+import com.ufrstgi.imr.application.database.local.LatlngManager;
+import com.ufrstgi.imr.application.database.local.NiveauManager;
+import com.ufrstgi.imr.application.database.local.OperationManager;
+import com.ufrstgi.imr.application.database.local.PersonneManager;
+import com.ufrstgi.imr.application.database.local.PositionChauffeurManager;
+import com.ufrstgi.imr.application.database.local.PositionColisManager;
+import com.ufrstgi.imr.application.database.local.TourneeManager;
+import com.ufrstgi.imr.application.object.Adresse;
+import com.ufrstgi.imr.application.object.Camion;
+import com.ufrstgi.imr.application.object.Chauffeur;
+import com.ufrstgi.imr.application.object.Client;
+import com.ufrstgi.imr.application.object.Colis;
+import com.ufrstgi.imr.application.object.Horaire;
+import com.ufrstgi.imr.application.object.Latlng;
+import com.ufrstgi.imr.application.object.Livraison;
+import com.ufrstgi.imr.application.object.Niveau;
+import com.ufrstgi.imr.application.object.Personne;
+import com.ufrstgi.imr.application.object.PositionChauffeur;
+import com.ufrstgi.imr.application.object.PositionColis;
+import com.ufrstgi.imr.application.object.Tournee;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
