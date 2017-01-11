@@ -17,6 +17,11 @@ import com.ufrstgi.imr.application.object.Personne;
 import com.ufrstgi.imr.application.object.PositionColis;
 import com.ufrstgi.imr.application.object.Tournee;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -31,6 +36,8 @@ public class PositionColisManager {
     public static final String KEY_DATE_HEURE_COLIS = "date_heure_colis";
     public static final String KEY_ID_COLIS = "id_colis";
     public static final String KEY_ID_LATLNG = "id_latlng";
+
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     public static final String CREATE_TABLE_POSITION_COLIS =
             "CREATE TABLE "+TABLE_NAME+ " (" +
@@ -63,9 +70,11 @@ public class PositionColisManager {
     public long addPositionColis(PositionColis positionColis) {
         // Ajout d'un enregistrement dans la table
 
+        String date_heure_colis = df.format(positionColis.getDate_heure_colis());
+
         ContentValues values = new ContentValues();
         values.put(KEY_ID_POSITION_COLIS, positionColis.getId_position_colis());
-        values.put(KEY_DATE_HEURE_COLIS, positionColis.getDate_heure_colis());
+        values.put(KEY_DATE_HEURE_COLIS, date_heure_colis);
         values.put(KEY_ID_COLIS, positionColis.getColis().getId_colis());
         values.put(KEY_ID_LATLNG, positionColis.getLatlng().getId_latlng());
 
@@ -78,9 +87,11 @@ public class PositionColisManager {
         // modification d'un enregistrement
         // valeur de retour : (int) nombre de lignes affectées par la requête
 
+        String date_heure_colis = df.format(positionColis.getDate_heure_colis());
+
         ContentValues values = new ContentValues();
         values.put(KEY_ID_POSITION_COLIS, positionColis.getId_position_colis());
-        values.put(KEY_DATE_HEURE_COLIS, positionColis.getDate_heure_colis());
+        values.put(KEY_DATE_HEURE_COLIS, date_heure_colis);
         values.put(KEY_ID_COLIS, positionColis.getColis().getId_colis());
         values.put(KEY_ID_LATLNG, positionColis.getLatlng().getId_latlng());
 
@@ -113,12 +124,18 @@ public class PositionColisManager {
         Camion camion = new Camion("","",0,0,0);
         Tournee tournee = new Tournee(0,chauffeur,camion);
         Colis colis = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
-        PositionColis p = new PositionColis(0,"",colis,latlng);
+        Date date_heure_colis = new Date();
+        PositionColis p = new PositionColis(0,date_heure_colis,colis,latlng);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_POSITION_COLIS+"="+id, null);
         if (c.moveToFirst()) {
             p.setId_position_colis(c.getInt(c.getColumnIndex(KEY_ID_POSITION_COLIS)));
-            p.setDate_heure_colis(c.getString(c.getColumnIndex(KEY_DATE_HEURE_COLIS)));
+            try {
+                date_heure_colis = df.parse(c.getString(c.getColumnIndex(KEY_DATE_HEURE_COLIS)));
+            } catch (ParseException pe) {
+                System.err.println("Erreur parsage date dans PositionColisManager");
+            }
+            p.setDate_heure_colis(date_heure_colis);
 
             int id_colis = c.getInt(c.getColumnIndex(KEY_ID_COLIS));
             ColisManager colisManager = new ColisManager(context);

@@ -44,6 +44,8 @@ import com.ufrstgi.imr.application.object.PositionChauffeur;
 import com.ufrstgi.imr.application.object.PositionColis;
 import com.ufrstgi.imr.application.object.Tournee;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -77,24 +79,25 @@ public class MainActivity extends AppCompatActivity
 
 
         /* Test BDD */
-        /*Niveau niveau = new Niveau(1,"Niveau 1",150);
+        Niveau niveau = new Niveau(1,"Niveau 1",150);
         Personne conducteur_camion = new Personne(1,"Westermann","Thomas","0621065701");
         Personne contact_client = new Personne(2,"Spies","François","0654865701");
         Camion camion = new Camion("BK-589-KD","Peugeot 308",25,2,1500);
         Latlng latlng = new Latlng(1,40,7);
         Chauffeur chauffeur = new Chauffeur("TW272D8N","password",52,conducteur_camion);
-        Horaire horaire = new Horaire(1,"8","20",chauffeur);
+        Date today = Calendar.getInstance().getTime();
+        Horaire horaire = new Horaire(1,today,today,chauffeur);
         Adresse adresse_client = new Adresse(1,"6 rue Maurice Ravel",70400,"Hericourt","France",latlng);
         Adresse adresse_operation = new Adresse(2,"9 rue des Alouettes",90782,"Belfort","France",latlng);
-        PositionChauffeur positionChauffeur = new PositionChauffeur(0,"12",chauffeur,latlng);
+        PositionChauffeur positionChauffeur = new PositionChauffeur(0,today,chauffeur,latlng);
         Tournee tournee = new Tournee(1,chauffeur,camion);
         Client client = new Client(1,"Dufay Cyril","0621065807",adresse_client,contact_client);
-        Livraison livraison = new Livraison(1,"14","15","19",1,"9B","Nodier",adresse_operation, client);
+        Livraison livraison = new Livraison(1,today,today,today,"9B","Nodier",adresse_operation, client);
         Colis colis0 = new Colis(1,1782,0.25f,47,22,80,niveau,livraison,tournee,client);
         Colis colis1 = new Colis(2,156462,0.25f,47,22,80,niveau,livraison,tournee,client);
         Colis colis2 = new Colis(3,162,0.25f,47,22,80,niveau,livraison,tournee,client);
         Colis colis3 = new Colis(4,11435,0.25f,47,22,80,niveau,livraison,tournee,client);
-        PositionColis positionColis = new PositionColis(1,"14",colis0,latlng);
+        PositionColis positionColis = new PositionColis(1,today,colis0,latlng);
 
         NiveauManager niveauManager = new NiveauManager(this);
         niveauManager.open();
@@ -165,8 +168,6 @@ public class MainActivity extends AppCompatActivity
         positionColisManager.open();
         positionColisManager.addPositionColis(positionColis);
         positionColisManager.close();
-
-        */
     }
 
     @Override

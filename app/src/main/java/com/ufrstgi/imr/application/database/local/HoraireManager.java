@@ -9,6 +9,11 @@ import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Horaire;
 import com.ufrstgi.imr.application.object.Personne;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -23,6 +28,8 @@ public class HoraireManager {
     public static final String KEY_HEURE_DEBUT = "heure_debut";
     public static final String KEY_HEURE_FIN = "heure_fin";
     public static final String KEY_ID_CHAUFFEUR = "id_chauffeur";
+
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     public static final String CREATE_TABLE_HORAIRE =
             "CREATE TABLE "+TABLE_NAME+ " (" +
@@ -54,10 +61,13 @@ public class HoraireManager {
     public long addHoraire(Horaire horaire) {
         // Ajout d'un enregistrement dans la table
 
+        String heure_debut = df.format(horaire.getHeure_debut());
+        String heure_fin = df.format(horaire.getHeure_fin());
+
         ContentValues values = new ContentValues();
         values.put(KEY_ID_HORAIRE, horaire.getId_horaire());
-        values.put(KEY_HEURE_DEBUT, horaire.getHeure_debut());
-        values.put(KEY_HEURE_FIN, horaire.getHeure_fin());
+        values.put(KEY_HEURE_DEBUT, heure_debut);
+        values.put(KEY_HEURE_FIN, heure_fin);
         values.put(KEY_ID_CHAUFFEUR, horaire.getChauffeur().getId_chauffeur());
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
@@ -68,10 +78,13 @@ public class HoraireManager {
         // modification d'un enregistrement
         // valeur de retour : (int) nombre de lignes affectées par la requête
 
+        String heure_debut = df.format(horaire.getHeure_debut());
+        String heure_fin = df.format(horaire.getHeure_fin());
+
         ContentValues values = new ContentValues();
         values.put(KEY_ID_HORAIRE, horaire.getId_horaire());
-        values.put(KEY_HEURE_DEBUT, horaire.getHeure_debut());
-        values.put(KEY_HEURE_FIN, horaire.getHeure_fin());
+        values.put(KEY_HEURE_DEBUT, heure_debut);
+        values.put(KEY_HEURE_FIN, heure_fin);
         values.put(KEY_ID_CHAUFFEUR, horaire.getChauffeur().getId_chauffeur());
 
         String where = KEY_ID_HORAIRE+" = ?";
@@ -95,13 +108,22 @@ public class HoraireManager {
 
         Personne personne = new Personne(0,"","","");
         Chauffeur chauffeur = new Chauffeur("","",0,personne);
-        Horaire h = new Horaire(0,"","",chauffeur);
+        Date heure_debut = new Date();
+        Date heure_fin = new Date();
+
+        Horaire h = new Horaire(0,heure_debut,heure_fin,chauffeur);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_HORAIRE+"="+id, null);
         if (c.moveToFirst()) {
             h.setId_horaire(c.getInt(c.getColumnIndex(KEY_ID_HORAIRE)));
-            h.setHeure_debut(c.getString(c.getColumnIndex(KEY_HEURE_DEBUT)));
-            h.setHeure_fin(c.getString(c.getColumnIndex(KEY_HEURE_FIN)));
+            try {
+                heure_debut = df.parse(c.getString(c.getColumnIndex(KEY_HEURE_DEBUT)));
+                h.setHeure_debut(heure_debut);
+                heure_fin = df.parse(c.getString(c.getColumnIndex(KEY_HEURE_FIN)));
+                h.setHeure_fin(heure_fin);
+            } catch (ParseException pe) {
+                System.err.println("Erreur parsage date dans HoraireManager");
+            }
 
             String id_chauffeur = c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR));
             ChauffeurManager chauffeurManager = new ChauffeurManager(context);

@@ -10,6 +10,11 @@ import com.ufrstgi.imr.application.object.Latlng;
 import com.ufrstgi.imr.application.object.Personne;
 import com.ufrstgi.imr.application.object.PositionChauffeur;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -24,6 +29,8 @@ public class PositionChauffeurManager {
     public static final String KEY_DATE_HEURE_CHAUFFEUR= "date_heure_chauffeur";
     public static final String KEY_ID_CHAUFFEUR= "id_chauffeur";
     public static final String KEY_ID_LATLNG= "id_latlng";
+
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     public static final String CREATE_TABLE_POSITION_CHAUFFEUR =
             "CREATE TABLE "+TABLE_NAME+ " (" +
@@ -56,9 +63,11 @@ public class PositionChauffeurManager {
     public long addPositionChauffeur(PositionChauffeur positionChauffeur) {
         // Ajout d'un enregistrement dans la table
 
+        String date_heure_chauffeur = df.format(positionChauffeur.getDate_heure_chauffeur());
+
         ContentValues values = new ContentValues();
         values.put(KEY_ID_POSITION_CHAUFFEUR, positionChauffeur.getId_position_chauffeur());
-        values.put(KEY_DATE_HEURE_CHAUFFEUR, positionChauffeur.getDate_heure_chauffeur());
+        values.put(KEY_DATE_HEURE_CHAUFFEUR, date_heure_chauffeur);
         values.put(KEY_ID_CHAUFFEUR, positionChauffeur.getChauffeur().getId_chauffeur());
         values.put(KEY_ID_LATLNG, positionChauffeur.getLatlng().getId_latlng());
 
@@ -71,9 +80,11 @@ public class PositionChauffeurManager {
         // modification d'un enregistrement
         // valeur de retour : (int) nombre de lignes affectées par la requête
 
+        String date_heure_chauffeur = df.format(positionChauffeur.getDate_heure_chauffeur());
+
         ContentValues values = new ContentValues();
         values.put(KEY_ID_POSITION_CHAUFFEUR, positionChauffeur.getId_position_chauffeur());
-        values.put(KEY_DATE_HEURE_CHAUFFEUR, positionChauffeur.getDate_heure_chauffeur());
+        values.put(KEY_DATE_HEURE_CHAUFFEUR, date_heure_chauffeur);
         values.put(KEY_ID_CHAUFFEUR, positionChauffeur.getChauffeur().getId_chauffeur());
         values.put(KEY_ID_LATLNG, positionChauffeur.getLatlng().getId_latlng());
 
@@ -99,12 +110,18 @@ public class PositionChauffeurManager {
         Personne personne = new Personne(0,"","","");
         Chauffeur chauffeur = new Chauffeur("","",0,personne);
         Latlng latlng = new Latlng(0,0,0);
-        PositionChauffeur p = new PositionChauffeur(0,"",chauffeur,latlng);
+        Date date_heure_chauffeur = new Date();
+        PositionChauffeur p = new PositionChauffeur(0,date_heure_chauffeur,chauffeur,latlng);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_POSITION_CHAUFFEUR+"="+id, null);
         if (c.moveToFirst()) {
             p.setId_position_chauffeur(c.getInt(c.getColumnIndex(KEY_ID_POSITION_CHAUFFEUR)));
-            p.setDate_heure_chauffeur(c.getString(c.getColumnIndex(KEY_DATE_HEURE_CHAUFFEUR)));
+            try {
+                date_heure_chauffeur = df.parse(c.getString(c.getColumnIndex(KEY_DATE_HEURE_CHAUFFEUR)));
+            } catch (ParseException pe) {
+                System.err.println("Erreur parsage date dans PositionChauffeurManager");
+            }
+            p.setDate_heure_chauffeur(date_heure_chauffeur);
 
             String id_chauffeur = c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR));
             ChauffeurManager chauffeurManager = new ChauffeurManager(context);

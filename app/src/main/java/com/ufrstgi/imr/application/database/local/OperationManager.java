@@ -13,6 +13,11 @@ import com.ufrstgi.imr.application.object.Operation;
 import com.ufrstgi.imr.application.object.Personne;
 import com.ufrstgi.imr.application.object.Reception;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -32,6 +37,8 @@ public class OperationManager {
     public static final String KEY_BATIMENT= "batiment";
     public static final String KEY_ID_ADRESSE= "id_adresse";
     public static final String KEY_ID_CLIENT= "id_client";
+
+    DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     public static final String CREATE_TABLE_OPERATION =
             "CREATE TABLE "+TABLE_NAME+ " (" +
@@ -69,12 +76,20 @@ public class OperationManager {
     public long addOperation(Operation operation) {
         // Ajout d'un enregistrement dans la table
 
+        String date_theorique = df.format(operation.getDate_theorique());
+        String date_reelle = df.format(operation.getDate_reelle());
+        String date_limite = df.format(operation.getDate_limite());
+
         ContentValues values = new ContentValues();
         values.put(KEY_ID_OPERATION, operation.getId_operation());
-        values.put(KEY_DATE_THEORIQUE, operation.getDate_theorique());
-        values.put(KEY_DATE_REELLE, operation.getDate_reelle());
-        values.put(KEY_DATE_LIMITE, operation.getDate_limite());
-        values.put(KEY_EST_LIVRAISON, operation.getEstLivraison());
+        values.put(KEY_DATE_THEORIQUE, date_theorique);
+        values.put(KEY_DATE_REELLE, date_reelle);
+        values.put(KEY_DATE_LIMITE, date_limite);
+        if (operation instanceof Livraison) {
+            values.put(KEY_EST_LIVRAISON, "1");
+        } else if (operation instanceof Reception) {
+            values.put(KEY_EST_LIVRAISON, "0");
+        }
         values.put(KEY_QUAI, operation.getQuai());
         values.put(KEY_BATIMENT, operation.getBatiment());
         values.put(KEY_ID_ADRESSE, operation.getAdresse().getId_adresse());
@@ -89,12 +104,20 @@ public class OperationManager {
         // modification d'un enregistrement
         // valeur de retour : (int) nombre de lignes affectées par la requête
 
+        String date_theorique = df.format(operation.getDate_theorique());
+        String date_reelle = df.format(operation.getDate_reelle());
+        String date_limite = df.format(operation.getDate_limite());
+
         ContentValues values = new ContentValues();
         values.put(KEY_ID_OPERATION, operation.getId_operation());
-        values.put(KEY_DATE_THEORIQUE, operation.getDate_theorique());
-        values.put(KEY_DATE_REELLE, operation.getDate_reelle());
-        values.put(KEY_DATE_LIMITE, operation.getDate_limite());
-        values.put(KEY_EST_LIVRAISON, operation.getEstLivraison());
+        values.put(KEY_DATE_THEORIQUE, date_theorique);
+        values.put(KEY_DATE_REELLE, date_reelle);
+        values.put(KEY_DATE_LIMITE, date_limite);
+        if (operation instanceof Livraison) {
+            values.put(KEY_EST_LIVRAISON, "1");
+        } else if (operation instanceof Reception) {
+            values.put(KEY_EST_LIVRAISON, "0");
+        }
         values.put(KEY_QUAI, operation.getQuai());
         values.put(KEY_BATIMENT, operation.getBatiment());
         values.put(KEY_ID_ADRESSE, operation.getAdresse().getId_adresse());
@@ -124,20 +147,30 @@ public class OperationManager {
         Personne personne = new Personne(0,"","","");
         Client client = new Client(0,"","",adresse,personne);
         Operation o = null;
+        Date date_theorique = new Date();
+        Date date_reelle = new Date();
+        Date date_limite = new Date();
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_OPERATION+"="+id, null);
         if (c.moveToFirst()) {
             int estLivraison = c.getInt(c.getColumnIndex(KEY_EST_LIVRAISON));
             if (estLivraison == 1) {
-                o = new Livraison(0,"","","",1,"","",adresse,client);
+                o = new Livraison(0,date_theorique,date_reelle,date_limite,"","",adresse,client);
             } else {
-                o = new Reception(0,"","","",0,"","",adresse,client);
+                o = new Reception(0,date_theorique,date_reelle,date_limite,"","",adresse,client);
             }
 
             o.setId_operation(c.getInt(c.getColumnIndex(KEY_ID_OPERATION)));
-            o.setDate_theorique(c.getString(c.getColumnIndex(KEY_DATE_THEORIQUE)));
-            o.setDate_reelle(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
-            o.setDate_limite(c.getString(c.getColumnIndex(KEY_DATE_LIMITE)));
+            try {
+                date_theorique = df.parse(c.getString(c.getColumnIndex(KEY_DATE_THEORIQUE)));
+                date_reelle = df.parse(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
+                date_limite = df.parse(c.getString(c.getColumnIndex(KEY_DATE_LIMITE)));
+            } catch (ParseException pe) {
+                System.err.println("Erreur parsage date dans OperationManager");
+            }
+            o.setDate_theorique(date_theorique);
+            o.setDate_reelle(date_reelle);
+            o.setDate_limite(date_limite);
             o.setQuai(c.getString(c.getColumnIndex(KEY_QUAI)));
             o.setBatiment(c.getString(c.getColumnIndex(KEY_BATIMENT)));
 
