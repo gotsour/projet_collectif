@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.ufrstgi.imr.application.object.Latlng;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas Westermann on 09/01/2017.
  * Université de Franche-Comté
@@ -95,8 +97,22 @@ public class LatlngManager {
         return l;
     }
 
-    public Cursor getAllLatlng() {
+    public ArrayList<Latlng> getAllLatlng() {
+        ArrayList<Latlng> mesLatlng = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Latlng l;
+
+        if (c.moveToFirst()) {
+            do {
+                l=new Latlng(0,0,0);
+                l.setId_latlng(c.getInt(c.getColumnIndex(KEY_ID_LATLNG)));
+                l.setLatitude(c.getFloat(c.getColumnIndex(KEY_LATITUDE)));
+                l.setLongitude(c.getFloat(c.getColumnIndex(KEY_LONGITUDE)));
+                mesLatlng.add(l);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return mesLatlng;
     }
 }

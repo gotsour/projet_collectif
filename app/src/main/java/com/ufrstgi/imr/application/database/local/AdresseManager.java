@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.ufrstgi.imr.application.object.Adresse;
 import com.ufrstgi.imr.application.object.Latlng;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -122,8 +124,35 @@ public class AdresseManager {
         return a;
     }
 
-    public Cursor getAllAdresse() {
+    public ArrayList<Adresse> getAllAdresse() {
+        ArrayList<Adresse> mesAdresse = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Latlng latlng;
+        Adresse a;
+
+        if (c.moveToFirst()) {
+            do {
+                latlng = new Latlng(0,0,0);
+                a=new Adresse(0,"",0,"","",latlng);
+
+                a.setId_adresse(c.getInt(c.getColumnIndex(KEY_ID_ADRESSE)));
+                a.setRue(c.getString(c.getColumnIndex(KEY_RUE)));
+                a.setCode_postal(c.getInt(c.getColumnIndex(KEY_CODE_POSTAL)));
+                a.setVille(c.getString(c.getColumnIndex(KEY_VILLE)));
+                a.setPays(c.getString(c.getColumnIndex(KEY_PAYS)));
+
+                int id_latlng = c.getInt(c.getColumnIndex(KEY_ID_LATLNG));
+                LatlngManager latlngManager = new LatlngManager(context);
+                latlngManager.open();
+                latlng = latlngManager.getLatlng(id_latlng);
+                latlngManager.close();
+                a.setLatlng(latlng);
+
+                mesAdresse.add(a);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return mesAdresse;
     }
 }

@@ -10,6 +10,8 @@ import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Personne;
 import com.ufrstgi.imr.application.object.Tournee;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -120,8 +122,42 @@ public class TourneeManager {
         return t;
     }
 
-    public Cursor getAllTournee() {
+    public ArrayList<Tournee> getAllTournee() {
+        ArrayList<Tournee> mesTournee = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Personne personne;
+        Chauffeur chauffeur;
+        Camion camion;
+        Tournee t;
+
+        if (c.moveToFirst()) {
+            do {
+                personne = new Personne(0,"","","");
+                chauffeur = new Chauffeur("","",0,personne);
+                camion = new Camion("","",0,0,0);
+                t = new Tournee(0,chauffeur,camion);
+
+                t.setId_tournee(c.getInt(c.getColumnIndex(KEY_ID_TOURNEE)));
+
+                String id_chauffeur = c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR));
+                ChauffeurManager chauffeurManager= new ChauffeurManager(context);
+                chauffeurManager.open();
+                chauffeur = chauffeurManager.getChauffeur(id_chauffeur);
+                chauffeurManager.close();
+                t.setChauffeur(chauffeur);
+
+                String id_camion = c.getString(c.getColumnIndex(KEY_ID_CAMION));
+                CamionManager camionManager= new CamionManager(context);
+                camionManager.open();
+                camion = camionManager.getCamion(id_camion);
+                camionManager.close();
+                t.setCamion(camion);
+
+                mesTournee.add(t);
+            }while (c.moveToNext());
+        }
+        c.close();
+        return mesTournee;
     }
 }

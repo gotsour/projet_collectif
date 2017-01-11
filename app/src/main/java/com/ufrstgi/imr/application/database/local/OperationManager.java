@@ -16,6 +16,7 @@ import com.ufrstgi.imr.application.object.Reception;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -194,8 +195,69 @@ public class OperationManager {
         return o;
     }
 
-    public Cursor getAllOperation() {
+    public ArrayList<Operation> getAllOperation() {
+        ArrayList<Operation> mesOperation = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Latlng latlng;
+        Adresse adresse;
+        Personne personne;
+        Client client;
+        Operation o;
+        Date date_theorique;
+        Date date_reelle;
+        Date date_limite;
+
+        if (c.moveToFirst()) {
+            do {
+                latlng = new Latlng(0,0,0);
+                adresse = new Adresse(0,"",0,"","",latlng);
+                personne = new Personne(0,"","","");
+                client = new Client(0,"","",adresse,personne);
+                o = null;
+                date_theorique = new Date();
+                date_reelle = new Date();
+                date_limite = new Date();
+
+                int estLivraison = c.getInt(c.getColumnIndex(KEY_EST_LIVRAISON));
+                if (estLivraison == 1) {
+                    o = new Livraison(0,date_theorique,date_reelle,date_limite,"","",adresse,client);
+                } else {
+                    o = new Reception(0,date_theorique,date_reelle,date_limite,"","",adresse,client);
+                }
+
+                o.setId_operation(c.getInt(c.getColumnIndex(KEY_ID_OPERATION)));
+                try {
+                    date_theorique = df.parse(c.getString(c.getColumnIndex(KEY_DATE_THEORIQUE)));
+                    date_reelle = df.parse(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
+                    date_limite = df.parse(c.getString(c.getColumnIndex(KEY_DATE_LIMITE)));
+                } catch (ParseException pe) {
+                    System.err.println("Erreur parsage date dans OperationManager");
+                }
+                o.setDate_theorique(date_theorique);
+                o.setDate_reelle(date_reelle);
+                o.setDate_limite(date_limite);
+                o.setQuai(c.getString(c.getColumnIndex(KEY_QUAI)));
+                o.setBatiment(c.getString(c.getColumnIndex(KEY_BATIMENT)));
+
+                int id_adresse = c.getInt(c.getColumnIndex(KEY_ID_ADRESSE));
+                AdresseManager adresseManager = new AdresseManager(context);
+                adresseManager.open();
+                adresse = adresseManager.getAdresse(id_adresse);
+                adresseManager.close();
+                o.setAdresse(adresse);
+
+                int id_client = c.getInt(c.getColumnIndex(KEY_ID_CLIENT));
+                ClientManager clientManager = new ClientManager(context);
+                clientManager.open();
+                client = clientManager.getClient(id_client);
+                clientManager.close();
+                o.setClient(client);
+
+                mesOperation.add(o);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return mesOperation;
     }
 }

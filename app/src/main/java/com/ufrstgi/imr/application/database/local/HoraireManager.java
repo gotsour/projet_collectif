@@ -12,6 +12,7 @@ import com.ufrstgi.imr.application.object.Personne;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -138,8 +139,46 @@ public class HoraireManager {
         return h;
     }
 
-    public Cursor getAllHoraire() {
+    public ArrayList<Horaire> getAllHoraire() {
+        ArrayList<Horaire> mesHoraire = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+
+        Personne personne;
+        Chauffeur chauffeur;
+        Date heure_debut;
+        Date heure_fin;
+        Horaire h;
+
+        if (c.moveToFirst()) {
+            do {
+                personne = new Personne(0,"","","");
+                chauffeur = new Chauffeur("","",0,personne);
+                heure_debut = new Date();
+                heure_fin = new Date();
+                h = new Horaire(0,heure_debut,heure_fin,chauffeur);
+
+                h.setId_horaire(c.getInt(c.getColumnIndex(KEY_ID_HORAIRE)));
+                try {
+                    heure_debut = df.parse(c.getString(c.getColumnIndex(KEY_HEURE_DEBUT)));
+                    h.setHeure_debut(heure_debut);
+                    heure_fin = df.parse(c.getString(c.getColumnIndex(KEY_HEURE_FIN)));
+                    h.setHeure_fin(heure_fin);
+                } catch (ParseException pe) {
+                    System.err.println("Erreur parsage date dans HoraireManager");
+                }
+
+                String id_chauffeur = c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR));
+                ChauffeurManager chauffeurManager = new ChauffeurManager(context);
+                chauffeurManager.open();
+                chauffeur = chauffeurManager.getChauffeur(id_chauffeur);
+                chauffeurManager.close();
+                h.setChauffeur(chauffeur);
+
+                mesHoraire.add(h);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return mesHoraire;
     }
 }

@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.ufrstgi.imr.application.object.Personne;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -101,8 +103,23 @@ public class PersonneManager {
         return p;
     }
 
-    public Cursor getAllPersonne() {
+    public ArrayList<Personne> getAllPersonne() {
+        ArrayList<Personne> mesPersonne = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c =  db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Personne p;
+
+        if (c.moveToFirst()) {
+            do {
+                p = new Personne(0,"","","");
+                p.setId_personne(c.getInt(c.getColumnIndex(KEY_ID_PERSONNE)));
+                p.setNom_personne(c.getString(c.getColumnIndex(KEY_NOM_PERSONNE)));
+                p.setPrenom_personne(c.getString(c.getColumnIndex(KEY_PRENOM_PERSONNE)));
+                p.setTelephone_personne(c.getString(c.getColumnIndex(KEY_TELEPHONE_PERSONNE)));
+                mesPersonne.add(p);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return mesPersonne;
     }
 }

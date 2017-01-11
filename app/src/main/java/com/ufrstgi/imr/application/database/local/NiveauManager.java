@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.ufrstgi.imr.application.object.Niveau;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas Westermann on 07/01/2017.
  * Université de Franche-Comté
@@ -95,8 +97,23 @@ public class NiveauManager {
         return n;
     }
 
-    public Cursor getAllNiveau() {
+    public ArrayList<Niveau> getAllNiveau() {
+        ArrayList<Niveau> mesNiveau = new ArrayList<Niveau>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Niveau n;
+
+        if (c.moveToFirst()) {
+            do {
+                n=new Niveau(0,"",0);
+                n.setId_niveau(c.getInt(c.getColumnIndex(KEY_ID_NIVEAU)));
+                n.setLibelle_niveau(c.getString(c.getColumnIndex(KEY_LIBELLE_NIVEAU)));
+                n.setPrix(c.getFloat(c.getColumnIndex(KEY_PRIX)));
+                mesNiveau.add(n);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return mesNiveau;
     }
 }

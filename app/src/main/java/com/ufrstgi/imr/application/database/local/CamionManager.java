@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.ufrstgi.imr.application.object.Camion;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -107,9 +109,25 @@ public class CamionManager {
         return cam;
     }
 
-    public Cursor getAllCamion() {
+    public ArrayList<Camion> getAllCamion() {
+        ArrayList<Camion> mesCamion = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Camion cam;
+
+        if (c.moveToFirst()) {
+            do {
+                cam = new Camion("","",0,0,0);
+                cam.setId_camion(c.getString(c.getColumnIndex(KEY_ID_CAMION)));
+                cam.setNom_camion(c.getString(c.getColumnIndex(KEY_NOM_CAMION)));
+                cam.setVolume_camion(c.getFloat(c.getColumnIndex(KEY_VOLUME_CAMION)));
+                cam.setTaille_camion(c.getFloat(c.getColumnIndex(KEY_TAILLE_CAMION)));
+                cam.setPoids_chargement_camion(c.getFloat(c.getColumnIndex(KEY_POIDS_CHARGEMENT_CAMION)));
+                mesCamion.add(cam);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return mesCamion;
     }
 
 }

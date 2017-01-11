@@ -13,6 +13,7 @@ import com.ufrstgi.imr.application.object.PositionChauffeur;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -143,8 +144,50 @@ public class PositionChauffeurManager {
         return p;
     }
 
-    public Cursor getAllPositionChauffeur() {
+    public ArrayList<PositionChauffeur> getAllPositionChauffeur() {
+        ArrayList<PositionChauffeur> mesPositionChauffeur = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Personne personne;
+        Chauffeur chauffeur;
+        Latlng latlng;
+        Date date_heure_chauffeur;
+        PositionChauffeur p;
+
+        if (c.moveToFirst()) {
+            do {
+                personne = new Personne(0,"","","");
+                chauffeur = new Chauffeur("","",0,personne);
+                latlng = new Latlng(0,0,0);
+                date_heure_chauffeur = new Date();
+                p = new PositionChauffeur(0,date_heure_chauffeur,chauffeur,latlng);
+
+                p.setId_position_chauffeur(c.getInt(c.getColumnIndex(KEY_ID_POSITION_CHAUFFEUR)));
+                try {
+                    date_heure_chauffeur = df.parse(c.getString(c.getColumnIndex(KEY_DATE_HEURE_CHAUFFEUR)));
+                } catch (ParseException pe) {
+                    System.err.println("Erreur parsage date dans PositionChauffeurManager");
+                }
+                p.setDate_heure_chauffeur(date_heure_chauffeur);
+
+                String id_chauffeur = c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR));
+                ChauffeurManager chauffeurManager = new ChauffeurManager(context);
+                chauffeurManager.open();
+                chauffeur = chauffeurManager.getChauffeur(id_chauffeur);
+                chauffeurManager.close();
+                p.setChauffeur(chauffeur);
+
+                int id_latlng = c.getInt(c.getColumnIndex(KEY_ID_LATLNG));
+                LatlngManager latlngManager = new LatlngManager(context);
+                latlngManager.open();
+                latlng = latlngManager.getLatlng(id_latlng);
+                latlngManager.close();
+                p.setLatlng(latlng);
+
+                mesPositionChauffeur.add(p);
+            } while (c.moveToNext());
+        }
+        c.close();
+        return mesPositionChauffeur;
     }
 }

@@ -10,6 +10,8 @@ import com.ufrstgi.imr.application.object.Client;
 import com.ufrstgi.imr.application.object.Latlng;
 import com.ufrstgi.imr.application.object.Personne;
 
+import java.util.ArrayList;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -131,8 +133,44 @@ public class ClientManager {
         return cl;
     }
 
-    public Cursor getAllClient() {
+    public ArrayList<Client> getAllClient() {
+        ArrayList<Client> mesClient = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Latlng latlng;
+        Adresse adresse;
+        Personne personne;
+        Client cl;
+
+        if (c.moveToFirst()) {
+            do {
+                latlng = new Latlng(0,0,0);
+                adresse = new Adresse(0,"",0,"","",latlng);
+                personne = new Personne(0,"","","");
+                cl = new Client(0,"","",adresse,personne);
+
+                cl.setId_client(c.getInt(c.getColumnIndex(KEY_ID_CLIENT)));
+                cl.setNom_client(c.getString(c.getColumnIndex(KEY_NOM_CLIENT)));
+                cl.setTelephone_client(c.getString(c.getColumnIndex(KEY_TELEPHONE_CLIENT)));
+
+                int id_adresse = c.getInt(c.getColumnIndex(KEY_ID_ADRESSE));
+                AdresseManager adresseManager= new AdresseManager(context);
+                adresseManager.open();
+                adresse = adresseManager.getAdresse(id_adresse);
+                adresseManager.close();
+                cl.setAdresse(adresse);
+
+                int id_personne = c.getInt(c.getColumnIndex(KEY_ID_PERSONNE));
+                PersonneManager personneManager= new PersonneManager(context);
+                personneManager.open();
+                personne = personneManager.getPersonne(id_personne);
+                personneManager.close();
+                cl.setPersonne(personne);
+
+                mesClient.add(cl);
+            }while (c.moveToNext());
+        }
+        c.close();
+        return mesClient;
     }
 }

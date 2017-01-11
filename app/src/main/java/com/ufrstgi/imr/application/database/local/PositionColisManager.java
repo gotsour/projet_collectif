@@ -20,6 +20,7 @@ import com.ufrstgi.imr.application.object.Tournee;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -157,8 +158,65 @@ public class PositionColisManager {
         return p;
     }
 
-    public Cursor getAllPositionColis() {
+    public ArrayList<PositionColis> getAllPositionColis() {
+        ArrayList<PositionColis> mesPositionColis = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        return db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Niveau niveau;
+        Latlng latlng;
+        Adresse adresse;
+        Personne personne;
+        Client client;
+        Operation operation;
+        Chauffeur chauffeur;
+        Camion camion;
+        Tournee tournee;
+        Colis colis;
+        Date date_heure_colis;
+        PositionColis p;
+
+        if (c.moveToFirst()) {
+            do {
+                niveau = new Niveau(0,"",0);
+                latlng = new Latlng(0,0,0);
+                adresse = new Adresse(0,"",0,"","",latlng);
+                personne = new Personne(0,"","","");
+                client = new Client(0,"","",adresse,personne);
+                operation = null;
+                chauffeur = new Chauffeur("","",0,personne);
+                camion = new Camion("","",0,0,0);
+                tournee = new Tournee(0,chauffeur,camion);
+                colis = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
+                date_heure_colis = new Date();
+                p = new PositionColis(0,date_heure_colis,colis,latlng);
+
+                p.setId_position_colis(c.getInt(c.getColumnIndex(KEY_ID_POSITION_COLIS)));
+                try {
+                    date_heure_colis = df.parse(c.getString(c.getColumnIndex(KEY_DATE_HEURE_COLIS)));
+                } catch (ParseException pe) {
+                    System.err.println("Erreur parsage date dans PositionColisManager");
+                }
+                p.setDate_heure_colis(date_heure_colis);
+
+                int id_colis = c.getInt(c.getColumnIndex(KEY_ID_COLIS));
+                ColisManager colisManager = new ColisManager(context);
+                colisManager.open();
+                colis = colisManager.getColis(id_colis);
+                colisManager.close();
+                p.setColis(colis);
+
+                int id_latlng = c.getInt(c.getColumnIndex(KEY_ID_LATLNG));
+                LatlngManager latlngManager = new LatlngManager(context);
+                latlngManager.open();
+                latlng = latlngManager.getLatlng(id_latlng);
+                latlngManager.close();
+                p.setLatlng(latlng);
+
+                mesPositionColis.add(p);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return mesPositionColis;
     }
 }
