@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
 
 
         /* Test BDD */
-        Niveau niveau = new Niveau(1,"Niveau 1",150);
+        /*Niveau niveau = new Niveau(1,"Niveau 1",150);
         Personne conducteur_camion = new Personne(1,"Westermann","Thomas","0621065701");
         Personne contact_client = new Personne(2,"Spies","François","0654865701");
         Camion camion = new Camion("BK-589-KD","Peugeot 308",25,2,1500);
@@ -90,8 +90,11 @@ public class MainActivity extends AppCompatActivity
         Tournee tournee = new Tournee(1,chauffeur,camion);
         Client client = new Client(1,"Dufay Cyril","0621065807",adresse_client,contact_client);
         Livraison livraison = new Livraison(1,"14","15","19",1,"9B","Nodier",adresse_operation, client);
-        Colis colis = new Colis(1,12,0.25f,47,22,80,niveau,livraison,tournee,client);
-        PositionColis positionColis = new PositionColis(1,"14",colis,latlng);
+        Colis colis0 = new Colis(1,1782,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Colis colis1 = new Colis(2,156462,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Colis colis2 = new Colis(3,162,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Colis colis3 = new Colis(4,11435,0.25f,47,22,80,niveau,livraison,tournee,client);
+        PositionColis positionColis = new PositionColis(1,"14",colis0,latlng);
 
         NiveauManager niveauManager = new NiveauManager(this);
         niveauManager.open();
@@ -152,7 +155,10 @@ public class MainActivity extends AppCompatActivity
 
         ColisManager colisManager = new ColisManager(this);
         colisManager.open();
-        colisManager.addColis(colis);
+        colisManager.addColis(colis0);
+        colisManager.addColis(colis1);
+        colisManager.addColis(colis2);
+        colisManager.addColis(colis3);
         colisManager.close();
 
         PositionColisManager positionColisManager = new PositionColisManager(this);
@@ -160,14 +166,7 @@ public class MainActivity extends AppCompatActivity
         positionColisManager.addPositionColis(positionColis);
         positionColisManager.close();
 
-        // On recupère le colis avec id=1 créé précédemment
-        Colis co;
-        colisManager.open();
-        co = colisManager.getColis(1);
-
-        String str_colis = co.toString();
-        Log.d("Colis", str_colis);
-        colisManager.close();
+        */
     }
 
     @Override
@@ -188,7 +187,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-
+            Intent i = new Intent(this, ColisActivity.class);
+            startActivity(i);
         } else if (id == R.id.nav_slideshow) {
 
             Gson gson = new GsonBuilder()
