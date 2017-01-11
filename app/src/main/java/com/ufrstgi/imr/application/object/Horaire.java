@@ -1,5 +1,9 @@
 package com.ufrstgi.imr.application.object;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -9,15 +13,19 @@ package com.ufrstgi.imr.application.object;
 
 public class Horaire {
 
+    @SerializedName("id_horaire")
     private int id_horaire;
-    private String heure_debut;
-    private String heure_fin;
+    @SerializedName("heure_debut")
+    private Date heure_debut;
+    @SerializedName("heure_fin")
+    private Date heure_fin;
+    @SerializedName("id_chauffeur")
     private Chauffeur chauffeur;
 
-    public Horaire(int id_horaire, String heure_debut, String heure_fin, Chauffeur chauffeur) {
+    public Horaire(int id_horaire, Date heure_fin, Date heure_debut, Chauffeur chauffeur) {
         this.id_horaire = id_horaire;
-        this.heure_debut = heure_debut;
         this.heure_fin = heure_fin;
+        this.heure_debut = heure_debut;
         this.chauffeur = chauffeur;
     }
 
@@ -29,19 +37,19 @@ public class Horaire {
         this.id_horaire = id_horaire;
     }
 
-    public String getHeure_debut() {
+    public Date getHeure_debut() {
         return heure_debut;
     }
 
-    public void setHeure_debut(String heure_debut) {
+    public void setHeure_debut(Date heure_debut) {
         this.heure_debut = heure_debut;
     }
 
-    public String getHeure_fin() {
+    public Date getHeure_fin() {
         return heure_fin;
     }
 
-    public void setHeure_fin(String heure_fin) {
+    public void setHeure_fin(Date heure_fin) {
         this.heure_fin = heure_fin;
     }
 

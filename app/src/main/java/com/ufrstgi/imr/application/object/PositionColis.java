@@ -1,5 +1,7 @@
 package com.ufrstgi.imr.application.object;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -9,9 +11,13 @@ package com.ufrstgi.imr.application.object;
 
 public class PositionColis {
 
+    @SerializedName("id_position_colis")
     private int id_position_colis;
+    @SerializedName("date_heure_colis")
     private String date_heure_colis;
+    @SerializedName("id_colis")
     private Colis colis;
+    @SerializedName("id_latlng")
     private Latlng latlng;
 
     public PositionColis(int id_position_colis, String date_heure_colis, Colis colis, Latlng latlng) {

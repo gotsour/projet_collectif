@@ -1,5 +1,7 @@
 package com.ufrstgi.imr.application.object;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Thomas Westermann on 07/01/2017.
  * Université de Franche-Comté
@@ -9,11 +11,17 @@ package com.ufrstgi.imr.application.object;
 
 public class Colis {
 
+    @SerializedName("id_colis")
     private int id_colis;
+    @SerializedName("poids_colis")
     private float poids_colis;
+    @SerializedName("volume_colis")
     private float volume_colis;
+    @SerializedName("niveau_batterie_colis")
     private float niveau_batterie_colis;
+    @SerializedName("temperature_colis")
     private float temperature_colis;
+    @SerializedName("capacite_choc_colis")
     private float capacite_choc_colis;
 
     /* Clefs étrangères */

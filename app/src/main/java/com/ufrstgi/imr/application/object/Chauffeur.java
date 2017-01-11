@@ -1,5 +1,7 @@
 package com.ufrstgi.imr.application.object;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -9,9 +11,13 @@ package com.ufrstgi.imr.application.object;
 
 public class Chauffeur {
 
+    @SerializedName("id_chauffeur")
     private String id_chauffeur; //login
+    @SerializedName("mot_de_passe")
     private String mot_de_passe;
+    @SerializedName("niveau_batterie_terminal")
     private float niveau_batterie_terminal;
+    @SerializedName("id_personne")
     private Personne personne;
 
     public Chauffeur(String id_chauffeur, String mot_de_passe, float niveau_batterie_terminal, Personne personne) {

@@ -1,5 +1,10 @@
 package com.ufrstgi.imr.application.object;
 
+import java.util.Date;
+
+
+import java.util.Date;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -9,22 +14,21 @@ package com.ufrstgi.imr.application.object;
 
 public abstract class Operation {
 
+
     private int id_operation;
-    private String date_theorique;
-    private String date_reelle;
-    private String date_limite;
-    private int estLivraison;
+    private Date date_theorique;
+    private Date date_reelle;
+    private Date date_limite;
     private String quai;
     private String batiment;
     private Adresse adresse;
     private Client client;
 
-    public Operation(int id_operation, String date_theorique, String date_reelle, String date_limite, int estLivraison, String quai, String batiment, Adresse adresse, Client client) {
+    public Operation(int id_operation, Date date_theorique, Date date_reelle, Date date_limite, String quai, String batiment, Adresse adresse, Client client) {
         this.id_operation = id_operation;
         this.date_theorique = date_theorique;
         this.date_reelle = date_reelle;
         this.date_limite = date_limite;
-        this.estLivraison = estLivraison;
         this.quai = quai;
         this.batiment = batiment;
         this.adresse = adresse;
@@ -39,36 +43,28 @@ public abstract class Operation {
         this.id_operation = id_operation;
     }
 
-    public String getDate_theorique() {
+    public Date getDate_theorique() {
         return date_theorique;
     }
 
-    public void setDate_theorique(String date_theorique) {
+    public void setDate_theorique(Date date_theorique) {
         this.date_theorique = date_theorique;
     }
 
-    public String getDate_reelle() {
+    public Date getDate_reelle() {
         return date_reelle;
     }
 
-    public void setDate_reelle(String date_reelle) {
+    public void setDate_reelle(Date date_reelle) {
         this.date_reelle = date_reelle;
     }
 
-    public String getDate_limite() {
+    public Date getDate_limite() {
         return date_limite;
     }
 
-    public void setDate_limite(String date_limite) {
+    public void setDate_limite(Date date_limite) {
         this.date_limite = date_limite;
-    }
-
-    public int getEstLivraison() {
-        return estLivraison;
-    }
-
-    public void setEstLivraison(int estLivraison) {
-        this.estLivraison = estLivraison;
     }
 
     public String getQuai() {
@@ -105,11 +101,10 @@ public abstract class Operation {
 
     @Override
     public String toString() {
-        return "id_operation=" + id_operation +
+        return "id_operation=" + id_operation+
                 ", date_theorique='" + date_theorique + '\'' +
                 ", date_reelle='" + date_reelle + '\'' +
                 ", date_limite='" + date_limite + '\'' +
-                ", estLivraison=" + estLivraison +
                 ", quai='" + quai + '\'' +
                 ", batiment='" + batiment + '\'' +
                 ", adresse=" + adresse +

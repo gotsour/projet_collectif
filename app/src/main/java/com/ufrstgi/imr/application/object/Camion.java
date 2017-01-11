@@ -1,5 +1,7 @@
 package com.ufrstgi.imr.application.object;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -9,10 +11,15 @@ package com.ufrstgi.imr.application.object;
 
 public class Camion {
 
+    @SerializedName("id_camion")
     public String id_camion; // Numéro d'immatriculation
+    @SerializedName("nom_camion")
     public String nom_camion; // Marque
+    @SerializedName("volume_camion")
     public float volume_camion;
+    @SerializedName("taille_camion")
     public float taille_camion;
+    @SerializedName("poids_chargement_camion")
     public float poids_chargement_camion;
 
     public Camion(String id_camion, String nom_camion, float volume_camion, float taille_camion, float poids_chargement_camion) {

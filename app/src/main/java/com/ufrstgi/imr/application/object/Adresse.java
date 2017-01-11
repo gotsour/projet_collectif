@@ -1,5 +1,5 @@
 package com.ufrstgi.imr.application.object;
-
+import com.google.gson.annotations.SerializedName;
 /**
  * Created by Thomas Westermann on 08/01/2017.
  * Université de Franche-Comté
@@ -9,11 +9,17 @@ package com.ufrstgi.imr.application.object;
 
 public class Adresse {
 
+    @SerializedName("id_adresse")
     private int id_adresse;
+    @SerializedName("rue")
     private String rue;
+    @SerializedName("code_postal")
     private int code_postal;
+    @SerializedName("ville")
     private String ville;
+    @SerializedName("pays")
     private String pays;
+    @SerializedName("id_latlng")
     private Latlng latlng;
 
     public Adresse(int id_adresse, String rue, int code_postal, String ville, String pays, Latlng latlng) {

@@ -1,5 +1,7 @@
 package com.ufrstgi.imr.application.object;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Thomas Westermann on 09/01/2017.
  * Université de Franche-Comté
@@ -9,8 +11,11 @@ package com.ufrstgi.imr.application.object;
 
 public class Latlng {
 
+    @SerializedName("id_latlng")
     private int id_latlng;
+    @SerializedName("latitude")
     private float latitude;
+    @SerializedName("longitude")
     private float longitude;
 
     public Latlng(int id_latlng, float latitude, float longitude) {

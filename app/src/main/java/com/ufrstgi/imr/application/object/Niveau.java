@@ -1,5 +1,7 @@
 package com.ufrstgi.imr.application.object;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Thomas Westermann on 07/01/2017.
  * Université de Franche-Comté
@@ -9,8 +11,11 @@ package com.ufrstgi.imr.application.object;
 
 public class Niveau {
 
+    @SerializedName("id_niveau")
     private int id_niveau;
+    @SerializedName("libelle_niveau")
     private String libelle_niveau;
+    @SerializedName("prix")
     private float prix;
 
     public Niveau(int id_niveau, String libelle_niveau, float prix) {
