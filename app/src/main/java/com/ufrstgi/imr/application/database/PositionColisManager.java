@@ -108,7 +108,7 @@ public class PositionColisManager {
         Adresse adresse = new Adresse(0,"",0,"","",latlng);
         Personne personne = new Personne(0,"","","");
         Client client = new Client(0,"","",adresse,personne);
-        Operation operation = new Operation(0,"","","",0,"","",adresse,client);
+        Operation operation = null;
         Chauffeur chauffeur = new Chauffeur("","",0,personne);
         Camion camion = new Camion("","",0,0,0);
         Tournee tournee = new Tournee(0,chauffeur,camion);

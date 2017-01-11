@@ -43,5 +43,12 @@ public class Niveau {
         this.libelle_niveau = libelle_niveau;
     }
 
-
+    @Override
+    public String toString() {
+        return "Niveau{" +
+                "id_niveau=" + id_niveau +
+                ", libelle_niveau='" + libelle_niveau + '\'' +
+                ", prix=" + prix +
+                '}';
+    }
 }

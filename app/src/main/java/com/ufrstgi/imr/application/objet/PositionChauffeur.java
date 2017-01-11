@@ -52,4 +52,14 @@ public class PositionChauffeur {
     public void setLatlng(Latlng latlng) {
         this.latlng = latlng;
     }
+
+    @Override
+    public String toString() {
+        return "PositionChauffeur{" +
+                "id_position_chauffeur=" + id_position_chauffeur +
+                ", date_heure_chauffeur='" + date_heure_chauffeur + '\'' +
+                ", chauffeur=" + chauffeur +
+                ", latlng=" + latlng +
+                '}';
+    }
 }

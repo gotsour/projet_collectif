@@ -52,4 +52,14 @@ public class Personne {
     public void setTelephone_personne(String telephone_personne) {
         this.telephone_personne = telephone_personne;
     }
+
+    @Override
+    public String toString() {
+        return "Personne{" +
+                "id_personne=" + id_personne +
+                ", nom_personne='" + nom_personne + '\'' +
+                ", prenom_personne='" + prenom_personne + '\'' +
+                ", telephone_personne='" + telephone_personne + '\'' +
+                '}';
+    }
 }

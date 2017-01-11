@@ -62,4 +62,15 @@ public class Camion {
     public void setPoids_chargement_camion(float poids_chargement_camion) {
         this.poids_chargement_camion = poids_chargement_camion;
     }
+
+    @Override
+    public String toString() {
+        return "Camion{" +
+                "id_camion='" + id_camion + '\'' +
+                ", nom_camion='" + nom_camion + '\'' +
+                ", volume_camion=" + volume_camion +
+                ", taille_camion=" + taille_camion +
+                ", poids_chargement_camion=" + poids_chargement_camion +
+                '}';
+    }
 }

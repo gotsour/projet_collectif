@@ -8,8 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import com.ufrstgi.imr.application.objet.Adresse;
 import com.ufrstgi.imr.application.objet.Client;
 import com.ufrstgi.imr.application.objet.Latlng;
+import com.ufrstgi.imr.application.objet.Livraison;
 import com.ufrstgi.imr.application.objet.Operation;
 import com.ufrstgi.imr.application.objet.Personne;
+import com.ufrstgi.imr.application.objet.Reception;
 
 /**
  * Created by Thomas Westermann on 08/01/2017.
@@ -121,15 +123,21 @@ public class OperationManager {
         Adresse adresse = new Adresse(0,"",0,"","",latlng);
         Personne personne = new Personne(0,"","","");
         Client client = new Client(0,"","",adresse,personne);
-        Operation o = new Operation(0,"","","",0,"","",adresse,client);
+        Operation o = null;
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_OPERATION+"="+id, null);
         if (c.moveToFirst()) {
+            int estLivraison = c.getInt(c.getColumnIndex(KEY_EST_LIVRAISON));
+            if (estLivraison == 1) {
+                o = new Livraison(0,"","","",1,"","",adresse,client);
+            } else {
+                o = new Reception(0,"","","",0,"","",adresse,client);
+            }
+
             o.setId_operation(c.getInt(c.getColumnIndex(KEY_ID_OPERATION)));
             o.setDate_theorique(c.getString(c.getColumnIndex(KEY_DATE_THEORIQUE)));
             o.setDate_reelle(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
             o.setDate_limite(c.getString(c.getColumnIndex(KEY_DATE_LIMITE)));
-            o.setEstLivraison(c.getInt(c.getColumnIndex(KEY_EST_LIVRAISON)));
             o.setQuai(c.getString(c.getColumnIndex(KEY_QUAI)));
             o.setBatiment(c.getString(c.getColumnIndex(KEY_BATIMENT)));
 

@@ -7,7 +7,7 @@ package com.ufrstgi.imr.application.objet;
  * Application Projet_collectif
  */
 
-public class Operation {
+public abstract class Operation {
 
     private int id_operation;
     private String date_theorique;
@@ -101,5 +101,18 @@ public class Operation {
 
     public void setClient(Client client) {
         this.client = client;
+    }
+
+    @Override
+    public String toString() {
+        return "id_operation=" + id_operation +
+                ", date_theorique='" + date_theorique + '\'' +
+                ", date_reelle='" + date_reelle + '\'' +
+                ", date_limite='" + date_limite + '\'' +
+                ", estLivraison=" + estLivraison +
+                ", quai='" + quai + '\'' +
+                ", batiment='" + batiment + '\'' +
+                ", adresse=" + adresse +
+                ", client=" + client;
     }
 }

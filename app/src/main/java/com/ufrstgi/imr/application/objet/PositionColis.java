@@ -52,4 +52,14 @@ public class PositionColis {
     public void setLatlng(Latlng latlng) {
         this.latlng = latlng;
     }
+
+    @Override
+    public String toString() {
+        return "PositionColis{" +
+                "id_position_colis=" + id_position_colis +
+                ", date_heure_colis='" + date_heure_colis + '\'' +
+                ", colis=" + colis +
+                ", latlng=" + latlng +
+                '}';
+    }
 }

@@ -42,4 +42,13 @@ public class Tournee {
     public void setCamion(Camion camion) {
         this.camion = camion;
     }
+
+    @Override
+    public String toString() {
+        return "Tournee{" +
+                "id_tournee=" + id_tournee +
+                ", chauffeur=" + chauffeur +
+                ", camion=" + camion +
+                '}';
+    }
 }

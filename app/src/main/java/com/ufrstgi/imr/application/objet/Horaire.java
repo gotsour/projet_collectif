@@ -52,4 +52,14 @@ public class Horaire {
     public void setChauffeur(Chauffeur chauffeur) {
         this.chauffeur = chauffeur;
     }
+
+    @Override
+    public String toString() {
+        return "Horaire{" +
+                "id_horaire=" + id_horaire +
+                ", heure_debut='" + heure_debut + '\'' +
+                ", heure_fin='" + heure_fin + '\'' +
+                ", chauffeur=" + chauffeur +
+                '}';
+    }
 }

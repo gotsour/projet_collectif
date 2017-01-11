@@ -72,4 +72,16 @@ public class Adresse {
     public void setLatlng(Latlng latlng) {
         this.latlng = latlng;
     }
+
+    @Override
+    public String toString() {
+        return "Adresse{" +
+                "id_adresse=" + id_adresse +
+                ", rue='" + rue + '\'' +
+                ", code_postal=" + code_postal +
+                ", ville='" + ville + '\'' +
+                ", pays='" + pays + '\'' +
+                ", latlng=" + latlng +
+                '}';
+    }
 }

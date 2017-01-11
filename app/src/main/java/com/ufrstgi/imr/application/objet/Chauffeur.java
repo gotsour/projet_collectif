@@ -52,4 +52,14 @@ public class Chauffeur {
     public void setPersonne(Personne personne) {
         this.personne = personne;
     }
+
+    @Override
+    public String toString() {
+        return "Chauffeur{" +
+                "id_chauffeur='" + id_chauffeur + '\'' +
+                ", mot_de_passe='" + mot_de_passe + '\'' +
+                ", niveau_batterie_terminal=" + niveau_batterie_terminal +
+                ", personne=" + personne +
+                '}';
+    }
 }

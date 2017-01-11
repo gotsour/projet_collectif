@@ -114,4 +114,20 @@ public class Colis {
     public void setClient(Client client) {
         this.client = client;
     }
+
+    @Override
+    public String toString() {
+        return "Colis{" +
+                "id_colis=" + id_colis +
+                ", poids_colis=" + poids_colis +
+                ", volume_colis=" + volume_colis +
+                ", niveau_batterie_colis=" + niveau_batterie_colis +
+                ", temperature_colis=" + temperature_colis +
+                ", capacite_choc_colis=" + capacite_choc_colis +
+                ", niveau=" + niveau +
+                ", operation=" + operation +
+                ", tournee=" + tournee +
+                ", client=" + client +
+                '}';
+    }
 }

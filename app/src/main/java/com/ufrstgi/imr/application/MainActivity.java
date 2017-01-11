@@ -33,6 +33,7 @@ import com.ufrstgi.imr.application.objet.Client;
 import com.ufrstgi.imr.application.objet.Colis;
 import com.ufrstgi.imr.application.objet.Horaire;
 import com.ufrstgi.imr.application.objet.Latlng;
+import com.ufrstgi.imr.application.objet.Livraison;
 import com.ufrstgi.imr.application.objet.Niveau;
 import com.ufrstgi.imr.application.objet.Operation;
 import com.ufrstgi.imr.application.objet.Personne;
@@ -76,8 +77,8 @@ public class MainActivity extends AppCompatActivity
         PositionChauffeur positionChauffeur = new PositionChauffeur(0,"12",chauffeur,latlng);
         Tournee tournee = new Tournee(1,chauffeur,camion);
         Client client = new Client(1,"Dufay Cyril","0621065807",adresse_client,contact_client);
-        Operation operation = new Operation(1,"14","15","19",1,"9B","Nodier",adresse_operation, client);
-        Colis colis = new Colis(1,12,0.25f,47,22,80,niveau,operation,tournee,client);
+        Livraison livraison = new Livraison(1,"14","15","19",1,"9B","Nodier",adresse_operation, client);
+        Colis colis = new Colis(1,12,0.25f,47,22,80,niveau,livraison,tournee,client);
         PositionColis positionColis = new PositionColis(1,"14",colis,latlng);
 
         NiveauManager niveauManager = new NiveauManager(this);
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity
 
         OperationManager operationManager = new OperationManager(this);
         operationManager.open();
-        operationManager.addOperation(operation);
+        operationManager.addOperation(livraison);
         operationManager.close();
 
         ColisManager colisManager = new ColisManager(this);
@@ -152,42 +153,7 @@ public class MainActivity extends AppCompatActivity
         colisManager.open();
         co = colisManager.getColis(1);
 
-
-        String str_colis = "colis {\n"
-                + "\tid_colis : "+co.getId_colis()+"\n"
-                + "\tpoids_colis : "+co.getPoids_colis()+"\n"
-                + "\tvolume_colis : "+co.getVolume_colis()+"\n"
-                + "\tniveau_batterie_colis : "+co.getNiveau_batterie_colis()+"\n"
-                + "\ttemperature_colis : "+co.getTemperature_colis()+"\n"
-                + "\tcapacite_chox : "+co.getCapacite_choc_colis()+"\n"
-                + "\tniveau {\n"
-                + "\t\tid_niveau : "+co.getNiveau().getId_niveau()+"\n"
-                + "\t\tlibelle_niveau : "+co.getNiveau().getLibelle_niveau()+"\n"
-                + "\t\tprix_niveau : "+co.getNiveau().getPrix()+"\n"
-                + "\t}\n"
-                + "\toperation {\n"
-                + "\t\tid_operation : "+co.getOperation().getId_operation()+"\n"
-                + "\t\tdate_theorique : "+co.getOperation().getDate_theorique()+"\n"
-                + "\t\tdate_reelle : "+co.getOperation().getDate_reelle()+"\n"
-                + "\t\tdate_limite : "+co.getOperation().getDate_limite()+"\n"
-                + "\t\test_livraison : "+co.getOperation().getEstLivraison()+"\n"
-                + "\t\tquai : "+co.getOperation().getQuai()+"\n"
-                + "\t\tbatiment : "+co.getOperation().getBatiment()+"\n"
-                + "\t\tadresse {\n"
-                + "\t\t\tid_adresse : "+co.getOperation().getAdresse().getId_adresse()+"\n"
-                + "\t\t\true : "+co.getOperation().getAdresse().getRue()+"\n"
-                + "\t\t\tcode_postal : "+co.getOperation().getAdresse().getCode_postal()+"\n"
-                + "\t\t\tville : "+co.getOperation().getAdresse().getVille()+"\n"
-                + "\t\t\tpays : "+co.getOperation().getAdresse().getPays()+"\n"
-                + "\t\t\tlatlng {\n"
-                + "\t\t\t\tid_latlng : "+co.getOperation().getAdresse().getLatlng().getId_latlng()+"\n"
-                + "\t\t\t\tlatitude : "+co.getOperation().getAdresse().getLatlng().getLatitude()+"\n"
-                + "\t\t\t\tlongitude : "+co.getOperation().getAdresse().getLatlng().getLongitude()+"\n"
-                + "\t\t\t}\n"
-                + "\t\t}\n"
-                +"\t}\n"
-                + "}"
-        ;
+        String str_colis = co.toString();
         Log.d("Colis", str_colis);
         colisManager.close();
     }

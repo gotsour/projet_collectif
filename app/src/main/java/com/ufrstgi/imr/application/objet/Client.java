@@ -62,4 +62,15 @@ public class Client {
     public void setPersonne(Personne personne) {
         this.personne = personne;
     }
+
+    @Override
+    public String toString() {
+        return "Client{" +
+                "id_client=" + id_client +
+                ", nom_client='" + nom_client + '\'' +
+                ", telephone_client='" + telephone_client + '\'' +
+                ", adresse=" + adresse +
+                ", personne=" + personne +
+                '}';
+    }
 }

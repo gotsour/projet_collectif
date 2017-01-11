@@ -42,4 +42,13 @@ public class Latlng {
     public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
+
+    @Override
+    public String toString() {
+        return "Latlng{" +
+                "id_latlng=" + id_latlng +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
+    }
 }
