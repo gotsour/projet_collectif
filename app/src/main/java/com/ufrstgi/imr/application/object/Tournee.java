@@ -50,10 +50,10 @@ public class Tournee {
 
     @Override
     public String toString() {
-        return "Tournee{" +
-                "id_tournee=" + id_tournee +
-                ", chauffeur=" + chauffeur +
-                ", camion=" + camion +
-                '}';
+        return "Tournee{" + "\n" +
+                "\tid_tournee=" + id_tournee + "\n" +
+                "\tchauffeur=" + chauffeur + "\n" +
+                "\tcamion=" + camion + "\n" +
+                "}\n";
     }
 }

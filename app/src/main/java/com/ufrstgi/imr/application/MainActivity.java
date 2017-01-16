@@ -91,12 +91,12 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle fragment_navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_gallery) {
-
+            viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
+            viewPager.setCurrentItem(2);
 
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd HH:mm:ss")

@@ -63,11 +63,11 @@ public class PositionChauffeur {
 
     @Override
     public String toString() {
-        return "PositionChauffeur{" +
-                "id_position_chauffeur=" + id_position_chauffeur +
-                ", date_heure_chauffeur='" + date_heure_chauffeur + '\'' +
-                ", chauffeur=" + chauffeur +
-                ", latlng=" + latlng +
-                '}';
+        return "PositionChauffeur{" + "\n" +
+                "\tid_position_chauffeur=" + id_position_chauffeur + "\n" +
+                "\tdate_heure_chauffeur='" + date_heure_chauffeur + '\'' + "\n" +
+                "\tchauffeur=" + chauffeur + "\n" +
+                "\tlatlng=" + latlng + "\n" +
+                "}\n";
     }
 }

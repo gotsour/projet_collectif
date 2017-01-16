@@ -125,17 +125,17 @@ public class Colis {
 
     @Override
     public String toString() {
-        return "Colis{" +
-                "id_colis=" + id_colis +
-                ", poids_colis=" + poids_colis +
-                ", volume_colis=" + volume_colis +
-                ", niveau_batterie_colis=" + niveau_batterie_colis +
-                ", temperature_colis=" + temperature_colis +
-                ", capacite_choc_colis=" + capacite_choc_colis +
-                ", niveau=" + niveau +
-                ", operation=" + operation +
-                ", tournee=" + tournee +
-                ", client=" + client +
-                '}';
+        return "Colis{\n" +
+                "\tid_colis=" + id_colis + "\n" +
+                "\tpoids_colis=" + poids_colis + "\n" +
+                "\tvolume_colis=" + volume_colis + "\n" +
+                "\tniveau_batterie_colis=" + niveau_batterie_colis + "\n" +
+                "\ttemperature_colis=" + temperature_colis + "\n" +
+                "\tcapacite_choc_colis=" + capacite_choc_colis + "\n" +
+                "\tniveau=" + niveau + "\n" +
+                "\toperation=" + operation + "\n" +
+                "\ttournee=" + tournee + "\n" +
+                "\tclient=" + client + "\n" +
+                "}\n";
     }
 }

@@ -61,11 +61,11 @@ public class Chauffeur {
 
     @Override
     public String toString() {
-        return "Chauffeur{" +
-                "id_chauffeur='" + id_chauffeur + '\'' +
-                ", mot_de_passe='" + mot_de_passe + '\'' +
-                ", niveau_batterie_terminal=" + niveau_batterie_terminal +
-                ", personne=" + personne +
-                '}';
+        return "Chauffeur{" + "\n" +
+                "\tid_chauffeur='" + id_chauffeur + '\'' + "\n" +
+                "\tmot_de_passe='" + mot_de_passe + '\'' + "\n" +
+                "\tniveau_batterie_terminal=" + niveau_batterie_terminal + "\n" +
+                "\tpersonne=" + personne + "\n" +
+                "}\n";
     }
 }

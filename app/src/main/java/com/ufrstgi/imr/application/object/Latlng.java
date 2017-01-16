@@ -50,10 +50,10 @@ public class Latlng {
 
     @Override
     public String toString() {
-        return "Latlng{" +
-                "id_latlng=" + id_latlng +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
-                '}';
+        return "Latlng{" + "\n" +
+                "\tid_latlng=" + id_latlng + "\n" +
+                "\tlatitude=" + latitude + "\n" +
+                "\tlongitude=" + longitude + "\n" +
+                "}\n";
     }
 }

@@ -72,12 +72,12 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Client{" +
-                "id_client=" + id_client +
-                ", nom_client='" + nom_client + '\'' +
-                ", telephone_client='" + telephone_client + '\'' +
-                ", adresse=" + adresse +
-                ", personne=" + personne +
-                '}';
+        return "Client{" + "\n" +
+                "\tid_client=" + id_client + "\n" +
+                "\tnom_client='" + nom_client + '\'' + "\n" +
+                "\ttelephone_client='" + telephone_client + '\'' + "\n" +
+                "\tadresse=" + adresse + "\n" +
+                "\tpersonne=" + personne + "\n" +
+                "}\n";
     }
 }

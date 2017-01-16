@@ -63,11 +63,11 @@ public class Horaire {
 
     @Override
     public String toString() {
-        return "Horaire{" +
-                "id_horaire=" + id_horaire +
-                ", heure_debut='" + heure_debut + '\'' +
-                ", heure_fin='" + heure_fin + '\'' +
-                ", chauffeur=" + chauffeur +
-                '}';
+        return "Horaire{" + "\n" +
+                "\tid_horaire=" + id_horaire + "\n" +
+                "\theure_debut='" + heure_debut + '\'' + "\n" +
+                "\theure_fin='" + heure_fin + '\'' + "\n" +
+                "\tchauffeur=" + chauffeur + "\n" +
+                "}\n";
     }
 }

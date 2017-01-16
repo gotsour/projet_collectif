@@ -50,10 +50,10 @@ public class Niveau {
 
     @Override
     public String toString() {
-        return "Niveau{" +
-                "id_niveau=" + id_niveau +
-                ", libelle_niveau='" + libelle_niveau + '\'' +
-                ", prix=" + prix +
-                '}';
+        return "Niveau{" + "\n" +
+                "\tid_niveau=" + id_niveau + "\n" +
+                "\tlibelle_niveau='" + libelle_niveau + '\'' + "\n" +
+                "\tprix=" + prix + "\n" +
+                "}\n";
     }
 }

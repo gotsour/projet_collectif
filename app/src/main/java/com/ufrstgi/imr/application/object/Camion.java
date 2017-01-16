@@ -72,12 +72,12 @@ public class Camion {
 
     @Override
     public String toString() {
-        return "Camion{" +
-                "id_camion='" + id_camion + '\'' +
-                ", nom_camion='" + nom_camion + '\'' +
-                ", volume_camion=" + volume_camion +
-                ", taille_camion=" + taille_camion +
-                ", poids_chargement_camion=" + poids_chargement_camion +
-                '}';
+        return "Camion{" + "\n" +
+                "\tid_camion='" + id_camion + '\'' + "\n" +
+                "\tnom_camion='" + nom_camion + '\'' + "\n" +
+                "\tvolume_camion=" + volume_camion + "\n" +
+                "\ttaille_camion=" + taille_camion + "\n" +
+                "\tpoids_chargement_camion=" + poids_chargement_camion + "\n" +
+                "}\n";
     }
 }

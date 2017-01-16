@@ -63,11 +63,11 @@ public class PositionColis {
 
     @Override
     public String toString() {
-        return "PositionColis{" +
-                "id_position_colis=" + id_position_colis +
-                ", date_heure_colis='" + date_heure_colis + '\'' +
-                ", colis=" + colis +
-                ", latlng=" + latlng +
-                '}';
+        return "PositionColis{" + "\n" +
+                "\tid_position_colis=" + id_position_colis + "\n" +
+                "\tdate_heure_colis='" + date_heure_colis + '\'' + "\n" +
+                "\tcolis=" + colis + "\n" +
+                "\tlatlng=" + latlng + "\n" +
+                "}\n";
     }
 }

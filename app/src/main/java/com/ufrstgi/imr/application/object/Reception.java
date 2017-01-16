@@ -19,7 +19,7 @@ public class Reception extends Operation {
 
     @Override
     public String toString() {
-        return nom_operation + "{" + super.toString() + '\'' +
-                '}';
+        return nom_operation + "{\n" + super.toString() + '\'' +
+                "}\n";
     }
 }

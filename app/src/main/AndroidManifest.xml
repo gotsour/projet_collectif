@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
+        <activity android:name=".activity.ColisDetails" />
     </application>
 
 </manifest>

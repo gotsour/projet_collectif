@@ -20,14 +20,14 @@ import java.util.List;
  * Application Projet_collectif
  */
 
-public class ExpandableListAdapterColis extends BaseExpandableListAdapter {
+public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
     private List<String> expandableListTitle;
     private HashMap<String, List<String>> expandableListDetail;
 
-    public ExpandableListAdapterColis(Context context, List<String> expandableListTitle,
-                                       HashMap<String, List<String>> expandableListDetail) {
+    public ExpandableListAdapter(Context context, List<String> expandableListTitle,
+                                 HashMap<String, List<String>> expandableListDetail) {
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
@@ -50,10 +50,10 @@ public class ExpandableListAdapterColis extends BaseExpandableListAdapter {
         final String expandedListText = (String) getChild(listPosition, expandedListPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_item_colis, null);
+            convertView = layoutInflater.inflate(R.layout.list_item_fragment_expandable, null);
         }
 
-        TextView expandedListTextView = (TextView) convertView.findViewById(R.id.poids_colis);
+        TextView expandedListTextView = (TextView) convertView.findViewById(R.id.texte);
         expandedListTextView.setText(expandedListText);
 
         return convertView;
@@ -86,7 +86,7 @@ public class ExpandableListAdapterColis extends BaseExpandableListAdapter {
 
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_group_colis, null);
+            convertView = layoutInflater.inflate(R.layout.list_group_fragment_expandable, null);
         }
 
         TextView listTitleTextView = (TextView) convertView.findViewById(R.id.listTitle);

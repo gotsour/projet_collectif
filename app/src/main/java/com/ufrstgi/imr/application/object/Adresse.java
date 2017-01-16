@@ -81,13 +81,13 @@ public class Adresse {
 
     @Override
     public String toString() {
-        return "Adresse{" +
-                "id_adresse=" + id_adresse +
-                ", rue='" + rue + '\'' +
-                ", code_postal=" + code_postal +
-                ", ville='" + ville + '\'' +
-                ", pays='" + pays + '\'' +
-                ", latlng=" + latlng +
-                '}';
+        return "Adresse{" + "\n" +
+                "\tid_adresse=" + id_adresse + "\n" +
+                "\true='" + rue + '\'' + "\n" +
+                "\tcode_postal=" + code_postal + "\n" +
+                "\tville='" + ville + '\'' + "\n" +
+                "\tpays='" + pays + '\'' + "\n" +
+                "\tlatlng=" + latlng + "\n" +
+                "}\n";
     }
 }

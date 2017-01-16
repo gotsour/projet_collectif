@@ -61,11 +61,11 @@ public class Personne {
 
     @Override
     public String toString() {
-        return "Personne{" +
-                "id_personne=" + id_personne +
-                ", nom_personne='" + nom_personne + '\'' +
-                ", prenom_personne='" + prenom_personne + '\'' +
-                ", telephone_personne='" + telephone_personne + '\'' +
-                '}';
+        return "Personne{" + "\n" +
+                "\tid_personne=" + id_personne + "\n" +
+                "\tnom_personne='" + nom_personne + '\'' + "\n" +
+                "\tprenom_personne='" + prenom_personne + '\'' + "\n" +
+                "\ttelephone_personne='" + telephone_personne + '\'' + "\n" +
+                "}\n";
     }
 }

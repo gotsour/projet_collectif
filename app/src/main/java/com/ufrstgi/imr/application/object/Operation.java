@@ -101,13 +101,13 @@ public abstract class Operation {
 
     @Override
     public String toString() {
-        return "id_operation=" + id_operation+
-                ", date_theorique='" + date_theorique + '\'' +
-                ", date_reelle='" + date_reelle + '\'' +
-                ", date_limite='" + date_limite + '\'' +
-                ", quai='" + quai + '\'' +
-                ", batiment='" + batiment + '\'' +
-                ", adresse=" + adresse +
-                ", client=" + client;
+        return "\tid_operation=" + id_operation+ "\n" +
+                "\tdate_theorique='" + date_theorique + '\'' + "\n" +
+                "\tdate_reelle='" + date_reelle + '\'' + "\n" +
+                "\tdate_limite='" + date_limite + '\'' + "\n" +
+                "\tquai='" + quai + '\'' + "\n" +
+                "\tbatiment='" + batiment + '\'' + "\n" +
+                "\tadresse=" + adresse + "\n" +
+                "\tclient=" + client + "\n";
     }
 }
