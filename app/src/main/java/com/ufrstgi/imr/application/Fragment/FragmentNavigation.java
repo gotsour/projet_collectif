@@ -21,6 +21,8 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,13 +35,17 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ufrstgi.imr.application.R;
 import com.ufrstgi.imr.application.database.local.ColisManager;
+import com.ufrstgi.imr.application.database.local.OperationManager;
 import com.ufrstgi.imr.application.object.Colis;
+import com.ufrstgi.imr.application.object.Livraison;
+import com.ufrstgi.imr.application.object.Reception;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static android.content.ContentValues.TAG;
@@ -55,7 +61,16 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     GoogleMap myMap;
     MapView mMapView;
     Location location;
-    ArrayList<Colis> colis;
+    ArrayList<Colis> listeColis;
+    Colis colis;
+
+    TextView tvClient;
+    TextView tvAdresse;
+    TextView tvTelephone;
+    TextView tvVille;
+    TextView tvNombre;
+    Button bValider;
+
     public FragmentNavigation() {
 
     }
@@ -80,13 +95,23 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             mMapView.onCreate(savedInstanceState);
             mMapView.getMapAsync(this);
 
-            ColisManager colisManager = new ColisManager(getActivity());
-            colisManager.open();
-            colis = colisManager.getNextColis(1);
-            //colis.toString();
-            colisManager.close();
+            tvClient=(TextView) rootView.findViewById(R.id.tvClient);
+            tvAdresse=(TextView) rootView.findViewById(R.id.tvAdresse);
+            tvTelephone=(TextView) rootView.findViewById(R.id.tvTelephone);
+            tvVille=(TextView) rootView.findViewById(R.id.tvVille);
+            tvNombre=(TextView) rootView.findViewById(R.id.tvNombre);
 
-           Log.d("resut",colis.toString());
+            bValider=(Button) rootView.findViewById(R.id.bValider);
+            Log.d("resut","first load");
+            loadData();
+
+            bValider.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    loadData();
+                    Log.d("resut","click ok");
+                }
+            });
+           Log.d("resut",listeColis.toString());
 
 
 
@@ -94,6 +119,41 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             Log.e(TAG, "Inflate exception");
         }
         return rootView;
+    }
+
+    public void loadData(){
+        ColisManager colisManager = new ColisManager(getActivity());
+        colisManager.open();
+        listeColis = colisManager.getNextColis(1);
+        colisManager.close();
+        int nbLivraison=0;
+        int nbReception=0;
+        for(int i =0; i<listeColis.size();i++){
+            if(i==0){
+                OperationManager operationManager = new OperationManager(getActivity());
+                operationManager.open();
+                listeColis.get(i).getOperation().setDate_theorique(Calendar.getInstance().getTime());
+                operationManager.updateOperation(listeColis.get(i).getOperation());
+                operationManager.close();
+            }
+            if(listeColis.get(i).getOperation() instanceof Reception){
+                nbReception++;
+            }
+            else{
+                nbLivraison++;
+            }
+        }
+        colis=listeColis.get(0);
+        tvClient.setText(" "+colis.getOperation().getClient().getNom_client());
+        tvAdresse.setText(" "+colis.getOperation().getAdresse().getRue());
+        tvVille.setText(" "+colis.getOperation().getAdresse().getVille());
+
+        tvTelephone.setText(colis.getOperation().getClient().getTelephone_client());
+        tvNombre.setText(nbLivraison+ " colis à livrer \n"+ nbReception + " colis à récuperer");
+
+        Log.d("result", "nombre colis : "+listeColis.size());
+        //faire chargement nouveau itineraire
+
     }
 
     public String makeURL(double sourcelat, double sourcelog, double destlat, double destlog) {
