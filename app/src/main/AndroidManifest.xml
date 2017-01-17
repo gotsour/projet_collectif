@@ -31,8 +31,9 @@
         <activity android:name=".activity.ColisDetails" />
 
         <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
+            android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAAj3h7P5IjBNuSv-hLNeYs5yZgVzf11F4"/>
+
 
     </application>
 
