@@ -32,7 +32,7 @@ import java.util.Date;
 
 public class PositionColisManager {
 
-    private static final String TABLE_NAME = "positionColis";
+    public static final String TABLE_NAME = "positionColis";
     public static final String KEY_ID_POSITION_COLIS = "id_position_colis";
     public static final String KEY_DATE_HEURE_COLIS = "date_heure_colis";
     public static final String KEY_ID_COLIS = "id_colis";

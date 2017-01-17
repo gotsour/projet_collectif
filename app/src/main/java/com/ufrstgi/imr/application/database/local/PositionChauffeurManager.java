@@ -25,7 +25,7 @@ import java.util.Date;
 
 public class PositionChauffeurManager {
 
-    private static final String TABLE_NAME = "positionChauffeur";
+    public static final String TABLE_NAME = "positionChauffeur";
     public static final String KEY_ID_POSITION_CHAUFFEUR = "id_position_chauffeur";
     public static final String KEY_DATE_HEURE_CHAUFFEUR= "date_heure_chauffeur";
     public static final String KEY_ID_CHAUFFEUR= "id_chauffeur";

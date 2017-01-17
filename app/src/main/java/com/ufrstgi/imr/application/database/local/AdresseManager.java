@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class AdresseManager {
 
-    private static final String TABLE_NAME = "adresse";
+    public static final String TABLE_NAME = "adresse";
     public static final String KEY_ID_ADRESSE = "id_adresse";
     public static final String KEY_RUE = "rue";
     public static final String KEY_CODE_POSTAL= "code_postal";

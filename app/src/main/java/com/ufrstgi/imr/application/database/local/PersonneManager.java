@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class PersonneManager {
 
-    private static final String TABLE_NAME = "personne";
+    public static final String TABLE_NAME = "personne";
     public static final String KEY_ID_PERSONNE = "id_personne";
     public static final String KEY_NOM_PERSONNE = "nom_personne";
     public static final String KEY_PRENOM_PERSONNE= "prenom_personne";

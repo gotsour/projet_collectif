@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class TourneeManager {
 
-    private static final String TABLE_NAME = "tournee";
+    public static final String TABLE_NAME = "tournee";
     public static final String KEY_ID_TOURNEE = "id_tournee";
     public static final String KEY_ID_CHAUFFEUR = "id_chauffeur";
     public static final String KEY_ID_CAMION = "id_camion";

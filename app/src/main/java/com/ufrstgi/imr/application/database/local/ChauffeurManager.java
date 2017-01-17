@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class ChauffeurManager {
 
-    private static final String TABLE_NAME = "chauffeur";
+    public static final String TABLE_NAME = "chauffeur";
     public static final String KEY_ID_CHAUFFEUR = "id_chauffeur";
     public static final String KEY_MOT_DE_PASSE = "mot_de_passe";
     public static final String KEY_NIVEAU_BATTERIE_TERMINAL = "niveau_batterie_terminal";

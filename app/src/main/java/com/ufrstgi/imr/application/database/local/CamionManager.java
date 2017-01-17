@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class CamionManager {
 
-    private static final String TABLE_NAME = "camion";
+    public static final String TABLE_NAME = "camion";
     public static final String KEY_ID_CAMION = "id_camion";
     public static final String KEY_NOM_CAMION = "nom_camion";
     public static final String KEY_VOLUME_CAMION= "volume_camion";

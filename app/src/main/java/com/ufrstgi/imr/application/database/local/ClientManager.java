@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class ClientManager {
 
-    private static final String TABLE_NAME = "client";
+    public static final String TABLE_NAME = "client";
     public static final String KEY_ID_CLIENT = "id_client";
     public static final String KEY_NOM_CLIENT = "nom_client";
     public static final String KEY_TELEPHONE_CLIENT = "telephone_client";

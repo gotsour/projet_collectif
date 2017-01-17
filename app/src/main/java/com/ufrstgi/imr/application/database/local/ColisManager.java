@@ -28,7 +28,7 @@ import java.util.ArrayList;
 
 public class ColisManager {
 
-    private static final String TABLE_NAME = "colis";
+    public static final String TABLE_NAME = "colis";
     public static final String KEY_ID_COLIS = "id_colis";
     public static final String KEY_POIDS_COLIS = "poids_colis";
     public static final String KEY_VOLUME_COLIS = "volume_colis";
@@ -184,6 +184,89 @@ public class ColisManager {
 
         return co;
     }
+
+        public ArrayList<Colis> getNextColis(int id) {
+
+            ArrayList<Colis> mesColis = new ArrayList<Colis>();
+            String date = "";
+            Cursor c = db.rawQuery("SELECT o.date_theorique  FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
+                    " ORDER BY date(o.date_theorique) DESC Limit 1", null);
+            if (c.moveToFirst()) {
+                date = c.getString(c.getColumnIndex("o.date_theorique"));
+            }
+            Log.d("result", "date : " + date);
+
+
+            c = db.rawQuery("SELECT * FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
+                    " and o.date_theorique='" + date + "'", null);
+
+            Niveau niveau;
+            Latlng latlng;
+            Adresse adresse;
+            Personne personne;
+            Client client;
+            Operation operation;
+            Chauffeur chauffeur;
+            Camion camion;
+            Tournee tournee;
+            Colis co;
+
+            if (c.moveToFirst()) {
+                do {
+                    niveau = new Niveau(0,"",0);
+                    latlng = new Latlng(0,0,0);
+                    adresse = new Adresse(0,"",0,"","",latlng);
+                    personne = new Personne(0,"","","");
+                    client = new Client(0,"","",adresse,personne);
+                    operation = null;
+                    chauffeur = new Chauffeur("","",0,personne);
+                    camion = new Camion("","",0,0,0);
+                    tournee = new Tournee(0,chauffeur,camion);
+                    co = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
+
+                    co.setId_colis(c.getInt(c.getColumnIndex(KEY_ID_COLIS)));
+                    co.setPoids_colis(c.getFloat(c.getColumnIndex(KEY_POIDS_COLIS)));
+                    co.setVolume_colis(c.getFloat(c.getColumnIndex(KEY_VOLUME_COLIS)));
+                    co.setNiveau_batterie_colis(c.getFloat(c.getColumnIndex(KEY_NIVEAU_BATTERIE_COLIS)));
+                    co.setTemperature_colis(c.getFloat(c.getColumnIndex(KEY_TEMPERATURE_COLIS)));
+                    co.setCapacite_choc_colis(c.getFloat(c.getColumnIndex(KEY_CAPACITE_CHOC_COLIS)));
+
+                    int id_niveau = c.getInt(c.getColumnIndex(KEY_ID_NIVEAU));
+                    NiveauManager niveauManager = new NiveauManager(context);
+                    niveauManager.open();
+                    niveau = niveauManager.getNiveau(id_niveau);
+                    niveauManager.close();
+                    co.setNiveau(niveau);
+
+                    int id_operation = c.getInt(c.getColumnIndex(KEY_ID_OPERATION));
+                    OperationManager operationManager = new OperationManager(context);
+                    operationManager.open();
+                    operation = operationManager.getOperation(id_operation);
+                    operationManager.close();
+                    co.setOperation(operation);
+
+                    int id_tournee = c.getInt(c.getColumnIndex(KEY_ID_TOURNEE));
+                    TourneeManager tourneeManager = new TourneeManager(context);
+                    tourneeManager.open();
+                    tournee = tourneeManager.getTournee(id_tournee);
+                    tourneeManager.close();
+                    co.setTournee(tournee);
+
+                    int id_client = c.getInt(c.getColumnIndex(KEY_ID_CLIENT));
+                    ClientManager clientManager = new ClientManager(context);
+                    clientManager.open();
+                    client = clientManager.getClient(id_client);
+                    clientManager.close();
+                    co.setClient(client);
+
+                    mesColis.add(co);
+                } while (c.moveToNext());
+            }
+
+            c.close();
+
+            return mesColis;
+        }
 
     public ArrayList<Colis> getAllColis() {
 

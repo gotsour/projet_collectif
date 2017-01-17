@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class LatlngManager {
 
-    private static final String TABLE_NAME = "latlng";
+    public static final String TABLE_NAME = "latlng";
     public static final String KEY_ID_LATLNG = "id_latlng";
     public static final String KEY_LATITUDE= "latitude";
     public static final String KEY_LONGITUDE= "longitude";

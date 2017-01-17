@@ -24,7 +24,7 @@ import java.util.Date;
 
 public class HoraireManager {
 
-    private static final String TABLE_NAME = "horaire";
+    public static final String TABLE_NAME = "horaire";
     public static final String KEY_ID_HORAIRE = "id_horaire";
     public static final String KEY_HEURE_DEBUT = "heure_debut";
     public static final String KEY_HEURE_FIN = "heure_fin";

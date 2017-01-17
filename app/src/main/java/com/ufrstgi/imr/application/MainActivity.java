@@ -1,9 +1,11 @@
 package com.ufrstgi.imr.application;
 
+import android.*;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -53,8 +55,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        //initBDDTest();
+        initBDDTest();
 
     }
 
@@ -199,11 +199,14 @@ public class MainActivity extends AppCompatActivity
         Adresse adresse_operation = new Adresse(2,"9 rue des Alouettes",90782,"Belfort","France",latlng);
         PositionChauffeur positionChauffeur = new PositionChauffeur(0,today,chauffeur,latlng);
         Tournee tournee = new Tournee(1,chauffeur,camion);
+
         Client client = new Client(1,"Dufay Cyril","0621065807",adresse_client,contact_client);
-        Livraison livraison = new Livraison(1,today,today,today,"9B","Nodier",adresse_operation, client);
+        Livraison livraison = new Livraison(1, today,today,today,"9B","Nodier",adresse_operation, client);
+        Livraison livraison2 = new Livraison(3, today,today,today,"9B","Nodier",adresse_operation, client);
+        Reception reception = new Reception(2,today,today,today,"9B","Nodier",adresse_client, client);
         Colis colis0 = new Colis(1,1782,0.25f,47,22,80,niveau,livraison,tournee,client);
-        Colis colis1 = new Colis(2,156462,0.25f,47,22,80,niveau,livraison,tournee,client);
-        Colis colis2 = new Colis(3,162,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Colis colis1 = new Colis(2,156462,0.25f,47,22,80,niveau,reception,tournee,client);
+        Colis colis2 = new Colis(3,162,0.25f,47,22,80,niveau,livraison2,tournee,client);
         Colis colis3 = new Colis(4,11435,0.25f,47,22,80,niveau,livraison,tournee,client);
         PositionColis positionColis = new PositionColis(1,today,colis0,latlng);
 
@@ -262,6 +265,8 @@ public class MainActivity extends AppCompatActivity
         OperationManager operationManager = new OperationManager(this);
         operationManager.open();
         operationManager.addOperation(livraison);
+        operationManager.addOperation(reception);
+        operationManager.addOperation(livraison2);
         operationManager.close();
 
         ColisManager colisManager = new ColisManager(this);

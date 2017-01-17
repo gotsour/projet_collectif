@@ -28,7 +28,7 @@ import java.util.Date;
 
 public class OperationManager {
 
-    private static final String TABLE_NAME = "operation";
+    public static final String TABLE_NAME = "operation";
     public static final String KEY_ID_OPERATION = "id_operation";
     public static final String KEY_DATE_THEORIQUE = "date_theorique";
     public static final String KEY_DATE_REELLE= "heure_relle_operation";

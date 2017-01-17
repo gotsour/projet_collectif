@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class NiveauManager {
 
-    private static final String TABLE_NAME = "niveau";
+    public static final String TABLE_NAME = "niveau";
     public static final String KEY_ID_NIVEAU = "id_niveau";
     public static final String KEY_LIBELLE_NIVEAU = "libelle_niveau";
     public static final String KEY_PRIX= "prix";
