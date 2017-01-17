@@ -7,7 +7,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.ufrstgi.imr.application.MainActivity;
+import com.ufrstgi.imr.application.database.local.ColisManager;
 import com.ufrstgi.imr.application.object.ClientScanResult;
+import com.ufrstgi.imr.application.object.Colis;
 import com.ufrstgi.imr.application.object.WifiApManager;
 
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +49,22 @@ public class BackgroundTasks  extends AsyncTask<Void, Void, Void> {
         // On compare les deux indices
         if (clients.size() != nbColisFromDataBase) {
             // On requêtes les adresses MAC des colis de la base et on les compare à ceux du tableaux de clients
+            ArrayList<String> mesAdresseMac;
+            ColisManager colisManager = new ColisManager(context);
+            colisManager.open();
+            // TODO : Prendre l'id de la tournée qui va bien
+            mesAdresseMac = colisManager.getMacAdressesFromTournee(1);
+            colisManager.close();
+
+            ArrayList<String> adressesMacClient = new ArrayList<>();
+            for (int i = 0 ; i < clients.size() ; i++) {
+                adressesMacClient.add(clients.get(i).getHWAddr());
+            }
+
+            // On compare les deux arraylists = suppression des elements egaux
+            mesAdresseMac.removeAll(adressesMacClient);
+
+            System.out.println("Result: "+mesAdresseMac);
 
         }
 
@@ -80,12 +98,12 @@ public class BackgroundTasks  extends AsyncTask<Void, Void, Void> {
         WifiApManager wifiApManager = new WifiApManager(context);
         ArrayList<ClientScanResult> clients = wifiApManager.getClientList(false);
 
-        /*for (ClientScanResult clientScanResult : clients) {
+        for (ClientScanResult clientScanResult : clients) {
             Log.d("Test", "IpAddr: " + clientScanResult.getIpAddr());
             //Log.d("Test", "Device: " + clientScanResult.getDevice());
             Log.d("Test", "MacAddr: " + clientScanResult.getHWAddr());
             //Log.d("Test", "isReachable: " + clientScanResult.isReachable());
-        }*/
+        }
 
         return clients;
     }

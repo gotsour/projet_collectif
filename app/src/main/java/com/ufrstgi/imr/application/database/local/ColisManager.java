@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import com.ufrstgi.imr.application.object.Adresse;
 import com.ufrstgi.imr.application.object.Camion;
@@ -190,94 +191,55 @@ public class ColisManager {
         return co;
     }
 
-        public ArrayList<Colis> getNextColis(int id) {
-
-            ArrayList<Colis> mesColis = new ArrayList<Colis>();
-            String date = "";
-            Cursor c = db.rawQuery("SELECT o.date_theorique  FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
-                    " ORDER BY date(o.date_theorique) DESC Limit 1", null);
-            if (c.moveToFirst()) {
-                date = c.getString(c.getColumnIndex("date_theorique"));
-            }
-            Log.d("result", "date : " + date);
-
-
-            c = db.rawQuery("SELECT * FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
-                    " and o.date_theorique='" + date + "'", null);
-
-            Niveau niveau;
-            Latlng latlng;
-            Adresse adresse;
-            Personne personne;
-            Client client;
-            Operation operation;
-            Chauffeur chauffeur;
-            Camion camion;
-            Tournee tournee;
-            Colis co;
-
-            if (c.moveToFirst()) {
-                do {
-                    niveau = new Niveau(0,"",0);
-                    latlng = new Latlng(0,0,0);
-                    adresse = new Adresse(0,"",0,"","",latlng);
-                    personne = new Personne(0,"","","");
-                    client = new Client(0,"","",adresse,personne);
-                    operation = null;
-                    chauffeur = new Chauffeur("","",0,personne);
-                    camion = new Camion("","",0,0,0);
-                    tournee = new Tournee(0,chauffeur,camion);
-                    co = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
-
-                    co.setId_colis(c.getInt(c.getColumnIndex(KEY_ID_COLIS)));
-                    co.setAdresse_mac(c.getString(c.getColumnIndex(KEY_ADRESSE_MAC)));
-                    co.setPoids_colis(c.getFloat(c.getColumnIndex(KEY_POIDS_COLIS)));
-                    co.setVolume_colis(c.getFloat(c.getColumnIndex(KEY_VOLUME_COLIS)));
-                    co.setNiveau_batterie_colis(c.getFloat(c.getColumnIndex(KEY_NIVEAU_BATTERIE_COLIS)));
-                    co.setTemperature_colis(c.getFloat(c.getColumnIndex(KEY_TEMPERATURE_COLIS)));
-                    co.setCapacite_choc_colis(c.getFloat(c.getColumnIndex(KEY_CAPACITE_CHOC_COLIS)));
-
-                    int id_niveau = c.getInt(c.getColumnIndex(KEY_ID_NIVEAU));
-                    NiveauManager niveauManager = new NiveauManager(context);
-                    niveauManager.open();
-                    niveau = niveauManager.getNiveau(id_niveau);
-                    niveauManager.close();
-                    co.setNiveau(niveau);
-
-                    int id_operation = c.getInt(c.getColumnIndex(KEY_ID_OPERATION));
-                    OperationManager operationManager = new OperationManager(context);
-                    operationManager.open();
-                    operation = operationManager.getOperation(id_operation);
-                    operationManager.close();
-                    co.setOperation(operation);
-
-                    int id_tournee = c.getInt(c.getColumnIndex(KEY_ID_TOURNEE));
-                    TourneeManager tourneeManager = new TourneeManager(context);
-                    tourneeManager.open();
-                    tournee = tourneeManager.getTournee(id_tournee);
-                    tourneeManager.close();
-                    co.setTournee(tournee);
-
-                    int id_client = c.getInt(c.getColumnIndex(KEY_ID_CLIENT));
-                    ClientManager clientManager = new ClientManager(context);
-                    clientManager.open();
-                    client = clientManager.getClient(id_client);
-                    clientManager.close();
-                    co.setClient(client);
-
-                    mesColis.add(co);
-                } while (c.moveToNext());
-            }
-
-            c.close();
-
-            return mesColis;
+    public ArrayList<Colis> getNextColis(int id) {
+        ArrayList<Colis> mesColis = new ArrayList<Colis>();
+        String date = "";
+        Cursor c = db.rawQuery("SELECT o.date_theorique  FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
+                " ORDER BY date(o.date_theorique) DESC Limit 1", null);
+        if (c.moveToFirst()) {
+            date = c.getString(c.getColumnIndex("date_theorique"));
         }
+        Log.d("result", "date : " + date);
+
+
+        c = db.rawQuery("SELECT * FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
+                " and o.date_theorique='" + date + "'", null);
+
+        mesColis = instancieColis(c);
+        c.close();
+        return mesColis;
+    }
+
+    public ArrayList<Colis> getColisFromTournee(int idTournee) {
+        ArrayList<Colis> mesColis;
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE id_tournee="+idTournee+"", null);
+        mesColis = instancieColis(c);
+        c.close();
+        return mesColis;
+    }
+
+    public ArrayList<String> getMacAdressesFromTournee(int idTournee) {
+        ArrayList<Colis> mesColis;
+        ArrayList<String> mesAdresseMac = new ArrayList<>();
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE id_tournee="+idTournee+"", null);
+        mesColis = instancieColis(c);
+        c.close();
+        for (int i = 0 ; i < mesColis.size() ; i++) {
+            mesAdresseMac.add(mesColis.get(i).getAdresse_mac());
+        }
+        return mesAdresseMac;
+    }
 
     public ArrayList<Colis> getAllColis() {
-
-        ArrayList<Colis> mesColis = new ArrayList<Colis>();
+        ArrayList<Colis> mesColis;
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        mesColis = instancieColis(c);
+        c.close();
+        return mesColis;
+    }
+
+    public ArrayList<Colis> instancieColis(Cursor c) {
+        ArrayList<Colis> mesColis = new ArrayList<>();
 
         Niveau niveau;
         Latlng latlng;
@@ -347,5 +309,6 @@ public class ColisManager {
 
         return mesColis;
     }
+
 
 }

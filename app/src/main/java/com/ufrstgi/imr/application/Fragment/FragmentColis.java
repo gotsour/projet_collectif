@@ -59,6 +59,7 @@ public class FragmentColis extends Fragment{
         for (int i = 0 ; i < mesColis.size() ; i++) {
             List<String> list = new ArrayList<String>();
             list.add(mesColis.get(i).getPoids_colis()+" kg");
+            list.add(mesColis.get(i).getAdresse_mac());
             list.add(mesColis.get(i).getOperation().getAdresse().getRue() +
                     ", "+mesColis.get(i).getOperation().getAdresse().getCode_postal() +
                     ", "+mesColis.get(i).getOperation().getAdresse().getVille()
