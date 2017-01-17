@@ -124,7 +124,7 @@ public class PositionColisManager {
         Chauffeur chauffeur = new Chauffeur("","",0,personne);
         Camion camion = new Camion("","",0,0,0);
         Tournee tournee = new Tournee(0,chauffeur,camion);
-        Colis colis = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
+        Colis colis = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
         Date date_heure_colis = new Date();
         PositionColis p = new PositionColis(0,date_heure_colis,colis,latlng);
 
@@ -186,7 +186,7 @@ public class PositionColisManager {
                 chauffeur = new Chauffeur("","",0,personne);
                 camion = new Camion("","",0,0,0);
                 tournee = new Tournee(0,chauffeur,camion);
-                colis = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
+                colis = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
                 date_heure_colis = new Date();
                 p = new PositionColis(0,date_heure_colis,colis,latlng);
 

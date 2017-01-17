@@ -30,6 +30,7 @@ public class ColisManager {
 
     public static final String TABLE_NAME = "colis";
     public static final String KEY_ID_COLIS = "id_colis";
+    public static final String KEY_ADRESSE_MAC = "adresse_mac";
     public static final String KEY_POIDS_COLIS = "poids_colis";
     public static final String KEY_VOLUME_COLIS = "volume_colis";
     public static final String KEY_NIVEAU_BATTERIE_COLIS = "niveau_batterie_colis";
@@ -43,6 +44,7 @@ public class ColisManager {
     public static final String CREATE_TABLE_COLIS =
             "CREATE TABLE "+TABLE_NAME+ " (" +
                     " "+KEY_ID_COLIS+" INTEGER primary key," +
+                    " "+KEY_ADRESSE_MAC+" TEXT," +
                     " "+KEY_POIDS_COLIS+" REAL," +
                     " "+KEY_VOLUME_COLIS+" REAL," +
                     " "+KEY_NIVEAU_BATTERIE_COLIS+" REAL," +
@@ -81,6 +83,7 @@ public class ColisManager {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_COLIS, colis.getId_colis());
+        values.put(KEY_ADRESSE_MAC, colis.getAdresse_mac());
         values.put(KEY_POIDS_COLIS, colis.getPoids_colis());
         values.put(KEY_VOLUME_COLIS, colis.getVolume_colis());
         values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
@@ -102,6 +105,7 @@ public class ColisManager {
 
         ContentValues values = new ContentValues();
         values.put(KEY_ID_COLIS, colis.getId_colis());
+        values.put(KEY_ADRESSE_MAC, colis.getAdresse_mac());
         values.put(KEY_POIDS_COLIS, colis.getPoids_colis());
         values.put(KEY_VOLUME_COLIS, colis.getVolume_colis());
         values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
@@ -140,11 +144,12 @@ public class ColisManager {
         Chauffeur chauffeur = new Chauffeur("","",0,personne);
         Camion camion = new Camion("","",0,0,0);
         Tournee tournee = new Tournee(0,chauffeur,camion);
-        Colis co = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
+        Colis co = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_COLIS+"="+id, null);
         if (c.moveToFirst()) {
             co.setId_colis(c.getInt(c.getColumnIndex(KEY_ID_COLIS)));
+            co.setAdresse_mac(c.getString(c.getColumnIndex(KEY_ADRESSE_MAC)));
             co.setPoids_colis(c.getFloat(c.getColumnIndex(KEY_POIDS_COLIS)));
             co.setVolume_colis(c.getFloat(c.getColumnIndex(KEY_VOLUME_COLIS)));
             co.setNiveau_batterie_colis(c.getFloat(c.getColumnIndex(KEY_NIVEAU_BATTERIE_COLIS)));
@@ -222,9 +227,10 @@ public class ColisManager {
                     chauffeur = new Chauffeur("","",0,personne);
                     camion = new Camion("","",0,0,0);
                     tournee = new Tournee(0,chauffeur,camion);
-                    co = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
+                    co = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
 
                     co.setId_colis(c.getInt(c.getColumnIndex(KEY_ID_COLIS)));
+                    co.setAdresse_mac(c.getString(c.getColumnIndex(KEY_ADRESSE_MAC)));
                     co.setPoids_colis(c.getFloat(c.getColumnIndex(KEY_POIDS_COLIS)));
                     co.setVolume_colis(c.getFloat(c.getColumnIndex(KEY_VOLUME_COLIS)));
                     co.setNiveau_batterie_colis(c.getFloat(c.getColumnIndex(KEY_NIVEAU_BATTERIE_COLIS)));
@@ -295,9 +301,10 @@ public class ColisManager {
                 chauffeur = new Chauffeur("","",0,personne);
                 camion = new Camion("","",0,0,0);
                 tournee = new Tournee(0,chauffeur,camion);
-                co = new Colis(0,0,0,0,0,0,niveau,operation,tournee,client);
+                co = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
 
                 co.setId_colis(c.getInt(c.getColumnIndex(KEY_ID_COLIS)));
+                co.setAdresse_mac(c.getString(c.getColumnIndex(KEY_ADRESSE_MAC)));
                 co.setPoids_colis(c.getFloat(c.getColumnIndex(KEY_POIDS_COLIS)));
                 co.setVolume_colis(c.getFloat(c.getColumnIndex(KEY_VOLUME_COLIS)));
                 co.setNiveau_batterie_colis(c.getFloat(c.getColumnIndex(KEY_NIVEAU_BATTERIE_COLIS)));
