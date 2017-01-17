@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        initBDDTest();
+        //initBDDTest();
 
         BackgroundTasks routine = new BackgroundTasks(this);
         routine.execute();
@@ -210,10 +210,10 @@ public class MainActivity extends AppCompatActivity
         Livraison livraison = new Livraison(1, today,today,today,"9B","Nodier",adresse_operation, client);
         Livraison livraison2 = new Livraison(3, today,today,today,"9B","Nodier",adresse_operation, client);
         Reception reception = new Reception(2,today,today,today,"9B","Nodier",adresse_client, client);
-        Colis colis0 = new Colis(1,1782,0.25f,47,22,80,niveau,livraison,tournee,client);
-        Colis colis1 = new Colis(2,156462,0.25f,47,22,80,niveau,reception,tournee,client);
-        Colis colis2 = new Colis(3,162,0.25f,47,22,80,niveau,livraison2,tournee,client);
-        Colis colis3 = new Colis(4,11435,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Colis colis0 = new Colis(1,"Mac",1782,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Colis colis1 = new Colis(2,"Mac",156462,0.25f,47,22,80,niveau,reception,tournee,client);
+        Colis colis2 = new Colis(3,"Mac",162,0.25f,47,22,80,niveau,livraison2,tournee,client);
+        Colis colis3 = new Colis(4,"Mac",11435,0.25f,47,22,80,niveau,livraison,tournee,client);
         PositionColis positionColis = new PositionColis(1,today,colis0,latlng);
 
         NiveauManager niveauManager = new NiveauManager(this);

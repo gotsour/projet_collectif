@@ -13,6 +13,8 @@ public class Colis {
 
     @SerializedName("id_colis")
     private int id_colis;
+    @SerializedName("adresse_mac")
+    private String adresse_mac;
     @SerializedName("poids_colis")
     private float poids_colis;
     @SerializedName("volume_colis")
@@ -30,8 +32,9 @@ public class Colis {
     private  Tournee tournee;
     private Client client;
 
-    public Colis(int id_colis, float poids_colis, float volume_colis, float niveau_batterie_colis, float temperature_colis, float capacite_choc_colis, Niveau niveau, Operation operation, Tournee tournee, Client client) {
+    public Colis(int id_colis, String adresse_mac, float poids_colis, float volume_colis, float niveau_batterie_colis, float temperature_colis, float capacite_choc_colis, Niveau niveau, Operation operation, Tournee tournee, Client client) {
         this.id_colis = id_colis;
+        this.adresse_mac = adresse_mac;
         this.poids_colis = poids_colis;
         this.volume_colis = volume_colis;
         this.niveau_batterie_colis = niveau_batterie_colis;
@@ -49,6 +52,14 @@ public class Colis {
 
     public void setId_colis(int id_colis) {
         this.id_colis = id_colis;
+    }
+
+    public String getAdresse_mac() {
+        return adresse_mac;
+    }
+
+    public void setAdresse_mac(String adresse_mac) {
+        this.adresse_mac = adresse_mac;
     }
 
     public float getPoids_colis() {
@@ -127,6 +138,7 @@ public class Colis {
     public String toString() {
         return "Colis{\n" +
                 "\tid_colis=" + id_colis + "\n" +
+                "\tadresse_mac=" + adresse_mac + "\n" +
                 "\tpoids_colis=" + poids_colis + "\n" +
                 "\tvolume_colis=" + volume_colis + "\n" +
                 "\tniveau_batterie_colis=" + niveau_batterie_colis + "\n" +
