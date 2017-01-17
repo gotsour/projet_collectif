@@ -1,7 +1,9 @@
-package com.ufrstgi.imr.application;
+package com.ufrstgi.imr.application.activity;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.ufrstgi.imr.application.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;

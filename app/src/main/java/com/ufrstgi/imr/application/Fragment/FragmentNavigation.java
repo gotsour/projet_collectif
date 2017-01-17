@@ -229,9 +229,9 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
                 Log.d("location", "location false");
             }
 
-            Log.d("resultats", makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()));
-            connectAsyncTask test = new connectAsyncTask(makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()), this.getActivity());
-            test.execute();
+            //Log.d("resultats", makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()));
+            //connectAsyncTask test = new connectAsyncTask(makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()), this.getActivity());
+            //test.execute();
 
         }
     }

@@ -23,6 +23,9 @@ import com.google.gson.GsonBuilder;
 import com.ufrstgi.imr.application.Fragment.FragmentColis;
 import com.ufrstgi.imr.application.Fragment.FragmentFeuilleRoute;
 import com.ufrstgi.imr.application.Fragment.FragmentNavigation;
+import com.ufrstgi.imr.application.activity.BackgroundTasks;
+import com.ufrstgi.imr.application.activity.ServerHTTP;
+import com.ufrstgi.imr.application.activity.SettingsActivity;
 import com.ufrstgi.imr.application.database.local.*;
 import com.ufrstgi.imr.application.database.server.MyApiEndpointInterface;
 import com.ufrstgi.imr.application.database.server.OperationSerializer;
@@ -74,6 +77,9 @@ public class MainActivity extends AppCompatActivity
 
 
         initBDDTest();
+
+        BackgroundTasks routine = new BackgroundTasks(this);
+        routine.execute();
 
     }
 

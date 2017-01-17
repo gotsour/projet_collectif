@@ -1,4 +1,4 @@
-package com.ufrstgi.imr.application;
+package com.ufrstgi.imr.application.activity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,6 +9,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.ufrstgi.imr.application.R;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -77,7 +79,7 @@ public class SettingsActivity extends PreferenceActivity {
     /**
      * Créér le point d'accès WIFI
      */
-    private static void createWifiAccessPoint() {
+    public static void createWifiAccessPoint() {
         if(wifiManager.isWifiEnabled()) {
             wifiManager.setWifiEnabled(false);
         } else {
