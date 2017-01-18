@@ -2,7 +2,9 @@ package com.ufrstgi.imr.application;
 
 import android.*;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -23,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import com.ufrstgi.imr.application.Fragment.FragmentColis;
 import com.ufrstgi.imr.application.Fragment.FragmentFeuilleRoute;
 import com.ufrstgi.imr.application.Fragment.FragmentNavigation;
+import com.ufrstgi.imr.application.activity.Background;
 import com.ufrstgi.imr.application.activity.BackgroundTasks;
 import com.ufrstgi.imr.application.activity.ServerHTTP;
 import com.ufrstgi.imr.application.activity.SettingsActivity;
@@ -35,7 +38,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -75,12 +82,11 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        deleteDatabase("db.sqlite");
+        initBDDTest();
 
-        //initBDDTest();
-
-        BackgroundTasks routine = new BackgroundTasks(this);
-        routine.execute();
-
+        // Lancement du background toute les x intervalles de temps
+        Background background = new Background(this);
     }
 
     @Override
@@ -191,6 +197,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
     public void initBDDTest() {
         /* Test BDD */
         Niveau niveau = new Niveau(1,"Niveau 1",150);
@@ -210,10 +217,10 @@ public class MainActivity extends AppCompatActivity
         Livraison livraison = new Livraison(1, today,today,today,"9B","Nodier",adresse_operation, client);
         Livraison livraison2 = new Livraison(3, today,today,today,"9B","Nodier",adresse_operation, client);
         Reception reception = new Reception(2,today,today,today,"9B","Nodier",adresse_client, client);
-        Colis colis0 = new Colis(1,"Mac",1782,0.25f,47,22,80,niveau,livraison,tournee,client);
-        Colis colis1 = new Colis(2,"Mac",156462,0.25f,47,22,80,niveau,reception,tournee,client);
-        Colis colis2 = new Colis(3,"Mac",162,0.25f,47,22,80,niveau,livraison2,tournee,client);
-        Colis colis3 = new Colis(4,"Mac",11435,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Colis colis0 = new Colis(1,"60:01:94:10:1c:3d",1782,0.25f,47,22,80,niveau,livraison,tournee,client);
+        //Colis colis1 = new Colis(2,"56:76:94:10:1a:8d",156462,0.25f,47,22,80,niveau,reception,tournee,client);
+        //Colis colis2 = new Colis(3,"12:01:94:14:1c:3d",162,0.25f,47,22,80,niveau,livraison2,tournee,client);
+        //Colis colis3 = new Colis(4,"92:22:94:10:3a:9d",11435,0.25f,47,22,80,niveau,livraison,tournee,client);
         PositionColis positionColis = new PositionColis(1,today,colis0,latlng);
 
         NiveauManager niveauManager = new NiveauManager(this);
@@ -278,9 +285,9 @@ public class MainActivity extends AppCompatActivity
         ColisManager colisManager = new ColisManager(this);
         colisManager.open();
         colisManager.addColis(colis0);
-        colisManager.addColis(colis1);
-        colisManager.addColis(colis2);
-        colisManager.addColis(colis3);
+        //colisManager.addColis(colis1);
+        //colisManager.addColis(colis2);
+        //colisManager.addColis(colis3);
         colisManager.close();
 
         PositionColisManager positionColisManager = new PositionColisManager(this);
