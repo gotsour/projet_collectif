@@ -77,8 +77,13 @@ public class OperationManager {
     public long addOperation(Operation operation) {
         // Ajout d'un enregistrement dans la table
 
+        String date_reelle;
         String date_theorique = df.format(operation.getDate_theorique());
-        String date_reelle = df.format(operation.getDate_reelle());
+        if(operation.getDate_reelle() != null)
+            date_reelle = df.format(operation.getDate_reelle());
+        else
+            date_reelle="";
+
         String date_limite = df.format(operation.getDate_limite());
 
         ContentValues values = new ContentValues();

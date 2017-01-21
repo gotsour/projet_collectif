@@ -195,11 +195,11 @@ public class ColisManager {
         ArrayList<Colis> mesColis = new ArrayList<Colis>();
         String date = "";
         Cursor c = db.rawQuery("SELECT o.date_theorique  FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
-                " ORDER BY date(o.date_theorique) DESC Limit 1", null);
+                " ORDER BY date(o.date_theorique) ASC Limit 1", null);
         if (c.moveToFirst()) {
             date = c.getString(c.getColumnIndex("date_theorique"));
         }
-        Log.d("result", "date : " + date);
+
 
 
         c = db.rawQuery("SELECT * FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +

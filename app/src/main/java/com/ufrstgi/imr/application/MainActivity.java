@@ -2,9 +2,7 @@ package com.ufrstgi.imr.application;
 
 import android.*;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -38,11 +36,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutionException;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -116,7 +110,8 @@ public class MainActivity extends AppCompatActivity
                     .create();
 
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://10.0.2.2/API/example/")
+                   // .baseUrl("http://10.0.2.2/API/example/")
+                    .baseUrl("http://ceram.pu-pm.univ-fcomte.fr:5022/API/example/")
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
 
@@ -197,30 +192,32 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
     public void initBDDTest() {
         /* Test BDD */
         Niveau niveau = new Niveau(1,"Niveau 1",150);
         Personne conducteur_camion = new Personne(1,"Westermann","Thomas","0621065701");
         Personne contact_client = new Personne(2,"Spies","François","0654865701");
         Camion camion = new Camion("BK-589-KD","Peugeot 308",25,2,1500);
-        Latlng latlng = new Latlng(1,40,7);
+        Latlng latlng = new Latlng(1,47.481991f, 6.356643f);
+        Latlng latlng2 = new Latlng(2,47.483514f, 6.922867f);
         Chauffeur chauffeur = new Chauffeur("TW272D8N","password",52,conducteur_camion);
         Date today = Calendar.getInstance().getTime();
         Horaire horaire = new Horaire(1,today,today,chauffeur);
         Adresse adresse_client = new Adresse(1,"6 rue Maurice Ravel",70400,"Hericourt","France",latlng);
-        Adresse adresse_operation = new Adresse(2,"9 rue des Alouettes",90782,"Belfort","France",latlng);
+        Adresse adresse_operation = new Adresse(2,"9 rue des Alouettes",90782,"Belfort","France",latlng2);
         PositionChauffeur positionChauffeur = new PositionChauffeur(0,today,chauffeur,latlng);
         Tournee tournee = new Tournee(1,chauffeur,camion);
 
         Client client = new Client(1,"Dufay Cyril","0621065807",adresse_client,contact_client);
-        Livraison livraison = new Livraison(1, today,today,today,"9B","Nodier",adresse_operation, client);
-        Livraison livraison2 = new Livraison(3, today,today,today,"9B","Nodier",adresse_operation, client);
-        Reception reception = new Reception(2,today,today,today,"9B","Nodier",adresse_client, client);
-        Colis colis0 = new Colis(1,"60:01:94:10:1c:3d",1782,0.25f,47,22,80,niveau,livraison,tournee,client);
-        //Colis colis1 = new Colis(2,"56:76:94:10:1a:8d",156462,0.25f,47,22,80,niveau,reception,tournee,client);
-        //Colis colis2 = new Colis(3,"12:01:94:14:1c:3d",162,0.25f,47,22,80,niveau,livraison2,tournee,client);
-        //Colis colis3 = new Colis(4,"92:22:94:10:3a:9d",11435,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Livraison livraison = new Livraison(1, today,null,today,"9B","Nodier",adresse_operation, client);
+        Livraison livraison2 = new Livraison(3, today,null,today,"9B","Nodier",adresse_client, client);
+        Reception reception = new Reception(2,today,null,today,"9B","Nodier",adresse_client, client);
+        Reception reception2 = new Reception(4,today,null,today,"9B","Nodier",adresse_client, client);
+
+        Colis colis0 = new Colis(1,"Mac",1782,0.25f,47,22,80,niveau,livraison,tournee,client);
+        Colis colis1 = new Colis(2,"Mac",156462,0.25f,47,22,80,niveau,reception,tournee,client);
+        Colis colis2 = new Colis(3,"Mac",162,0.25f,47,22,80,niveau,livraison2,tournee,client);
+        Colis colis3 = new Colis(4,"Mac",11435,0.25f,47,22,80,niveau,reception2,tournee,client);
         PositionColis positionColis = new PositionColis(1,today,colis0,latlng);
 
         NiveauManager niveauManager = new NiveauManager(this);
@@ -279,15 +276,16 @@ public class MainActivity extends AppCompatActivity
         operationManager.open();
         operationManager.addOperation(livraison);
         operationManager.addOperation(reception);
+        operationManager.addOperation(reception2);
         operationManager.addOperation(livraison2);
         operationManager.close();
 
         ColisManager colisManager = new ColisManager(this);
         colisManager.open();
         colisManager.addColis(colis0);
-        //colisManager.addColis(colis1);
-        //colisManager.addColis(colis2);
-        //colisManager.addColis(colis3);
+        colisManager.addColis(colis1);
+        colisManager.addColis(colis2);
+        colisManager.addColis(colis3);
         colisManager.close();
 
         PositionColisManager positionColisManager = new PositionColisManager(this);

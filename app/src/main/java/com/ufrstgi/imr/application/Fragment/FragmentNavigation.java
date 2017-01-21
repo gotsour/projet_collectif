@@ -102,16 +102,20 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             tvNombre=(TextView) rootView.findViewById(R.id.tvNombre);
 
             bValider=(Button) rootView.findViewById(R.id.bValider);
-            Log.d("resut","first load");
+            Log.d("result","first load");
             loadData();
 
             bValider.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     loadData();
-                    Log.d("resut","click ok");
+                    Log.d("result",listeColis.toString());
+                    valideColis();
+                    connectAsyncTask test = new connectAsyncTask(makeURL((double)colis.getOperation().getAdresse().getLatlng().getLatitude(),(double)colis.getOperation().getAdresse().getLatlng().getLongitude(), location.getLatitude(), location.getLongitude()), getActivity());
+                    test.execute();
+
                 }
             });
-           Log.d("resut",listeColis.toString());
+          // Log.d("resut",listeColis.toString());
 
 
 
@@ -119,6 +123,29 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             Log.e(TAG, "Inflate exception");
         }
         return rootView;
+    }
+    public void valideColis(){
+        OperationManager operationManager = new OperationManager(getActivity());
+        operationManager.open();
+        for(int i =0; i<listeColis.size();i++) {
+            listeColis.get(i).getOperation().setDate_reelle(Calendar.getInstance().getTime());
+            //listeColis.get(i).getOperation().setDate_theorique(Calendar.getInstance().getTime());
+            operationManager.updateOperation(listeColis.get(i).getOperation());
+            Log.d("result","valide colis : "+i);
+           /*if(i==0){
+                Log.d("result","update colis new date : "+Calendar.getInstance().getTime().toString() + " \n "+listeColis.get(i).getOperation().toString());
+                // pour les test
+                listeColis.get(i).getOperation().setDate_theorique(Calendar.getInstance().getTime());
+                operationManager.updateOperation(listeColis.get(i).getOperation());
+                Log.d("result","apres update colis new date : "+listeColis.get(i).getOperation().toString());
+
+
+            }*/
+        }
+
+
+
+        operationManager.close();
     }
 
     public void loadData(){
@@ -129,13 +156,8 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         int nbLivraison=0;
         int nbReception=0;
         for(int i =0; i<listeColis.size();i++){
-            if(i==0){
-                OperationManager operationManager = new OperationManager(getActivity());
-                operationManager.open();
-                listeColis.get(i).getOperation().setDate_theorique(Calendar.getInstance().getTime());
-                operationManager.updateOperation(listeColis.get(i).getOperation());
-                operationManager.close();
-            }
+            Log.d("result", "colis liste : "+listeColis.get(i).getId_colis());
+
             if(listeColis.get(i).getOperation() instanceof Reception){
                 nbReception++;
             }
@@ -152,7 +174,11 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         tvNombre.setText(nbLivraison+ " colis à livrer \n"+ nbReception + " colis à récuperer");
 
         Log.d("result", "nombre colis : "+listeColis.size());
-        //faire chargement nouveau itineraire
+        //faire chargement nouveau itineraire, tracage
+
+        Log.d("result", "colis 0: "+colis.toString());
+        Log.d("result", colis.getOperation().getAdresse().getLatlng().getLatitude()+" ");
+
 
     }
 
@@ -289,9 +315,11 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
                 Log.d("location", "location false");
             }
 
+            connectAsyncTask test = new connectAsyncTask(makeURL((double)colis.getOperation().getAdresse().getLatlng().getLatitude(),(double)colis.getOperation().getAdresse().getLatlng().getLongitude(), 47.282928, 5.993042), this.getActivity());
+            test.execute();
             //Log.d("resultats", makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()));
-            //connectAsyncTask test = new connectAsyncTask(makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()), this.getActivity());
-            //test.execute();
+           /* connectAsyncTask test = new connectAsyncTask(makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()), this.getActivity());
+            test.execute();*/
 
         }
     }
