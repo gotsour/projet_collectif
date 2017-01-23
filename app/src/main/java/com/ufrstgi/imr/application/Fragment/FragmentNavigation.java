@@ -38,6 +38,7 @@ import com.ufrstgi.imr.application.database.local.ColisManager;
 import com.ufrstgi.imr.application.database.local.OperationManager;
 import com.ufrstgi.imr.application.object.Colis;
 import com.ufrstgi.imr.application.object.Livraison;
+import com.ufrstgi.imr.application.object.Operation;
 import com.ufrstgi.imr.application.object.Reception;
 
 import org.json.JSONArray;
@@ -87,35 +88,36 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         try {
-            //verifie permission
-
             rootView = inflater.inflate(R.layout.fragment_navigation, container, false);
             MapsInitializer.initialize(this.getActivity());
             mMapView = (MapView) rootView.findViewById(R.id.map);
             mMapView.onCreate(savedInstanceState);
             mMapView.getMapAsync(this);
-
             tvClient=(TextView) rootView.findViewById(R.id.tvClient);
             tvAdresse=(TextView) rootView.findViewById(R.id.tvAdresse);
             tvTelephone=(TextView) rootView.findViewById(R.id.tvTelephone);
             tvVille=(TextView) rootView.findViewById(R.id.tvVille);
             tvNombre=(TextView) rootView.findViewById(R.id.tvNombre);
-
             bValider=(Button) rootView.findViewById(R.id.bValider);
-            Log.d("result","first load");
+
+            // TODO faire ensuite que la premiere fois puis au click du bouton valider
+
             loadData();
 
             bValider.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    loadData();
-                    Log.d("result",listeColis.toString());
                     valideColis();
-                    connectAsyncTask test = new connectAsyncTask(makeURL((double)colis.getOperation().getAdresse().getLatlng().getLatitude(),(double)colis.getOperation().getAdresse().getLatlng().getLongitude(), location.getLatitude(), location.getLongitude()), getActivity());
-                    test.execute();
+                    loadData();
+                    if(colis!=null){
+                        connectAsyncTask test = new connectAsyncTask(makeURL(location.getLatitude(), location.getLongitude(),
+                                colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude()), getActivity());
+                        test.execute();
+                    }
+                    /*connectAsyncTask test = new connectAsyncTask(makeURL(47.282925, 5.993049, 47.282928, 5.993042), getActivity());
+                    test.execute();*/
 
                 }
             });
-          // Log.d("resut",listeColis.toString());
 
 
 
@@ -128,19 +130,16 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         OperationManager operationManager = new OperationManager(getActivity());
         operationManager.open();
         for(int i =0; i<listeColis.size();i++) {
-            listeColis.get(i).getOperation().setDate_reelle(Calendar.getInstance().getTime());
-            //listeColis.get(i).getOperation().setDate_theorique(Calendar.getInstance().getTime());
-            operationManager.updateOperation(listeColis.get(i).getOperation());
-            Log.d("result","valide colis : "+i);
-           /*if(i==0){
-                Log.d("result","update colis new date : "+Calendar.getInstance().getTime().toString() + " \n "+listeColis.get(i).getOperation().toString());
-                // pour les test
-                listeColis.get(i).getOperation().setDate_theorique(Calendar.getInstance().getTime());
-                operationManager.updateOperation(listeColis.get(i).getOperation());
-                Log.d("result","apres update colis new date : "+listeColis.get(i).getOperation().toString());
+           //valide l'operation en mettant une date reelle
+            Operation operation=  listeColis.get(i).getCurrentOperation();
+            operation.setDate_reelle(Calendar.getInstance().getTime());
 
+            operationManager.updateOperation(operation);
+            Log.d("resultat","valide colis : "+i);
 
-            }*/
+        }
+        if(listeColis.size()==0){
+            colis=null;
         }
 
 
@@ -156,31 +155,81 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         int nbLivraison=0;
         int nbReception=0;
         for(int i =0; i<listeColis.size();i++){
-            Log.d("result", "colis liste : "+listeColis.get(i).getId_colis());
 
-            if(listeColis.get(i).getOperation() instanceof Reception){
+            if(listeColis.get(i).getCurrentOperation() instanceof Reception){
                 nbReception++;
             }
             else{
                 nbLivraison++;
             }
         }
-        colis=listeColis.get(0);
-        tvClient.setText(" "+colis.getOperation().getClient().getNom_client());
-        tvAdresse.setText(" "+colis.getOperation().getAdresse().getRue());
-        tvVille.setText(" "+colis.getOperation().getAdresse().getVille());
 
-        tvTelephone.setText(colis.getOperation().getClient().getTelephone_client());
+        if(listeColis.size()>0){
+            colis=listeColis.get(0);
+            tvClient.setText(" "+colis.getCurrentOperation().getClient().getNom_client());
+            tvAdresse.setText(" "+colis.getCurrentOperation().getAdresse().getRue());
+            tvVille.setText(" "+colis.getCurrentOperation().getAdresse().getVille());
+            tvTelephone.setText(colis.getCurrentOperation().getClient().getTelephone_client());
+        }
+        else{
+            tvClient.setText(" Fin de la tournée ");
+            tvAdresse.setText("");
+            tvVille.setText("");
+            tvTelephone.setText("");
+        }
+
         tvNombre.setText(nbLivraison+ " colis à livrer \n"+ nbReception + " colis à récuperer");
 
-        Log.d("result", "nombre colis : "+listeColis.size());
+
         //faire chargement nouveau itineraire, tracage
 
-        Log.d("result", "colis 0: "+colis.toString());
-        Log.d("result", colis.getOperation().getAdresse().getLatlng().getLatitude()+" ");
+
 
 
     }
+
+    public void onMapReady(GoogleMap googleMap) {
+        //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        myMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        }
+        myMap.setMyLocationEnabled(true);
+
+        //affiche bouton + - zoom
+        myMap.getUiSettings().setZoomControlsEnabled(true);
+
+        //récupération position
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+        //affiche bousolle en haut à gauche
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);//locationManager.getBestProvider(criteria, false));
+        if (location != null) {
+            myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(18)                   // Sets the zoom
+                    // .bearing(90)                // Sets the orientation of the camera to east
+                    //.tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            Log.d("localisation", "location false : "+location.toString());
+
+        } else {
+            Log.d("location", "location false");
+        }
+
+        //lancement tracage itinéraire
+        if(colis!=null) {
+            connectAsyncTask test = new connectAsyncTask(makeURL(location.getLatitude(), location.getLongitude(),
+                    colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude()), this.getActivity());
+            test.execute();
+        }
+
+    }
+
 
     public String makeURL(double sourcelat, double sourcelog, double destlat, double destlog) {
         StringBuilder urlString = new StringBuilder();
@@ -244,23 +293,14 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
             String encodedString = overviewPolylines.getString("points");
             List<LatLng> list = decodePoly(encodedString);
-
+            myMap.clear();
             Polyline line = myMap.addPolyline(new PolylineOptions()
                     .addAll(list)
                     .width(10)
                     .color(Color.parseColor("#05b1fb"))//Google maps blue color
                     .geodesic(true)
             );
-           /*
-           for(int z = 0; z<list.size()-1;z++){
-                LatLng src= list.get(z);
-                LatLng dest= list.get(z+1);
-                Polyline line = mMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(src.latitude, src.longitude), new LatLng(dest.latitude,   dest.longitude))
-                .width(2)
-                .color(Color.BLUE).geodesic(true));
-            }
-           */
+
         } catch (JSONException e) {
 
         }
@@ -282,47 +322,6 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         super.onDestroyView();
     }
 
-
-    public void onMapReady(GoogleMap googleMap) {
-        {
-            //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-            myMap = googleMap;
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            }
-            myMap.setMyLocationEnabled(true);
-            //affiche bouton + - zoom
-            myMap.getUiSettings().setZoomControlsEnabled(true);
-
-
-
-            //récupération position
-            LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            //affiche bousolle en haut à gauche
-            location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-            if (location != null) {
-                myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
-
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                        .zoom(18)                   // Sets the zoom
-                        // .bearing(90)                // Sets the orientation of the camera to east
-                        //.tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                        .build();                   // Creates a CameraPosition from the builder
-                myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            } else {
-                Log.d("location", "location false");
-            }
-
-            connectAsyncTask test = new connectAsyncTask(makeURL((double)colis.getOperation().getAdresse().getLatlng().getLatitude(),(double)colis.getOperation().getAdresse().getLatlng().getLongitude(), 47.282928, 5.993042), this.getActivity());
-            test.execute();
-            //Log.d("resultats", makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()));
-           /* connectAsyncTask test = new connectAsyncTask(makeURL(47.282928, 5.993042, location.getLatitude(), location.getLongitude()), this.getActivity());
-            test.execute();*/
-
-        }
-    }
 
     @Override
     public void onPause() {

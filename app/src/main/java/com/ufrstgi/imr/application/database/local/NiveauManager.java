@@ -49,6 +49,7 @@ public class NiveauManager {
         // Ajout d'un enregistrement dans la table
 
         ContentValues values = new ContentValues();
+        values.put(KEY_ID_NIVEAU, niveau.getId_niveau());
         values.put(KEY_LIBELLE_NIVEAU, niveau.getLibelle_niveau());
         values.put(KEY_PRIX, niveau.getPrix());
 

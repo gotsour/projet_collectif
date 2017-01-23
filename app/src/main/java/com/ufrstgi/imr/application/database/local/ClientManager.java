@@ -173,4 +173,30 @@ public class ClientManager {
         c.close();
         return mesClient;
     }
+
+    public long addAllOfClient(Client client) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID_CLIENT, client.getId_client());
+        values.put(KEY_NOM_CLIENT, client.getNom_client());
+        values.put(KEY_TELEPHONE_CLIENT, client.getTelephone_client());
+
+        AdresseManager adresseManager = new AdresseManager(context);
+        adresseManager.open();
+        adresseManager.addAllOfAdresse(client.getAdresse());
+        adresseManager.close();
+
+        PersonneManager personneManager = new PersonneManager(context);
+        personneManager.open();
+        personneManager.addPersonne(client.getPersonne());
+        personneManager.close();
+
+        values.put(KEY_ID_ADRESSE, client.getAdresse().getId_adresse());
+        values.put(KEY_ID_PERSONNE, client.getPersonne().getId_personne());
+
+
+        // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
+        this.open();
+        return db.insert(TABLE_NAME,null,values);
+
+    }
 }

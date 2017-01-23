@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.ufrstgi.imr.application.object.Adresse;
 import com.ufrstgi.imr.application.object.Client;
@@ -77,13 +78,12 @@ public class OperationManager {
     public long addOperation(Operation operation) {
         // Ajout d'un enregistrement dans la table
 
-        String date_reelle;
         String date_theorique = df.format(operation.getDate_theorique());
+        String date_reelle;
         if(operation.getDate_reelle() != null)
             date_reelle = df.format(operation.getDate_reelle());
         else
             date_reelle="";
-
         String date_limite = df.format(operation.getDate_limite());
 
         ContentValues values = new ContentValues();
@@ -115,7 +115,6 @@ public class OperationManager {
         String date_limite = df.format(operation.getDate_limite());
 
         ContentValues values = new ContentValues();
-        values.put(KEY_ID_OPERATION, operation.getId_operation());
         values.put(KEY_DATE_THEORIQUE, date_theorique);
         values.put(KEY_DATE_REELLE, date_reelle);
         values.put(KEY_DATE_LIMITE, date_limite);
@@ -169,7 +168,11 @@ public class OperationManager {
             o.setId_operation(c.getInt(c.getColumnIndex(KEY_ID_OPERATION)));
             try {
                 date_theorique = df.parse(c.getString(c.getColumnIndex(KEY_DATE_THEORIQUE)));
-                date_reelle = df.parse(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
+                if(c.getString(c.getColumnIndex(KEY_DATE_REELLE)).length()>5){
+                    date_reelle = df.parse(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
+                }else{
+                    date_reelle=null;
+                }
                 date_limite = df.parse(c.getString(c.getColumnIndex(KEY_DATE_LIMITE)));
             } catch (ParseException pe) {
                 System.err.println("Erreur parsage date dans OperationManager");
@@ -203,7 +206,7 @@ public class OperationManager {
     public ArrayList<Operation> getAllOperation() {
         ArrayList<Operation> mesOperation = new ArrayList<>();
         // sélection de tous les enregistrements de la table
-        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME +" ORDER BY Date(substr(date_theorique, 7, 4) || '-' || substr(date_theorique, 1, 2) || '-' || substr(date_theorique, 4, 2) || substr(date_theorique, 11, 9)) ASC", null);
         Latlng latlng;
         Adresse adresse;
         Personne personne;
@@ -234,7 +237,12 @@ public class OperationManager {
                 o.setId_operation(c.getInt(c.getColumnIndex(KEY_ID_OPERATION)));
                 try {
                     date_theorique = df.parse(c.getString(c.getColumnIndex(KEY_DATE_THEORIQUE)));
-                    date_reelle = df.parse(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
+                    Log.d("result","date reelle :"+c.getString(c.getColumnIndex(KEY_DATE_REELLE))+"-");
+                    if(c.getString(c.getColumnIndex(KEY_DATE_REELLE)).length()>5){
+                        date_reelle = df.parse(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
+                    }else{
+                        date_reelle=null;
+                    }
                     date_limite = df.parse(c.getString(c.getColumnIndex(KEY_DATE_LIMITE)));
                 } catch (ParseException pe) {
                     System.err.println("Erreur parsage date dans OperationManager");
@@ -264,5 +272,46 @@ public class OperationManager {
         }
         c.close();
         return mesOperation;
+    }
+
+    public long addAllOfOperation(Operation operation) {
+        ClientManager clientManager = new ClientManager(context);
+        clientManager.open();
+        clientManager.addAllOfClient(operation.getClient());
+        clientManager.close();
+
+        AdresseManager adresseManager = new AdresseManager(context);
+        adresseManager.open();
+        adresseManager.addAllOfAdresse(operation.getAdresse());
+        adresseManager.close();
+
+        String date_theorique = df.format(operation.getDate_theorique());
+        String date_reelle;
+        if(operation.getDate_reelle() != null)
+            date_reelle = df.format(operation.getDate_reelle());
+        else
+            date_reelle="";
+        String date_limite = df.format(operation.getDate_limite());
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID_OPERATION, operation.getId_operation());
+        values.put(KEY_DATE_THEORIQUE, date_theorique);
+        values.put(KEY_DATE_REELLE, date_reelle);
+        values.put(KEY_DATE_LIMITE, date_limite);
+        if (operation instanceof Livraison) {
+            values.put(KEY_EST_LIVRAISON, "1");
+        } else if (operation instanceof Reception) {
+            values.put(KEY_EST_LIVRAISON, "0");
+        }
+        values.put(KEY_QUAI, operation.getQuai());
+        values.put(KEY_BATIMENT, operation.getBatiment());
+        values.put(KEY_ID_ADRESSE, operation.getAdresse().getId_adresse());
+        values.put(KEY_ID_CLIENT, operation.getClient().getId_client());
+
+
+        // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
+        this.open();
+        return db.insert(TABLE_NAME,null,values);
+
     }
 }

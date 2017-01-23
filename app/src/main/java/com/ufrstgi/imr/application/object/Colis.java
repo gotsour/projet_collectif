@@ -1,5 +1,7 @@
 package com.ufrstgi.imr.application.object;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -27,12 +29,20 @@ public class Colis {
     private float capacite_choc_colis;
 
     /* Clefs étrangères */
+    @SerializedName("id_niveau")
     private Niveau niveau;
-    private Operation operation;
+    @SerializedName("id_livraison")
+    private Operation livraison;
+    @SerializedName("id_reception")
+    private Operation reception;
+   // @SerializedName("id_tournee")
     private  Tournee tournee;
+    @SerializedName("id_client")
     private Client client;
 
-    public Colis(int id_colis, String adresse_mac, float poids_colis, float volume_colis, float niveau_batterie_colis, float temperature_colis, float capacite_choc_colis, Niveau niveau, Operation operation, Tournee tournee, Client client) {
+    private Operation currentOperation;
+
+    public Colis(int id_colis, String adresse_mac, float poids_colis, float volume_colis, float niveau_batterie_colis, float temperature_colis, float capacite_choc_colis, Niveau niveau, Operation livraison, Operation reception, Tournee tournee, Client client) {
         this.id_colis = id_colis;
         this.adresse_mac = adresse_mac;
         this.poids_colis = poids_colis;
@@ -41,11 +51,46 @@ public class Colis {
         this.temperature_colis = temperature_colis;
         this.capacite_choc_colis = capacite_choc_colis;
         this.niveau = niveau;
-        this.operation = operation;
+        this.livraison = livraison;
+        this.reception = reception;
         this.tournee = tournee;
         this.client = client;
     }
 
+    public Colis() {
+    }
+
+    @Override
+    public String toString() {
+        return "Colis{" +
+                "id_colis=" + id_colis +
+                ", adresse_mac='" + adresse_mac + '\'' +
+                ", poids_colis=" + poids_colis +
+                ", volume_colis=" + volume_colis +
+                ", niveau_batterie_colis=" + niveau_batterie_colis +
+                ", temperature_colis=" + temperature_colis +
+                ", capacite_choc_colis=" + capacite_choc_colis +
+                ", niveau=" + niveau +
+                ", livraison=" + livraison +
+                ", reception=" + reception +
+                ", tournee=" + tournee +
+                ", client=" + client +
+                '}';
+    }
+
+    public Operation getCurrentOperation(){
+        //recherche prochaine opération
+        //todo voir si ok avec test sur data
+        if(reception.getDate_reelle()== null && livraison.getDate_theorique().after(reception.getDate_theorique())){
+            Log.d("resultat", "current operation reception : ");//+reception.toString());
+            return reception;
+        }else{
+            Log.d("resultat", "current operation livraison : ");//+livraison.toString());
+            return livraison;
+        }
+
+
+    }
     public int getId_colis() {
         return id_colis;
     }
@@ -54,20 +99,20 @@ public class Colis {
         this.id_colis = id_colis;
     }
 
-    public String getAdresse_mac() {
-        return adresse_mac;
-    }
-
-    public void setAdresse_mac(String adresse_mac) {
-        this.adresse_mac = adresse_mac;
-    }
-
     public float getPoids_colis() {
         return poids_colis;
     }
 
     public void setPoids_colis(float poids_colis) {
         this.poids_colis = poids_colis;
+    }
+
+    public String getAdresse_mac() {
+        return adresse_mac;
+    }
+
+    public void setAdresse_mac(String adresse_mac) {
+        this.adresse_mac = adresse_mac;
     }
 
     public float getVolume_colis() {
@@ -110,12 +155,20 @@ public class Colis {
         this.niveau = niveau;
     }
 
-    public Operation getOperation() {
-        return operation;
+    public Operation getLivraison() {
+        return livraison;
     }
 
-    public void setOperation(Operation operation) {
-        this.operation = operation;
+    public void setLivraison(Operation livraison) {
+        this.livraison = livraison;
+    }
+
+    public Operation getReception() {
+        return reception;
+    }
+
+    public void setReception(Operation reception) {
+        this.reception = reception;
     }
 
     public Tournee getTournee() {
@@ -132,22 +185,5 @@ public class Colis {
 
     public void setClient(Client client) {
         this.client = client;
-    }
-
-    @Override
-    public String toString() {
-        return "Colis{\n" +
-                "\tid_colis=" + id_colis + "\n" +
-                "\tadresse_mac=" + adresse_mac + "\n" +
-                "\tpoids_colis=" + poids_colis + "\n" +
-                "\tvolume_colis=" + volume_colis + "\n" +
-                "\tniveau_batterie_colis=" + niveau_batterie_colis + "\n" +
-                "\ttemperature_colis=" + temperature_colis + "\n" +
-                "\tcapacite_choc_colis=" + capacite_choc_colis + "\n" +
-                "\tniveau=" + niveau + "\n" +
-                "\toperation=" + operation + "\n" +
-                "\ttournee=" + tournee + "\n" +
-                "\tclient=" + client + "\n" +
-                "}\n";
     }
 }

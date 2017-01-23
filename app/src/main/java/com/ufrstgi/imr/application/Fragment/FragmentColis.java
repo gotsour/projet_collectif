@@ -53,6 +53,8 @@ public class FragmentColis extends Fragment{
         mesColis = colisManager.getAllColis();
         colisManager.close();
 
+        Log.d("result","all my colis : "+mesColis.size());
+
         //Log.d("Test", mesColis.toString());
 
         expandableListDetail = new HashMap<String, List<String>>();
@@ -60,14 +62,25 @@ public class FragmentColis extends Fragment{
             List<String> list = new ArrayList<String>();
             list.add(mesColis.get(i).getPoids_colis()+" kg");
             list.add(mesColis.get(i).getAdresse_mac());
-            list.add(mesColis.get(i).getOperation().getAdresse().getRue() +
-                    ", "+mesColis.get(i).getOperation().getAdresse().getCode_postal() +
-                    ", "+mesColis.get(i).getOperation().getAdresse().getVille()
+            //livraison
+            list.add("livraison : "+mesColis.get(i).getLivraison().getAdresse().getRue() +
+                    ", "+mesColis.get(i).getLivraison().getAdresse().getCode_postal() +
+                    ", "+mesColis.get(i).getLivraison().getAdresse().getVille()
             );
-            list.add(mesColis.get(i).getOperation().getClient().getPersonne().getNom_personne() +
-                    " "+mesColis.get(i).getOperation().getClient().getPersonne().getPrenom_personne()
+            list.add(mesColis.get(i).getLivraison().getClient().getPersonne().getNom_personne() +
+                    " "+mesColis.get(i).getLivraison().getClient().getPersonne().getPrenom_personne()
             );
-            list.add(mesColis.get(i).getOperation().getClient().getPersonne().getTelephone_personne());
+            list.add(mesColis.get(i).getLivraison().getClient().getPersonne().getTelephone_personne());
+
+            //reception
+            list.add("reception : "+mesColis.get(i).getReception().getAdresse().getRue() +
+                    ", "+mesColis.get(i).getReception().getAdresse().getCode_postal() +
+                    ", "+mesColis.get(i).getReception().getAdresse().getVille()
+            );
+            list.add(mesColis.get(i).getReception().getClient().getPersonne().getNom_personne() +
+                    " "+mesColis.get(i).getReception().getClient().getPersonne().getPrenom_personne()
+            );
+            list.add(mesColis.get(i).getReception().getClient().getPersonne().getTelephone_personne());
 
             expandableListDetail.put("Colis num "+mesColis.get(i).getId_colis(), list);
         }

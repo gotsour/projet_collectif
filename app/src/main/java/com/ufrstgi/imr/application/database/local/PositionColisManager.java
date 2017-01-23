@@ -120,11 +120,12 @@ public class PositionColisManager {
         Adresse adresse = new Adresse(0,"",0,"","",latlng);
         Personne personne = new Personne(0,"","","");
         Client client = new Client(0,"","",adresse,personne);
-        Operation operation = null;
+        Operation livraison = null;
+        Operation reception = null;
         Chauffeur chauffeur = new Chauffeur("","",0,personne);
         Camion camion = new Camion("","",0,0,0);
-        Tournee tournee = new Tournee(0,chauffeur,camion);
-        Colis colis = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
+        Tournee tournee = new Tournee(0,null,chauffeur,camion);
+        Colis colis = new Colis(0,"",0,0,0,0,0,niveau,livraison,reception,tournee,client);
         Date date_heure_colis = new Date();
         PositionColis p = new PositionColis(0,date_heure_colis,colis,latlng);
 
@@ -167,7 +168,8 @@ public class PositionColisManager {
         Adresse adresse;
         Personne personne;
         Client client;
-        Operation operation;
+        Operation livraison;
+        Operation reception;
         Chauffeur chauffeur;
         Camion camion;
         Tournee tournee;
@@ -182,11 +184,12 @@ public class PositionColisManager {
                 adresse = new Adresse(0,"",0,"","",latlng);
                 personne = new Personne(0,"","","");
                 client = new Client(0,"","",adresse,personne);
-                operation = null;
+                livraison = null;
+                reception = null;
                 chauffeur = new Chauffeur("","",0,personne);
                 camion = new Camion("","",0,0,0);
-                tournee = new Tournee(0,chauffeur,camion);
-                colis = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
+                tournee = new Tournee(0,null,chauffeur,camion);
+                colis = new Colis(0,"",0,0,0,0,0,niveau,livraison,reception,tournee,client);
                 date_heure_colis = new Date();
                 p = new PositionColis(0,date_heure_colis,colis,latlng);
 

@@ -1,11 +1,12 @@
 package com.ufrstgi.imr.application;
 
-import android.*;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -17,31 +18,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.ufrstgi.imr.application.Fragment.FragmentColis;
 import com.ufrstgi.imr.application.Fragment.FragmentFeuilleRoute;
 import com.ufrstgi.imr.application.Fragment.FragmentNavigation;
-import com.ufrstgi.imr.application.activity.Background;
-import com.ufrstgi.imr.application.activity.BackgroundTasks;
 import com.ufrstgi.imr.application.activity.ServerHTTP;
 import com.ufrstgi.imr.application.activity.SettingsActivity;
 import com.ufrstgi.imr.application.database.local.*;
-import com.ufrstgi.imr.application.database.server.MyApiEndpointInterface;
-import com.ufrstgi.imr.application.database.server.OperationSerializer;
+import com.ufrstgi.imr.application.database.server.Communication;
 import com.ufrstgi.imr.application.object.*;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -51,6 +42,10 @@ public class MainActivity extends AppCompatActivity
     List<Colis> mesColis;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    String idUSer;
+    TextView tvIdChauffeur;
+    TextView tvIdCamion;
+    Tournee tournee;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +71,37 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        deleteDatabase("db.sqlite");
-        initBDDTest();
+        tvIdChauffeur = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvIdChauffeur);
+        tvIdCamion = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvIdCamion);
+
+        idUSer="chauffeur0001";
+
+        //todo à mettre en place, pour cas ou pas encore app installé ->sans bdd
+        /*TourneeManager tourneeManager = new TourneeManager(this);
+        tourneeManager.open();
+        Tournee tournee=tourneeManager.getTournee();
+        tourneeManager.close();
+
+
+         if(tournee==null){
+             //si premier chargement lancer avec id user saisie
+             idUSer="chauffeur0001";
+            // tvIdChauffeur.setText(idUSer);
+            // tvIdCamion.setText("Mon camion");
+             SynchronizeFromServer sync = new SynchronizeFromServer(this);
+             sync.execute();
+
+         }else{
+             idUSer = tournee.getChauffeur().getId_chauffeur();
+             tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
+             tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
+         }*/
+
+
+
 
         // Lancement du background toute les x intervalles de temps
-        Background background = new Background(this);
+       // Background background = new Background(this);
     }
 
     @Override
@@ -93,6 +114,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle fragment_navigation view item clicks here.
@@ -100,40 +124,27 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_gallery) {
+            Log.d("resultat", "sync.synchronizeToServer ");
+
+
+            Colis colis0 = new Colis(3,"Mac",1782,0.25f,47,22,80,null,null,null,null,null);
+            Latlng latlng = new Latlng(1,47.481991f, 6.356643f);
+            PositionColis positionColis = new PositionColis(1,Calendar.getInstance().getTime(),colis0,latlng);
+
+            PositionColisManager positionColisManager = new PositionColisManager(this);
+            positionColisManager.open();
+            positionColisManager.addPositionColis(positionColis);
+            positionColisManager.close();
+
+            Communication sync=new Communication(this,idUSer);
+            sync.synchronizeToServer();
             viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
+            Log.d("resultat", "reload bdd ");
+            deleteDatabase("db.sqlite");
+            Communication sync=new Communication(this,idUSer);
+            sync.synchronizeFromServer();
             viewPager.setCurrentItem(2);
-
-            Gson gson = new GsonBuilder()
-                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                    .registerTypeAdapter(Operation.class, new OperationSerializer())
-                    .create();
-
-            Retrofit retrofit = new Retrofit.Builder()
-                   // .baseUrl("http://10.0.2.2/API/example/")
-                    .baseUrl("http://ceram.pu-pm.univ-fcomte.fr:5022/API/example/")
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build();
-
-
-            MyApiEndpointInterface apiService = retrofit.create(MyApiEndpointInterface.class);
-
-            Call<List<Colis>> call0 = apiService.getAllColis("2");
-
-            call0.enqueue(new Callback<List<Colis>>() {
-                @Override
-                public void onResponse(Call<List<Colis>> call, Response<List<Colis>> response) {
-                    int statusCode = response.code();
-                    mesColis = response.body();
-                    Log.d("resultats", "colis recu : "+mesColis.toString());
-
-                }
-
-                @Override
-                public void onFailure(Call<List<Colis>> call, Throwable t) {
-                    Log.d("resultats", "failed onfailure "+ t.getMessage());
-                }
-            });
 
         } else if (id == R.id.nav_manage) {
             Intent i = new Intent(this, SettingsActivity.class);
@@ -206,7 +217,7 @@ public class MainActivity extends AppCompatActivity
         Adresse adresse_client = new Adresse(1,"6 rue Maurice Ravel",70400,"Hericourt","France",latlng);
         Adresse adresse_operation = new Adresse(2,"9 rue des Alouettes",90782,"Belfort","France",latlng2);
         PositionChauffeur positionChauffeur = new PositionChauffeur(0,today,chauffeur,latlng);
-        Tournee tournee = new Tournee(1,chauffeur,camion);
+        Tournee tournee = new Tournee(1,today,chauffeur,camion);
 
         Client client = new Client(1,"Dufay Cyril","0621065807",adresse_client,contact_client);
         Livraison livraison = new Livraison(1, today,null,today,"9B","Nodier",adresse_operation, client);
@@ -214,10 +225,10 @@ public class MainActivity extends AppCompatActivity
         Reception reception = new Reception(2,today,null,today,"9B","Nodier",adresse_client, client);
         Reception reception2 = new Reception(4,today,null,today,"9B","Nodier",adresse_client, client);
 
-        Colis colis0 = new Colis(1,"Mac",1782,0.25f,47,22,80,niveau,livraison,tournee,client);
-        Colis colis1 = new Colis(2,"Mac",156462,0.25f,47,22,80,niveau,reception,tournee,client);
-        Colis colis2 = new Colis(3,"Mac",162,0.25f,47,22,80,niveau,livraison2,tournee,client);
-        Colis colis3 = new Colis(4,"Mac",11435,0.25f,47,22,80,niveau,reception2,tournee,client);
+        Colis colis0 = new Colis(1,"Mac",1782,0.25f,47,22,80,niveau,livraison,reception,tournee,client);
+        Colis colis1 = new Colis(2,"Mac",156462,0.25f,47,22,80,niveau,livraison2,reception,tournee,client);
+        Colis colis2 = new Colis(3,"Mac",162,0.25f,47,22,80,niveau,livraison2,reception2,tournee,client);
+        Colis colis3 = new Colis(4,"Mac",11435,0.25f,47,22,80,niveau,livraison,reception2,tournee,client);
         PositionColis positionColis = new PositionColis(1,today,colis0,latlng);
 
         NiveauManager niveauManager = new NiveauManager(this);
@@ -294,5 +305,46 @@ public class MainActivity extends AppCompatActivity
         positionColisManager.close();
     }
 
+    public class SynchronizeFromServer extends AsyncTask<Void, Void, Void> {
 
-}
+        Context context;
+
+        public SynchronizeFromServer(Context context) {
+            this.context = context;
+        }
+
+        //private final ProgressDialog dialog = new ProgressDialog(context);
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+          /*  dialog.setMessage("chargement des données ...");
+            dialog.show();
+            dialog.setCanceledOnTouchOutside(false);*/
+        }
+
+        @Override
+        protected Void doInBackground(Void[] params) {
+            Communication sync=new Communication(context,idUSer);
+            sync.synchronizeFromServer();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void message) {
+            super.onPostExecute(message);
+            TourneeManager tourneeManager = new TourneeManager(context);
+            tourneeManager.open();
+            tournee=tourneeManager.getTournee();
+            tourneeManager.close();
+            Log.d("retour", " retour requete : "+tournee.toString());
+            idUSer = tournee.getChauffeur().getId_chauffeur();
+            tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
+            tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
+
+           // this.dialog.dismiss();
+        }
+    }
+
+
+
+    }

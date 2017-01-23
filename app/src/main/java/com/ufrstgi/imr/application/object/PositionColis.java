@@ -18,6 +18,7 @@ public class PositionColis {
     @SerializedName("date_heure_colis")
     private Date date_heure_colis;
     @SerializedName("id_colis")
+    private int idColis;
     private Colis colis;
     @SerializedName("id_latlng")
     private Latlng latlng;
@@ -27,6 +28,14 @@ public class PositionColis {
         this.date_heure_colis = date_heure_colis;
         this.colis = colis;
         this.latlng = latlng;
+    }
+
+    public int getIdColis() {
+        return idColis;
+    }
+
+    public void setIdColis(int idColis) {
+        this.idColis = idColis;
     }
 
     public int getId_position_colis() {

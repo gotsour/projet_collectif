@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Personne;
@@ -103,7 +104,6 @@ public class ChauffeurManager {
             ch.setId_chauffeur(c.getString(c.getColumnIndex(KEY_ID_CHAUFFEUR)));
             ch.setMot_de_passe(c.getString(c.getColumnIndex(KEY_MOT_DE_PASSE)));
             ch.setNiveau_batterie_terminal(c.getFloat(c.getColumnIndex(KEY_NIVEAU_BATTERIE_TERMINAL)));
-
             int id_personne = c.getInt(c.getColumnIndex(KEY_ID_PERSONNE));
             PersonneManager personneManager = new PersonneManager(context);
             personneManager.open();
@@ -145,5 +145,25 @@ public class ChauffeurManager {
         }
         c.close();
         return mesChauffeur;
+    }
+
+    public long addAllOfChauffeur(Chauffeur chauffeur) {
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_ID_CHAUFFEUR, chauffeur.getId_chauffeur());
+        values.put(KEY_MOT_DE_PASSE, chauffeur.getMot_de_passe());
+        values.put(KEY_NIVEAU_BATTERIE_TERMINAL, chauffeur.getNiveau_batterie_terminal());
+
+        PersonneManager personneManager = new PersonneManager(context);
+        personneManager.open();
+        personneManager.addPersonne(chauffeur.getPersonne());
+        personneManager.close();
+
+        values.put(KEY_ID_PERSONNE, chauffeur.getPersonne().getId_personne());
+
+        // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
+        this.open();
+
+        return db.insert(TABLE_NAME,null,values);
     }
 }

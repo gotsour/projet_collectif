@@ -60,6 +60,7 @@ public class AdresseManager {
         // Ajout d'un enregistrement dans la table
 
         ContentValues values = new ContentValues();
+        values.put(KEY_ID_ADRESSE, adresse.getId_adresse());
         values.put(KEY_RUE, adresse.getRue());
         values.put(KEY_CODE_POSTAL, adresse.getCode_postal());
         values.put(KEY_VILLE, adresse.getVille());
@@ -155,4 +156,27 @@ public class AdresseManager {
         c.close();
         return mesAdresse;
     }
+
+    public long addAllOfAdresse(Adresse adresse) {
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID_ADRESSE, adresse.getId_adresse());
+        values.put(KEY_RUE, adresse.getRue());
+        values.put(KEY_CODE_POSTAL, adresse.getCode_postal());
+        values.put(KEY_VILLE, adresse.getVille());
+        values.put(KEY_PAYS, adresse.getPays());
+
+        LatlngManager latlongManager = new LatlngManager(context);
+        latlongManager.open();
+        latlongManager.addLatlng(adresse.getLatlng());
+        latlongManager.close();
+
+        values.put(KEY_ID_LATLNG, adresse.getLatlng().getId_latlng());
+
+        // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
+        this.open();
+        return db.insert(TABLE_NAME,null,values);
+    }
+
+
 }

@@ -38,7 +38,8 @@ public class ColisManager {
     public static final String KEY_TEMPERATURE_COLIS= "temperature_colis";
     public static final String KEY_CAPACITE_CHOC_COLIS= "capacite_choc_colis";
     public static final String KEY_ID_NIVEAU= "id_niveau";
-    public static final String KEY_ID_OPERATION= "id_operation";
+    public static final String KEY_ID_LIVRAISON= "id_livraison";
+    public static final String KEY_ID_RECEPTION= "id_reception";
     public static final String KEY_ID_TOURNEE= "id_tournee";
     public static final String KEY_ID_CLIENT= "id_client";
 
@@ -52,11 +53,13 @@ public class ColisManager {
                     " "+KEY_TEMPERATURE_COLIS+" REAL," +
                     " "+KEY_CAPACITE_CHOC_COLIS+" REAL," +
                     " "+KEY_ID_NIVEAU+" INTEGER," +
-                    " "+KEY_ID_OPERATION+" INTEGER," +
+                    " "+KEY_ID_LIVRAISON+" INTEGER," +
+                    " "+KEY_ID_RECEPTION+" INTEGER," +
                     " "+KEY_ID_TOURNEE+" INTEGER," +
                     " "+KEY_ID_CLIENT+" INTEGER," +
                     " FOREIGN KEY("+KEY_ID_NIVEAU+") REFERENCES niveau("+KEY_ID_NIVEAU+")," +
-                    " FOREIGN KEY("+KEY_ID_OPERATION+") REFERENCES operation("+KEY_ID_OPERATION+")," +
+                    " FOREIGN KEY("+KEY_ID_LIVRAISON+") REFERENCES operation("+KEY_ID_LIVRAISON+")," +
+                    " FOREIGN KEY("+KEY_ID_RECEPTION+") REFERENCES operation("+KEY_ID_RECEPTION+")," +
                     " FOREIGN KEY("+KEY_ID_TOURNEE+") REFERENCES tournee("+KEY_ID_TOURNEE+")," +
                     " FOREIGN KEY("+KEY_ID_CLIENT+") REFERENCES client("+KEY_ID_CLIENT+") " +
                     ");";
@@ -79,6 +82,52 @@ public class ColisManager {
         db.close();
     }
 
+    public long addAllOfColis(Colis colis) {
+        // Ajout d'un enregistrement dans la table
+        this.close();
+        NiveauManager niveauManager = new NiveauManager(context);
+        niveauManager.open();
+        niveauManager.addNiveau(colis.getNiveau());
+        niveauManager.close();
+
+        OperationManager operationManager= new OperationManager(context);
+        operationManager.open();
+        operationManager.addAllOfOperation(colis.getLivraison());
+        operationManager.addAllOfOperation(colis.getReception());
+        operationManager.close();
+
+        /*TourneeManager tourneeManager = new TourneeManager(context);
+        tourneeManager.open();
+        long idTournee = tourneeManager.addAllOfTournee(colis.getTournee());
+        tourneeManager.close();*/
+        long idTournee=colis.getTournee().getId_tournee();
+
+        ClientManager clientManager = new ClientManager(context);
+        clientManager.open();
+        clientManager.addAllOfClient(colis.getClient());
+        clientManager.close();
+
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID_COLIS, colis.getId_colis());
+        values.put(KEY_ADRESSE_MAC, colis.getAdresse_mac());
+        values.put(KEY_POIDS_COLIS, colis.getPoids_colis());
+        values.put(KEY_VOLUME_COLIS, colis.getVolume_colis());
+        values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
+        values.put(KEY_TEMPERATURE_COLIS, colis.getTemperature_colis());
+        values.put(KEY_CAPACITE_CHOC_COLIS, colis.getCapacite_choc_colis());
+        values.put(KEY_ID_NIVEAU, colis.getNiveau().getId_niveau());
+        values.put(KEY_ID_LIVRAISON, colis.getLivraison().getId_operation());
+        values.put(KEY_ID_RECEPTION, colis.getReception().getId_operation());
+        values.put(KEY_ID_TOURNEE, idTournee);
+        values.put(KEY_ID_CLIENT, colis.getClient().getId_client());
+
+
+        // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
+        this.open();
+        return db.insert(TABLE_NAME,null,values);
+    }
+
     public long addColis(Colis colis) {
         // Ajout d'un enregistrement dans la table
 
@@ -91,7 +140,8 @@ public class ColisManager {
         values.put(KEY_TEMPERATURE_COLIS, colis.getTemperature_colis());
         values.put(KEY_CAPACITE_CHOC_COLIS, colis.getCapacite_choc_colis());
         values.put(KEY_ID_NIVEAU, colis.getNiveau().getId_niveau());
-        values.put(KEY_ID_OPERATION, colis.getOperation().getId_operation());
+        values.put(KEY_ID_LIVRAISON, colis.getLivraison().getId_operation());
+        values.put(KEY_ID_RECEPTION, colis.getReception().getId_operation());
         values.put(KEY_ID_TOURNEE, colis.getTournee().getId_tournee());
         values.put(KEY_ID_CLIENT, colis.getClient().getId_client());
 
@@ -113,11 +163,12 @@ public class ColisManager {
         values.put(KEY_TEMPERATURE_COLIS, colis.getTemperature_colis());
         values.put(KEY_CAPACITE_CHOC_COLIS, colis.getCapacite_choc_colis());
         values.put(KEY_ID_NIVEAU, colis.getNiveau().getId_niveau());
-        values.put(KEY_ID_OPERATION, colis.getOperation().getId_operation());
+        values.put(KEY_ID_LIVRAISON, colis.getLivraison().getId_operation());
+        values.put(KEY_ID_RECEPTION, colis.getReception().getId_operation());
         values.put(KEY_ID_TOURNEE, colis.getTournee().getId_tournee());
         values.put(KEY_ID_CLIENT, colis.getClient().getId_client());
 
-        String where = KEY_ID_OPERATION+" = ?";
+        String where = KEY_ID_COLIS+" = ?";
         String[] whereArgs = {colis.getId_colis()+""};
 
         return db.update(TABLE_NAME, values, where, whereArgs);
@@ -141,11 +192,12 @@ public class ColisManager {
         Adresse adresse = new Adresse(0,"",0,"","",latlng);
         Personne personne = new Personne(0,"","","");
         Client client = new Client(0,"","",adresse,personne);
-        Operation operation = null;
+        Operation livraison = null;
+        Operation reception = null;
         Chauffeur chauffeur = new Chauffeur("","",0,personne);
         Camion camion = new Camion("","",0,0,0);
-        Tournee tournee = new Tournee(0,chauffeur,camion);
-        Colis co = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
+        Tournee tournee = new Tournee(0,null,chauffeur,camion);
+        Colis co = new Colis(0,"",0,0,0,0,0,niveau,livraison,reception,tournee,client);
 
         Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE "+KEY_ID_COLIS+"="+id, null);
         if (c.moveToFirst()) {
@@ -164,12 +216,18 @@ public class ColisManager {
             niveauManager.close();
             co.setNiveau(niveau);
 
-            int id_operation = c.getInt(c.getColumnIndex(KEY_ID_OPERATION));
+            int id_livraison = c.getInt(c.getColumnIndex(KEY_ID_LIVRAISON));
             OperationManager operationManager = new OperationManager(context);
             operationManager.open();
-            operation = operationManager.getOperation(id_operation);
+            livraison = operationManager.getOperation(id_livraison);
             operationManager.close();
-            co.setOperation(operation);
+            co.setLivraison(livraison);
+
+            int id_reception = c.getInt(c.getColumnIndex(KEY_ID_RECEPTION));
+            operationManager.open();
+            reception = operationManager.getOperation(id_reception);
+            operationManager.close();
+            co.setReception(reception);
 
             int id_tournee = c.getInt(c.getColumnIndex(KEY_ID_TOURNEE));
             TourneeManager tourneeManager = new TourneeManager(context);
@@ -194,17 +252,24 @@ public class ColisManager {
     public ArrayList<Colis> getNextColis(int id) {
         ArrayList<Colis> mesColis = new ArrayList<Colis>();
         String date = "";
-        Cursor c = db.rawQuery("SELECT o.date_theorique  FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
-                " ORDER BY date(o.date_theorique) ASC Limit 1", null);
+
+        // todo ajouter date_reele=null
+        Cursor c = db.rawQuery("SELECT o.date_theorique  FROM colis c, operation o WHERE c.id_tournee=" + id + " and (c.id_reception=o.id_operation " +
+                "or c.id_livraison=o.id_operation) and o.heure_relle_operation =''" +
+                 " ORDER BY Date(substr(date_theorique, 7, 4) || '-' || substr(date_theorique, 1, 2) || '-' || substr(date_theorique, 4, 2) || substr(date_theorique, 11, 9)) ASC Limit 1", null);
         if (c.moveToFirst()) {
             date = c.getString(c.getColumnIndex("date_theorique"));
         }
+        Log.d("resultat","date obetenu pour la 1ere requete colis : "+date + " taille reponse : "+c.getCount());
 
 
 
-        c = db.rawQuery("SELECT * FROM colis c, operation o WHERE c.id_tournee=" + id + " and c.id_operation=o.id_operation " +
-                " and o.date_theorique='" + date + "'", null);
+        c = db.rawQuery("SELECT * FROM colis c, operation o WHERE c.id_tournee=" + id + " and (c.id_reception=o.id_operation " +
+                        "or c.id_livraison=o.id_operation)" +
+                " and o.date_theorique='" + date+"' and o.heure_relle_operation='' group by c.id_colis "
+                , null);
 
+        Log.d("resultat","date obetenu pour la 2eme requete colis : "+date + " taille reponse : "+c.getCount());
         mesColis = instancieColis(c);
         c.close();
         return mesColis;
@@ -232,7 +297,8 @@ public class ColisManager {
 
     public ArrayList<Colis> getAllColis() {
         ArrayList<Colis> mesColis;
-        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM colis ", null);
+        Log.d("result","all my colis cursor size : "+c.getCount());
         mesColis = instancieColis(c);
         c.close();
         return mesColis;
@@ -246,7 +312,8 @@ public class ColisManager {
         Adresse adresse;
         Personne personne;
         Client client;
-        Operation operation;
+        Operation livraison;
+        Operation reception;
         Chauffeur chauffeur;
         Camion camion;
         Tournee tournee;
@@ -259,11 +326,12 @@ public class ColisManager {
                 adresse = new Adresse(0,"",0,"","",latlng);
                 personne = new Personne(0,"","","");
                 client = new Client(0,"","",adresse,personne);
-                operation = null;
+                livraison = null;
+                reception = null;
                 chauffeur = new Chauffeur("","",0,personne);
                 camion = new Camion("","",0,0,0);
-                tournee = new Tournee(0,chauffeur,camion);
-                co = new Colis(0,"",0,0,0,0,0,niveau,operation,tournee,client);
+                tournee = new Tournee(0,null,chauffeur,camion);
+                co = new Colis(0,"",0,0,0,0,0,niveau,livraison, reception,tournee,client);
 
                 co.setId_colis(c.getInt(c.getColumnIndex(KEY_ID_COLIS)));
                 co.setAdresse_mac(c.getString(c.getColumnIndex(KEY_ADRESSE_MAC)));
@@ -280,12 +348,18 @@ public class ColisManager {
                 niveauManager.close();
                 co.setNiveau(niveau);
 
-                int id_operation = c.getInt(c.getColumnIndex(KEY_ID_OPERATION));
+                int id_livraison = c.getInt(c.getColumnIndex(KEY_ID_LIVRAISON));
                 OperationManager operationManager = new OperationManager(context);
                 operationManager.open();
-                operation = operationManager.getOperation(id_operation);
+                livraison = operationManager.getOperation(id_livraison);
                 operationManager.close();
-                co.setOperation(operation);
+                co.setLivraison(livraison);
+
+                int id_reception = c.getInt(c.getColumnIndex(KEY_ID_RECEPTION));
+                operationManager.open();
+                reception = operationManager.getOperation(id_reception);
+                operationManager.close();
+                co.setReception(reception);
 
                 int id_tournee = c.getInt(c.getColumnIndex(KEY_ID_TOURNEE));
                 TourneeManager tourneeManager = new TourneeManager(context);

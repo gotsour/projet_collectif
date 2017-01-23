@@ -52,6 +52,8 @@ public class PersonneManager {
         // Ajout d'un enregistrement dans la table
 
         ContentValues values = new ContentValues();
+
+        values.put(KEY_ID_PERSONNE, personne.getId_personne());
         values.put(KEY_NOM_PERSONNE, personne.getNom_personne());
         values.put(KEY_PRENOM_PERSONNE, personne.getPrenom_personne());
         values.put(KEY_TELEPHONE_PERSONNE, personne.getTelephone_personne());
@@ -122,4 +124,5 @@ public class PersonneManager {
         c.close();
         return mesPersonne;
     }
+
 }

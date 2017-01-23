@@ -1,8 +1,11 @@
 package com.ufrstgi.imr.application.database.server;
 
 
+import com.ufrstgi.imr.application.object.ArrayPosition;
 import com.ufrstgi.imr.application.object.Colis;
 import com.ufrstgi.imr.application.object.Niveau;
+import com.ufrstgi.imr.application.object.PositionColis;
+import com.ufrstgi.imr.application.object.Tournee;
 
 import java.util.List;
 import retrofit2.Call;
@@ -16,10 +19,11 @@ import retrofit2.http.Path;
  */
 public interface MyApiEndpointInterface {
 
-    //niveaux
-    @GET("niveau/{niveau}")
-    Call<Niveau> getNiveau(@Path("niveau") int idNiveau);
+    //tournee
+    @GET("tournee/{idChauffeur}")
+    Call<Tournee> getTournee(@Path("idChauffeur") String idChauffeur);
 
+    //niveaux
     @GET("niveaux")
     Call<List<Niveau>> getAllNiveaux();
 
@@ -37,6 +41,6 @@ public interface MyApiEndpointInterface {
     /*@GET("group/{id}/users")
     Call<List<Niveau>> groupList(@Path("id") int groupId, @Query("sort") String sort);*/
 
-    @POST("niveau")
-    Call<Niveau> createUser(@Body Niveau niveau);
+    @POST("positionColis")
+    Call<PositionColis> createPositionColis(@Body PositionColis position);
 }

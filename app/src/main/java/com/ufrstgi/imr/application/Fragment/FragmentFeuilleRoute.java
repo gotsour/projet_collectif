@@ -54,12 +54,17 @@ public class FragmentFeuilleRoute extends Fragment {
         operationManager.close();
 
         SimpleDateFormat formater = formater = new SimpleDateFormat("dd/MM/yy à H:m:s");
-
+        String dateReellle="";
         expandableListDetail = new HashMap<String, List<String>>();
         for (int i = 0 ; i < mesOperations.size() ; i++) {
             List<String> list = new ArrayList<String>();
             list.add("Date théorique : "+formater.format(mesOperations.get(i).getDate_theorique()));
-            list.add("Date réelle : "+formater.format(mesOperations.get(i).getDate_reelle()));
+
+            //verification date
+            if(mesOperations.get(i).getDate_reelle()!=null)dateReellle=formater.format(mesOperations.get(i).getDate_reelle());
+            else dateReellle="";
+
+            list.add("Date réelle : " + dateReellle);
             list.add("Date limite : "+formater.format(mesOperations.get(i).getDate_limite()));
 
             list.add("Batiment : "+mesOperations.get(i).getBatiment());
@@ -77,7 +82,7 @@ public class FragmentFeuilleRoute extends Fragment {
             if (mesOperations.get(i) instanceof Livraison) {
                 expandableListDetail.put("Livraison : étape num "+mesOperations.get(i).getId_operation(), list);
             } else if (mesOperations.get(i) instanceof Reception) {
-                expandableListDetail.put("Récpection : étape num "+mesOperations.get(i).getId_operation(), list);
+                expandableListDetail.put("Réception : étape num "+mesOperations.get(i).getId_operation(), list);
             }
         }
 

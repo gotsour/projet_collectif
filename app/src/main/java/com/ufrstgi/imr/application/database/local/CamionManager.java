@@ -52,8 +52,11 @@ public class CamionManager {
 
     public long addCamion(Camion camion) {
         // Ajout d'un enregistrement dans la table
-
         ContentValues values = new ContentValues();
+
+        if(camion.getId_camion()!=null)
+            values.put(KEY_ID_CAMION, camion.getId_camion());
+
         values.put(KEY_NOM_CAMION, camion.getNom_camion());
         values.put(KEY_VOLUME_CAMION, camion.getVolume_camion());
         values.put(KEY_TAILLE_CAMION, camion.getTaille_camion());
