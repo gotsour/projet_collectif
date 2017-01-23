@@ -14,6 +14,7 @@ import com.ufrstgi.imr.application.object.Colis;
 import com.ufrstgi.imr.application.object.PositionColis;
 import com.ufrstgi.imr.application.object.Tournee;
 
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,6 +92,42 @@ public class Communication {
 
             }
         });
+    }
+
+    public void synchronizeFromServerSynchrone(){
+        Log.d("retour", " debut synchronize : "+idUser);
+        Call<Tournee> call0 = apiService.getTournee(idUser);
+        try {
+            tournee =call0.execute().body();
+           /* Response<Tournee> newPostResponse = call0.execute();
+            Log.d("test fonction", " string : "+newPostResponse.toString());
+            Log.d("test fonction", " code : "+newPostResponse.code());
+            Log.d("test fonction", " body : "+newPostResponse.body().toString());*/
+            Log.d("test fonction"," resultat tournee :"+tournee.toString());
+            TourneeManager tourneeManager= new TourneeManager(context);
+            tourneeManager.open();
+            tourneeManager.addAllOfTournee(tournee);
+            tourneeManager.close();
+
+
+
+            Call<List<Colis>> call1 = apiService.getAllColis(Integer.toString(tournee.getId_tournee()));
+            mesColis = call1.execute().body();
+            Log.d("test fonction"," resultat colis :"+mesColis.toString());
+            for(int i=0; i<mesColis.size();i++) {
+                Colis monColis = mesColis.get(i);
+
+                monColis.setTournee(tournee);
+                ColisManager colisManager = new ColisManager(context);
+                colisManager.open();
+                colisManager.addAllOfColis(monColis);
+                colisManager.close();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void synchronizeToServer(){

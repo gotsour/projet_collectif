@@ -73,8 +73,19 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     Button bValider;
     boolean visible=false;
 
-    public FragmentNavigation() {
-
+    private String title;
+    private int page;
+    public void setVisible(boolean res){
+        this.visible=res;
+    }
+    // newInstance constructor for creating fragment with arguments
+    public static FragmentNavigation newInstance(int page, String title) {
+        FragmentNavigation fragmentNavigation = new FragmentNavigation();
+        Bundle args = new Bundle();
+        args.putInt("someInt", page);
+        args.putString("PAGE 0", title);
+        fragmentNavigation.setArguments(args);
+        return fragmentNavigation;
     }
 
 
@@ -82,10 +93,14 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         super.onDetach();
     }
 
-
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        page = getArguments().getInt("someInt", 0);
+        title = getArguments().getString("PAGE 0");
     }
+
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         try {
@@ -231,7 +246,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
 
     }
 
-    @Override
+   /* @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (getView() != null) {
@@ -242,7 +257,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             visible= false;
             Log.d("visibilite"," changement visibilitée : "+visible);
         }
-    }
+    }*/
 
 
 
