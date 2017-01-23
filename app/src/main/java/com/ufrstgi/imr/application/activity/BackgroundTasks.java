@@ -85,13 +85,13 @@ public class BackgroundTasks  extends AsyncTask<Void, String, String> {
             if (mesAdresseMac.size() != 0) {
                 // Il faut alerter le chauffeur
                 Log.d("Test", "Colis missing : " + mesAdresseMac.size());
-                error = "Missing";
+                error = "Missing "+mesAdresseMac.size();
             }
             // Si adresseMacClient n'est pas vide, cela signifie qu'il y a trop de colis dans le camion
             if (adressesMacClient.size() != 0) {
                 // Il faut alerter le chauffeur
                 Log.d("Test", "Too much Colis : " + adressesMacClient.size());
-                error = "Too Much";
+                error = "Too Much "+adressesMacClient.size();
             }
 
         } else {

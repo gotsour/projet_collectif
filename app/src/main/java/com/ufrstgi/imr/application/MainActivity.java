@@ -1,6 +1,5 @@
 package com.ufrstgi.imr.application;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 import com.ufrstgi.imr.application.Fragment.FragmentColis;
 import com.ufrstgi.imr.application.Fragment.FragmentFeuilleRoute;
 import com.ufrstgi.imr.application.Fragment.FragmentNavigation;
+import com.ufrstgi.imr.application.activity.Background;
 import com.ufrstgi.imr.application.activity.ServerHTTP;
 import com.ufrstgi.imr.application.activity.SettingsActivity;
 import com.ufrstgi.imr.application.database.local.*;
@@ -97,11 +97,8 @@ public class MainActivity extends AppCompatActivity
              tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
          }*/
 
-
-
-
         // Lancement du background toute les x intervalles de temps
-       // Background background = new Background(this);
+        //Background background = new Background(this);
     }
 
     @Override

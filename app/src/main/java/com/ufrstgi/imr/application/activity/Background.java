@@ -1,8 +1,10 @@
 package com.ufrstgi.imr.application.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import java.util.Timer;
@@ -21,6 +23,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class Background {
 
     Context context;
+    Timer timer;
+    boolean aClique;
 
     public Background(Context context) {
         this.context = context;
@@ -29,7 +33,7 @@ public class Background {
 
     public void setRepeatingAsyncTask() {
         final Handler handler = new Handler();
-        final Timer timer = new Timer();
+        timer = new Timer();
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -39,29 +43,7 @@ public class Background {
                             BackgroundTasks routine = new BackgroundTasks(context);
                             String result = routine.execute().get();
                             Log.d("Test", result);
-                            if (result == "Missing" || result == "Too Much") {
-                                new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
-                                        .setTitleText(result+" Colis!")
-                                        .setContentText("Number of Colis does not match roadmap !")
-                                        .setConfirmText("I will see to it")
-                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                            @Override
-                                            public void onClick(SweetAlertDialog sDialog) {
-                                                // On arrete de lancer le background
-                                                timer.cancel();
-                                                timer.purge();
-                                                sDialog.dismissWithAnimation();
-                                                // On attend 10 secondes avant de relancer le background
-                                                Handler handler = new Handler();
-                                                handler.postDelayed(new Runnable() {
-                                                    public void run() {
-                                                        new Background(context);
-                                                    }
-                                                }, 10000);
-                                            }
-                                        })
-                                        .show();
-                            }
+                            showDialog(result);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ExecutionException e) {
@@ -71,7 +53,35 @@ public class Background {
                 });
             }
         };
-        timer.schedule(task, 0, 10*1000);  // interval of 5 seconds
+        timer.schedule(task, 0, 30*1000);
+    }
+
+    private void showDialog(String result) {
+        if (result.contains("Missing") || result.contains("Too Much")) {
+            new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText(result + " Colis!")
+                    .setContentText("Number of Colis does not match roadmap !")
+                    .setConfirmText("I will see to it")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+        } else if (result == "AP") {
+            new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Access Point!")
+                    .setContentText("Please turn your Access Point!")
+                    .setConfirmText("I will see to it")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+        }
     }
 
 }
