@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity
 
         // Lancement du background toute les x intervalles de temps
         //Background background = new Background(this);
+
+        //Thomas
     }
 
     @Override

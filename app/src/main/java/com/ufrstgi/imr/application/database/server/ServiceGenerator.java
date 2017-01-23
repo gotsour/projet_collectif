@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceGenerator {
 
     public static MyApiEndpointInterface init(){
-        final String authToken = Credentials.basic("cdufay", "iahxf25;");
+        final String authToken = Credentials.basic("twesterm", "2sn8keINaM@se");
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
