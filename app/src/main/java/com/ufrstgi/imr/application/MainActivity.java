@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public Fragment getItem(int position) {
+            Log.d("visibilite"," cgargement du fragment position : "+position);
             return mFragmentList.get(position);
         }
 

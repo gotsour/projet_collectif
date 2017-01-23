@@ -71,6 +71,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     TextView tvVille;
     TextView tvNombre;
     Button bValider;
+    boolean visible=false;
 
     public FragmentNavigation() {
 
@@ -222,13 +223,27 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         }
 
         //lancement tracage itinéraire
-        if(colis!=null) {
+        if(colis!=null & visible) {
             connectAsyncTask test = new connectAsyncTask(makeURL(location.getLatitude(), location.getLongitude(),
                     colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude()), this.getActivity());
             test.execute();
         }
 
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getView() != null) {
+            visible=true;
+            Log.d("visibilite"," changement visibilitée : "+visible);
+
+        } else {
+            visible= false;
+            Log.d("visibilite"," changement visibilitée : "+visible);
+        }
+    }
+
 
 
     public String makeURL(double sourcelat, double sourcelog, double destlat, double destlog) {

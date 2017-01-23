@@ -111,6 +111,7 @@ public class ColisManager {
         ContentValues values = new ContentValues();
         values.put(KEY_ID_COLIS, colis.getId_colis());
         values.put(KEY_ADRESSE_MAC, colis.getAdresse_mac());
+        Log.d("adresseMAC","insert adresse mac : "+colis.getAdresse_mac());
         values.put(KEY_POIDS_COLIS, colis.getPoids_colis());
         values.put(KEY_VOLUME_COLIS, colis.getVolume_colis());
         values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
@@ -253,7 +254,6 @@ public class ColisManager {
         ArrayList<Colis> mesColis = new ArrayList<Colis>();
         String date = "";
 
-        // todo ajouter date_reele=null
         Cursor c = db.rawQuery("SELECT o.date_theorique  FROM colis c, operation o WHERE c.id_tournee=" + id + " and (c.id_reception=o.id_operation " +
                 "or c.id_livraison=o.id_operation) and o.heure_relle_operation =''" +
                  " ORDER BY Date(substr(date_theorique, 7, 4) || '-' || substr(date_theorique, 1, 2) || '-' || substr(date_theorique, 4, 2) || substr(date_theorique, 11, 9)) ASC Limit 1", null);

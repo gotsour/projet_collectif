@@ -15,7 +15,7 @@ public class Colis {
 
     @SerializedName("id_colis")
     private int id_colis;
-    @SerializedName("adresse_mac")
+    @SerializedName("mac_adresse")
     private String adresse_mac;
     @SerializedName("poids_colis")
     private float poids_colis;
