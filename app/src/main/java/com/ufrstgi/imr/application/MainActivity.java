@@ -79,6 +79,19 @@ public class MainActivity extends AppCompatActivity
 
         idUSer="chauffeur0001";
 
+        SynchronizeFromServer sync = new SynchronizeFromServer();
+        sync.execute();
+
+        /*new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("lancement", "avant lancement thread");
+                Communication com = new Communication(getApplicationContext(), idUSer);
+                com.synchronizeFromServerSynchrone();
+                Log.d("lancement", "apres lancement thread");
+            }
+        }).start();*/
+
         //todo à mettre en place, pour cas ou pas encore app installé ->sans bdd
         /*TourneeManager tourneeManager = new TourneeManager(this);
         tourneeManager.open();
@@ -169,16 +182,11 @@ public class MainActivity extends AppCompatActivity
             sync.synchronizeToServer();
             viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
-            Log.d("resultat", "reload bdd ");
-            deleteDatabase("db.sqlite");
+            //deleteDatabase("db.sqlite");
 
-            /*Communication sync=new Communication(this,idUSer);
-            sync.synchronizeFromServer();*/
-
-            SynchronizeFromServer sync = new SynchronizeFromServer(this);
+            SynchronizeFromServer sync = new SynchronizeFromServer();
             sync.execute();
 
-            //sync.synchronizeFromServerSynchrone();
             viewPager.setCurrentItem(2);
 
         } else if (id == R.id.nav_manage) {
@@ -249,131 +257,22 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-
-
-    public void initBDDTest() {
-        /* Test BDD */
-        Niveau niveau = new Niveau(1,"Niveau 1",150);
-        Personne conducteur_camion = new Personne(1,"Westermann","Thomas","0621065701");
-        Personne contact_client = new Personne(2,"Spies","François","0654865701");
-        Camion camion = new Camion("BK-589-KD","Peugeot 308",25,2,1500);
-        Latlng latlng = new Latlng(1,47.481991f, 6.356643f);
-        Latlng latlng2 = new Latlng(2,47.483514f, 6.922867f);
-        Chauffeur chauffeur = new Chauffeur("TW272D8N","password",52,conducteur_camion);
-        Date today = Calendar.getInstance().getTime();
-        Horaire horaire = new Horaire(1,today,today,chauffeur);
-        Adresse adresse_client = new Adresse(1,"6 rue Maurice Ravel",70400,"Hericourt","France",latlng);
-        Adresse adresse_operation = new Adresse(2,"9 rue des Alouettes",90782,"Belfort","France",latlng2);
-        PositionChauffeur positionChauffeur = new PositionChauffeur(0,today,chauffeur,latlng);
-        Tournee tournee = new Tournee(1,today,chauffeur,camion);
-
-        Client client = new Client(1,"Dufay Cyril","0621065807",adresse_client,contact_client);
-        Livraison livraison = new Livraison(1, today,null,today,"9B","Nodier",adresse_operation, client);
-        Livraison livraison2 = new Livraison(3, today,null,today,"9B","Nodier",adresse_client, client);
-        Reception reception = new Reception(2,today,null,today,"9B","Nodier",adresse_client, client);
-        Reception reception2 = new Reception(4,today,null,today,"9B","Nodier",adresse_client, client);
-
-        Colis colis0 = new Colis(1,"Mac",1782,0.25f,47,22,80,niveau,livraison,reception,tournee,client);
-        Colis colis1 = new Colis(2,"Mac",156462,0.25f,47,22,80,niveau,livraison2,reception,tournee,client);
-        Colis colis2 = new Colis(3,"Mac",162,0.25f,47,22,80,niveau,livraison2,reception2,tournee,client);
-        Colis colis3 = new Colis(4,"Mac",11435,0.25f,47,22,80,niveau,livraison,reception2,tournee,client);
-        PositionColis positionColis = new PositionColis(1,today,colis0,latlng);
-
-        NiveauManager niveauManager = new NiveauManager(this);
-        niveauManager.open();
-        niveauManager.addNiveau(niveau);
-        niveauManager.close();
-
-        PersonneManager personneManager = new PersonneManager(this);
-        personneManager.open();
-        personneManager.addPersonne(conducteur_camion);
-        personneManager.addPersonne(contact_client);
-        personneManager.close();
-
-        CamionManager camionManager = new CamionManager(this);
-        camionManager.open();
-        camionManager.addCamion(camion);
-        camionManager.close();
-
-        LatlngManager latlngManager = new LatlngManager(this);
-        latlngManager.open();
-        latlngManager.addLatlng(latlng);
-        latlngManager.close();
-
-        ChauffeurManager chauffeurManager = new ChauffeurManager(this);
-        chauffeurManager.open();
-        chauffeurManager.addChauffeur(chauffeur);
-        chauffeurManager.close();
-
-        HoraireManager horaireManager = new HoraireManager(this);
-        horaireManager.open();
-        horaireManager.addHoraire(horaire);
-        horaireManager.close();
-
-        AdresseManager adresseManager = new AdresseManager(this);
-        adresseManager.open();
-        adresseManager.addAdresse(adresse_client);
-        adresseManager.addAdresse(adresse_operation);
-        adresseManager.close();
-
-        PositionChauffeurManager positionChauffeurManager = new PositionChauffeurManager(this);
-        positionChauffeurManager.open();
-        positionChauffeurManager.addPositionChauffeur(positionChauffeur);
-        positionChauffeurManager.close();
-
-        TourneeManager tourneeManager = new TourneeManager(this);
-        tourneeManager.open();
-        tourneeManager.addTournee(tournee);
-        tourneeManager.close();
-
-        ClientManager clientManager = new ClientManager(this);
-        clientManager.open();
-        clientManager.addClient(client);
-        clientManager.close();
-
-        OperationManager operationManager = new OperationManager(this);
-        operationManager.open();
-        operationManager.addOperation(livraison);
-        operationManager.addOperation(reception);
-        operationManager.addOperation(reception2);
-        operationManager.addOperation(livraison2);
-        operationManager.close();
-
-        ColisManager colisManager = new ColisManager(this);
-        colisManager.open();
-        colisManager.addColis(colis0);
-        colisManager.addColis(colis1);
-        colisManager.addColis(colis2);
-        colisManager.addColis(colis3);
-        colisManager.close();
-
-        PositionColisManager positionColisManager = new PositionColisManager(this);
-        positionColisManager.open();
-        positionColisManager.addPositionColis(positionColis);
-        positionColisManager.close();
-    }
-
     public class SynchronizeFromServer extends AsyncTask<Void, Void, Void> {
+        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
 
-        Context context;
-
-        public SynchronizeFromServer(Context context) {
-            this.context = context;
+        public SynchronizeFromServer() {
         }
-
-        //private final ProgressDialog dialog = new ProgressDialog(context);
 
         protected void onPreExecute() {
             super.onPreExecute();
-          /*  dialog.setMessage("chargement des données ...");
+            dialog.setMessage("chargement des données ...");
             dialog.show();
-            dialog.setCanceledOnTouchOutside(false);*/
+            dialog.setCanceledOnTouchOutside(false);
         }
 
         @Override
         protected Void doInBackground(Void[] params) {
-            Communication sync=new Communication(context,idUSer);
+            Communication sync=new Communication(MainActivity.this,idUSer);
             sync.synchronizeFromServerSynchrone();
             return null;
         }
@@ -381,7 +280,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void message) {
             super.onPostExecute(message);
-            TourneeManager tourneeManager = new TourneeManager(context);
+            TourneeManager tourneeManager = new TourneeManager(MainActivity.this);
             tourneeManager.open();
             tournee=tourneeManager.getTournee();
             tourneeManager.close();
@@ -390,7 +289,7 @@ public class MainActivity extends AppCompatActivity
             tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
             tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
 
-           // this.dialog.dismiss();
+            dialog.dismiss();
         }
     }
 
