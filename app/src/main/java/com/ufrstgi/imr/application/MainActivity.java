@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.ufrstgi.imr.application.Fragment.FragmentColis;
 import com.ufrstgi.imr.application.Fragment.FragmentFeuilleRoute;
 import com.ufrstgi.imr.application.Fragment.FragmentNavigation;
+import com.ufrstgi.imr.application.activity.Background;
 import com.ufrstgi.imr.application.activity.ServerHTTP;
 import com.ufrstgi.imr.application.activity.SettingsActivity;
 import com.ufrstgi.imr.application.database.local.*;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity
 
 
         // Lancement du background toute les x intervalles de temps
-       // Background background = new Background(this);
+       Background background = new Background(this);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -182,7 +183,7 @@ public class MainActivity extends AppCompatActivity
             sync.synchronizeToServer();
             viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
-            //deleteDatabase("db.sqlite");
+            deleteDatabase("db.sqlite");
 
             SynchronizeFromServer sync = new SynchronizeFromServer();
             sync.execute();

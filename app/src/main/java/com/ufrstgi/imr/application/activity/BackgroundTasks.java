@@ -72,15 +72,6 @@ public class BackgroundTasks  extends AsyncTask<Void, String, String> {
             adressesMacClient.removeAll(temp2);
             mesAdresseMac.removeAll(temp);
 
-            /*Log.d("Test2", "## Adresses mac connectées ##");
-            for (int i = 0 ; i < adressesMacClient.size() ; i++) {
-                Log.d("Test2", adressesMacClient.get(i).toString());
-            }
-            Log.d("Test2", "## Adresses mac en BDD ##");
-            for (int i = 0 ; i < mesAdresseMac.size() ; i++) {
-                Log.d("Test2", mesAdresseMac.get(i).toString());
-            }*/
-
             // Si mesAdresseMac n'est pas vide, cela signifie qu'il manque des colis dans le camion
             if (mesAdresseMac.size() != 0) {
                 // Il faut alerter le chauffeur

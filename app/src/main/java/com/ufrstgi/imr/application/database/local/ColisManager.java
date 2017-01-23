@@ -13,9 +13,11 @@ import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Client;
 import com.ufrstgi.imr.application.object.Colis;
 import com.ufrstgi.imr.application.object.Latlng;
+import com.ufrstgi.imr.application.object.Livraison;
 import com.ufrstgi.imr.application.object.Niveau;
 import com.ufrstgi.imr.application.object.Operation;
 import com.ufrstgi.imr.application.object.Personne;
+import com.ufrstgi.imr.application.object.Reception;
 import com.ufrstgi.imr.application.object.Tournee;
 
 import java.util.ArrayList;
@@ -286,11 +288,16 @@ public class ColisManager {
     public ArrayList<String> getMacAdressesFromTournee(int idTournee) {
         ArrayList<Colis> mesColis;
         ArrayList<String> mesAdresseMac = new ArrayList<>();
-        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE id_tournee="+idTournee+"", null);
+        //Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME+" WHERE id_tournee="+idTournee+"", null);
+
+        Cursor c = db.rawQuery("SELECT * FROM colis WHERE id_tournee=" + idTournee, null);
         mesColis = instancieColis(c);
         c.close();
+
         for (int i = 0 ; i < mesColis.size() ; i++) {
-            mesAdresseMac.add(mesColis.get(i).getAdresse_mac());
+            if (mesColis.get(i).getReception().getDate_reelle() != null && mesColis.get(i).getLivraison().getDate_reelle() == null) {
+                mesAdresseMac.add(mesColis.get(i).getAdresse_mac());
+            }
         }
         return mesAdresseMac;
     }
