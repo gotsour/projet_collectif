@@ -327,16 +327,10 @@ public class OperationManager {
         adresseManager.close();
 
         String date_theorique = df.format(operation.getDate_theorique());
-        String date_reelle;
-        if(operation.getDate_reelle() != null)
-            date_reelle = df.format(operation.getDate_reelle());
-        else
-            date_reelle="";
         String date_limite = df.format(operation.getDate_limite());
 
         ContentValues values = new ContentValues();
         values.put(KEY_DATE_THEORIQUE, date_theorique);
-        values.put(KEY_DATE_REELLE, date_reelle);
         values.put(KEY_DATE_LIMITE, date_limite);
         if (operation instanceof Livraison) {
             values.put(KEY_EST_LIVRAISON, "1");

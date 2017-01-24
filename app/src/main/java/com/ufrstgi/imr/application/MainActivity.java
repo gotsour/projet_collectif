@@ -54,6 +54,9 @@ public class MainActivity extends AppCompatActivity
     FragmentPagerAdapter adapterViewPager;
     ProgressDialog dialog;
     ViewPager.OnPageChangeListener pageChangeListener;
+    FragmentNavigation mFragmentNavigation;
+    FragmentColis mFragmentColis;
+    FragmentFeuilleRoute mFragmentFeuilleRoute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,26 +94,21 @@ public class MainActivity extends AppCompatActivity
 
          if(tournee==null){
              //si premier chargement lancer avec id user saisie
+             Log.d("loginChauffeur", "lancement activitée login");
              Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
              MainActivity.this.startActivityForResult(myIntent,1);
-             SynchronizeFromServer sync = new SynchronizeFromServer(0);
-             sync.execute();
 
          }else{
+             Log.d("loginChauffeur", "base deja existante");
              idUSer = tournee.getChauffeur().getId_chauffeur();
+             //update bdd
+             SynchronizeFromServer sync = new SynchronizeFromServer(1);
+             sync.execute();
              tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
              tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
          }
 
 
-
-
-
-
-        idUSer="chauffeur0001";
-
-        SynchronizeFromServer sync = new SynchronizeFromServer(1);
-        sync.execute();
 
         /*new Thread(new Runnable() {
             @Override
@@ -129,12 +127,21 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                //Log.d("pageSelect", "page select : "+position);
-                /*switch (position){
-                    case 0 : ((FragmentNavigation)adapterViewPager.getItem(position)).setVisible(true);
-                    case 1 : ((FragmentColis)adapterViewPager.getItem(position)).loadData();
+                Log.d("pageSelect", "page select : "+position);
+                switch (position){
+                    case 0 :{
+                        if(mFragmentNavigation!=null)mFragmentNavigation.setVisible(true);
+                    }
+                    case 1 :{
+                        if(mFragmentColis!=null)mFragmentColis.loadData();
+                        if(mFragmentNavigation!=null)mFragmentNavigation.setVisible(false);
+                    }
+                    case 2 :{
+                        if(mFragmentFeuilleRoute!=null)mFragmentFeuilleRoute.loadData();
+                        if(mFragmentNavigation!=null)mFragmentNavigation.setVisible(false);
+                    }
                     //default: ((FragmentNavigation)adapterViewPager.getItem(0)).setVisible(false);
-                }*/
+                }
             }
 
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -147,8 +154,8 @@ public class MainActivity extends AppCompatActivity
 
 
         };
-
-        viewPager.setOnPageChangeListener(pageChangeListener);
+        viewPager.setOffscreenPageLimit(3);
+       /* viewPager.setOnPageChangeListener(pageChangeListener);
         pageChangeListener.onPageSelected(viewPager.getCurrentItem());
         // do this in a runnable to make sure the viewPager's views are already instantiated before triggering the onPageSelected call
         viewPager.post(new Runnable()
@@ -158,31 +165,33 @@ public class MainActivity extends AppCompatActivity
             {
                 pageChangeListener.onPageSelected(viewPager.getCurrentItem());
             }
-        });
+        });*/
     }
 
-    public static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 3;
-        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+    public class MyPagerAdapter extends FragmentPagerAdapter {
+        private int NUM_ITEMS = 3;
+
+
+
         public MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            Fragment fragment = (Fragment) super.instantiateItem(container, position);
-            registeredFragments.put(position, fragment);
-            return fragment;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            registeredFragments.remove(position);
-            super.destroyItem(container, position, object);
-        }
-
-        public Fragment getRegisteredFragment(int position) {
-            return registeredFragments.get(position);
+            Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+            // save the appropriate reference depending on position
+            switch (position) {
+                case 0:
+                    mFragmentNavigation = (FragmentNavigation) createdFragment;
+                    break;
+                case 1:
+                    mFragmentColis = (FragmentColis) createdFragment;
+                    break;
+                case 2:
+                    mFragmentFeuilleRoute = (FragmentFeuilleRoute) createdFragment;
+            }
+            return createdFragment;
         }
 
         // Returns total number of pages
@@ -200,6 +209,7 @@ public class MainActivity extends AppCompatActivity
                     return FragmentNavigation.newInstance(0, "NAVIGATION");
                 case 1:
                     return FragmentColis.newInstance(1, "COLIS");
+
                 case 2:
                     return FragmentFeuilleRoute.newInstance(2, "ROADMAP");
                 default:
@@ -227,7 +237,11 @@ public class MainActivity extends AppCompatActivity
 
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
+                Log.d("loginChauffeur", "fin retour main activity ");
                 idUSer=data.getStringExtra("user");
+                //insert bdd
+                SynchronizeFromServer sync = new SynchronizeFromServer(0);
+                sync.execute();
 
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -247,6 +261,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle fragment_navigation view item clicks here.
@@ -257,6 +272,7 @@ public class MainActivity extends AppCompatActivity
            //force update
             SynchronizeFromServer sync = new SynchronizeFromServer(1);
             sync.execute();
+            mFragmentColis.loadData();
 
             viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
@@ -264,6 +280,7 @@ public class MainActivity extends AppCompatActivity
             deleteDatabase("db.sqlite");
             SynchronizeFromServer sync = new SynchronizeFromServer(0);
             sync.execute();
+            mFragmentNavigation.loadData();
 
             viewPager.setCurrentItem(2);
 
@@ -295,6 +312,8 @@ public class MainActivity extends AppCompatActivity
         int type; // 0-> create 1->update
         public SynchronizeFromServer(int type) {
             this.type=type;
+            Log.d("loginChauffeur", "lancement thread sync from server type :"+type + "utilisateur : "+idUSer);
+
         }
 
         protected void onPreExecute() {
@@ -306,8 +325,8 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Void[] params) {
-            Communication sync=new Communication(MainActivity.this,idUSer,type);
-            sync.synchronizeFromServerSynchrone();
+            Communication sync=new Communication(MainActivity.this);
+            sync.synchronizeFromServerSynchrone(idUSer,type);
             return null;
         }
 

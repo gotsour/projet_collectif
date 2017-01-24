@@ -31,7 +31,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 
 public class BackgroundTasks  extends AsyncTask<Void, String, String> {
 
-    Context context;
+    static Context context;
 
     public BackgroundTasks(Context context) {
         this.context = context;
@@ -113,7 +113,7 @@ public class BackgroundTasks  extends AsyncTask<Void, String, String> {
         Log.d("Test", text[0]);
     }
 
-    private ArrayList<ClientScanResult> scanColis() {
+    public static ArrayList<ClientScanResult> scanColis() {
         WifiApManager wifiApManager = new WifiApManager(context);
         ArrayList<ClientScanResult> clients = new ArrayList<>();
         clients = wifiApManager.getClientList(true);

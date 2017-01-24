@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.ufrstgi.imr.application.R;
 import com.ufrstgi.imr.application.database.local.ColisManager;
 import com.ufrstgi.imr.application.database.local.OperationManager;
+import com.ufrstgi.imr.application.database.local.TourneeManager;
 import com.ufrstgi.imr.application.object.Colis;
 import com.ufrstgi.imr.application.object.Livraison;
 import com.ufrstgi.imr.application.object.Operation;
@@ -72,6 +73,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     TextView tvNombre;
     Button bValider;
     boolean visible=false;
+    int idTournee;
 
     private String title;
     private int page;
@@ -98,6 +100,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         super.onCreate(savedInstanceState);
         page = getArguments().getInt("someInt", 0);
         title = getArguments().getString("PAGE 0");
+        setRetainInstance(true);
     }
 
 
@@ -115,8 +118,10 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             tvVille=(TextView) rootView.findViewById(R.id.tvVille);
             tvNombre=(TextView) rootView.findViewById(R.id.tvNombre);
             bValider=(Button) rootView.findViewById(R.id.bValider);
-
-            // TODO faire ensuite que la premiere fois puis au click du bouton valider
+            TourneeManager tourneeManager = new TourneeManager(getActivity());
+            tourneeManager.open();
+            idTournee=tourneeManager.getTournee().getId_tournee();
+            tourneeManager.close();
 
             loadData();
 
@@ -125,6 +130,11 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
                     valideColis();
                     loadData();
                     if(colis!=null){
+                        /*GPSTracker gps = new GPSTracker(getActivity());
+                        double latitude = gps.getLatitude();
+                        double longitude = gps.getLongitude();*/
+                        //Log.d("positionLatlong", "latitude : "+latitude+ " longitude : "+longitude);
+
                         connectAsyncTask test = new connectAsyncTask(makeURL(location.getLatitude(), location.getLongitude(),
                                 colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude()), getActivity());
                         test.execute();
@@ -166,7 +176,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     public void loadData(){
         ColisManager colisManager = new ColisManager(getActivity());
         colisManager.open();
-        listeColis = colisManager.getNextColis(1);
+        listeColis = colisManager.getNextColis(idTournee);
         colisManager.close();
         int nbLivraison=0;
         int nbReception=0;
@@ -195,13 +205,6 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         }
 
         tvNombre.setText(nbLivraison+ " colis à livrer \n"+ nbReception + " colis à récuperer");
-
-
-        //faire chargement nouveau itineraire, tracage
-
-
-
-
     }
 
     public void onMapReady(GoogleMap googleMap) {
@@ -230,7 +233,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
                     // .bearing(90)                // Sets the orientation of the camera to east
                     //.tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
-            myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+           // myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             Log.d("localisation", "location false : "+location.toString());
 
         } else {
@@ -245,21 +248,6 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         }
 
     }
-
-   /* @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (getView() != null) {
-            visible=true;
-            Log.d("visibilite"," changement visibilitée : "+visible);
-
-        } else {
-            visible= false;
-            Log.d("visibilite"," changement visibilitée : "+visible);
-        }
-    }*/
-
-
 
     public String makeURL(double sourcelat, double sourcelog, double destlat, double destlog) {
         StringBuilder urlString = new StringBuilder();

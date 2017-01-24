@@ -1,5 +1,7 @@
 package com.ufrstgi.imr.application.object;
 
+import android.util.Log;
+
 /**
  * Created by Thomas Westermann on 17/01/2017.
  * Université de Franche-Comté
@@ -23,6 +25,22 @@ public class ClientScanResult {
         HWAddr = hWAddr;
         Device = device;
         this.setReachable(isReachable);
+    }
+
+
+    @Override
+    public boolean  equals(Object obj) {
+        Colis colis= (Colis)obj;
+        boolean result = false;
+        if (colis == null ) {
+            result = false;
+        } else {
+            if (colis.getAdresse_mac()== this.getHWAddr()) {
+                Log.d("mac adresse","colis :"+colis.getAdresse_mac()+" carte :"+this.getHWAddr());
+                result = true;
+            }
+        }
+        return result;
     }
 
     public String getIpAddr() {

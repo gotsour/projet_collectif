@@ -57,13 +57,21 @@ public class FragmentFeuilleRoute extends Fragment {
         super.onCreate(savedInstanceState);
         page = getArguments().getInt("someInt", 0);
         title = getArguments().getString("someTitle");
+        setRetainInstance(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_feuille_route, container, false);
+        expandableListView = (ExpandableListView) v.findViewById(R.id.expandableListView);
+        loadData();
 
+        return v;
+    }
+
+    public void loadData(){
+        Log.d("logMessage", "loaddata launch feuille de route");
         OperationManager operationManager = new OperationManager(getActivity());
         operationManager.open();
         mesOperations = operationManager.getAllOperation();
@@ -102,17 +110,9 @@ public class FragmentFeuilleRoute extends Fragment {
             }
         }
 
-
-        expandableListView = (ExpandableListView) v.findViewById(R.id.expandableListView);
         expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-
-
         expandableListAdapter = new ExpandableListAdapter(getActivity(), expandableListTitle, expandableListDetail);
         expandableListView.setAdapter(expandableListAdapter);
-
-
-        // Inflate the layout for this fragment
-        return v;
     }
 
 }

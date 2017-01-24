@@ -349,7 +349,6 @@ public class ColisManager {
     public ArrayList<Colis> getAllColis() {
         ArrayList<Colis> mesColis;
         Cursor c = db.rawQuery("SELECT * FROM colis ", null);
-        Log.d("result","all my colis cursor size : "+c.getCount());
         mesColis = instancieColis(c);
         c.close();
         return mesColis;

@@ -67,7 +67,7 @@ public class WifiApManager {
                 }
             }
         } catch (Exception e) {
-            Log.e(this.getClass().toString(), e.getMessage());
+            //Log.e(this.getClass().toString(), e.getMessage());
         } finally {
             try {
                 br.close();

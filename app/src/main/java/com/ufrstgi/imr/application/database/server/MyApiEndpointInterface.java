@@ -2,6 +2,7 @@ package com.ufrstgi.imr.application.database.server;
 
 
 import com.ufrstgi.imr.application.object.ArrayPosition;
+import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Colis;
 import com.ufrstgi.imr.application.object.Niveau;
 import com.ufrstgi.imr.application.object.PositionColis;
@@ -19,13 +20,13 @@ import retrofit2.http.Path;
  */
 public interface MyApiEndpointInterface {
 
-    //tournee
+    //récuperation de la tournee depuis le chauffeur
     @GET("tournee/{idChauffeur}")
     Call<Tournee> getTournee(@Path("idChauffeur") String idChauffeur);
 
-    //niveaux
-    @GET("niveaux")
-    Call<List<Niveau>> getAllNiveaux();
+    //récuperation du chauffeur avec le login
+    @GET("user/{loginChauffeur}")
+    Call<Chauffeur> getChauffeur(@Path("loginChauffeur") String loginChauffeur);
 
     //colis
 

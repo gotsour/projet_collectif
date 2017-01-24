@@ -9,6 +9,7 @@ import com.ufrstgi.imr.application.database.local.ColisManager;
 import com.ufrstgi.imr.application.database.local.PositionColisManager;
 import com.ufrstgi.imr.application.database.local.TourneeManager;
 
+import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Colis;
 
 import com.ufrstgi.imr.application.object.PositionColis;
@@ -32,19 +33,18 @@ public class Communication {
     List<Colis> mesColis;
     Context context;
     MyApiEndpointInterface apiService;
-    String idUser;
-    int type; // 0-> create 1->update
+    Chauffeur chauffeur;
 
-    public Communication(final Context context, String idUser, int type){
+
+    public Communication(final Context context){
         this.context=context;
-        this.idUser=idUser;
-        this.type=type;
         apiService= ServiceGenerator.init();
 
 
     }
 
-    public void synchronizeFromServer(){
+    public void synchronizeFromServer(String idUser){
+
         Log.d("retour", " debut synchronize : "+idUser);
         Call<Tournee> call0 = apiService.getTournee(idUser);
         call0.enqueue(new Callback<Tournee>() {
@@ -97,16 +97,11 @@ public class Communication {
         });
     }
 
-    public void synchronizeFromServerSynchrone(){
+    public void synchronizeFromServerSynchrone(String idUser, int type){
 
         Call<Tournee> call0 = apiService.getTournee(idUser);
         try {
             tournee =call0.execute().body();
-           /* Response<Tournee> newPostResponse = call0.execute();
-            Log.d("test fonction", " string : "+newPostResponse.toString());
-            Log.d("test fonction", " code : "+newPostResponse.code());
-            Log.d("test fonction", " body : "+newPostResponse.body().toString());*/
-            Log.d("test fonction"," resultat tournee :"+tournee.toString());
             TourneeManager tourneeManager= new TourneeManager(context);
             tourneeManager.open();
             if(type==0)tourneeManager.addAllOfTournee(tournee);
@@ -117,7 +112,6 @@ public class Communication {
 
             Call<List<Colis>> call1 = apiService.getAllColis(Integer.toString(tournee.getId_tournee()));
             mesColis = call1.execute().body();
-            Log.d("test fonction"," resultat colis :"+mesColis.toString());
             for(int i=0; i<mesColis.size();i++) {
                 Colis monColis = mesColis.get(i);
 
@@ -132,6 +126,24 @@ public class Communication {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public Chauffeur getChauffeurFromLogin(String login){
+
+        Call<Chauffeur> call0 = apiService.getChauffeur(login);
+        try {
+            Log.d("loginChauffeur", " avant execute() ");
+            Response<Chauffeur> res= call0.execute();
+
+           // chauffeur =call0.execute().body();
+            Log.d("loginChauffeur", " dans getCjauffeur, recpetion : "+res.message());
+            Log.d("loginChauffeur", " dans getCjauffeur, recpetion : "+res.errorBody());
+
+            } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return chauffeur;
 
     }
 
