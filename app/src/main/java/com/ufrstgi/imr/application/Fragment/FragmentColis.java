@@ -59,20 +59,18 @@ public class FragmentColis extends Fragment{
         title = getArguments().getString("someTitle");
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        View v = inflater.inflate(R.layout.fragment_colis, container, false);
-
+    public void loadData(){
         ColisManager colisManager = new ColisManager(getActivity());
         colisManager.open();
         mesColis = colisManager.getAllColis();
         colisManager.close();
+    }
 
-        Log.d("result","all my colis : "+mesColis.size());
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        //Log.d("Test", mesColis.toString());
-
+        View v = inflater.inflate(R.layout.fragment_colis, container, false);
+        loadData();
         expandableListDetail = new HashMap<String, List<String>>();
         for (int i = 0 ; i < mesColis.size() ; i++) {
             List<String> list = new ArrayList<String>();

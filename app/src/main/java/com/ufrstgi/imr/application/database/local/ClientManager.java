@@ -199,4 +199,30 @@ public class ClientManager {
         return db.insert(TABLE_NAME,null,values);
 
     }
+
+    public long updateAllOfClient(Client client) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_NOM_CLIENT, client.getNom_client());
+        values.put(KEY_TELEPHONE_CLIENT, client.getTelephone_client());
+
+        AdresseManager adresseManager = new AdresseManager(context);
+        adresseManager.open();
+        adresseManager.updateAllOfAdresse(client.getAdresse());
+        adresseManager.close();
+
+        PersonneManager personneManager = new PersonneManager(context);
+        personneManager.open();
+        personneManager.updatePersonne(client.getPersonne());
+        personneManager.close();
+
+        values.put(KEY_ID_ADRESSE, client.getAdresse().getId_adresse());
+        values.put(KEY_ID_PERSONNE, client.getPersonne().getId_personne());
+
+
+        String where = KEY_ID_CLIENT+" = ?";
+        String[] whereArgs = {client.getId_client()+""};
+        this.open();
+        return db.update(TABLE_NAME, values, where, whereArgs);
+
+    }
 }

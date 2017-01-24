@@ -1,5 +1,6 @@
 package com.ufrstgi.imr.application;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,13 +18,16 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ufrstgi.imr.application.Fragment.FragmentColis;
 import com.ufrstgi.imr.application.Fragment.FragmentFeuilleRoute;
 import com.ufrstgi.imr.application.Fragment.FragmentNavigation;
 import com.ufrstgi.imr.application.activity.Background;
+import com.ufrstgi.imr.application.activity.LoginActivity;
 import com.ufrstgi.imr.application.activity.ServerHTTP;
 import com.ufrstgi.imr.application.activity.SettingsActivity;
 import com.ufrstgi.imr.application.database.local.*;
@@ -48,6 +52,8 @@ public class MainActivity extends AppCompatActivity
     TextView tvIdCamion;
     Tournee tournee;
     FragmentPagerAdapter adapterViewPager;
+    ProgressDialog dialog;
+    ViewPager.OnPageChangeListener pageChangeListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +61,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapterViewPager);
-        //setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -74,13 +78,38 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         tvIdChauffeur = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvIdChauffeur);
         tvIdCamion = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvIdCamion);
 
+        dialog = new ProgressDialog(MainActivity.this);
+
+        //verification tournee
+        TourneeManager tourneeManager = new TourneeManager(this);
+        tourneeManager.open();
+        Tournee tournee=tourneeManager.getTournee();
+        tourneeManager.close();
+
+         if(tournee==null){
+             //si premier chargement lancer avec id user saisie
+             Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
+             MainActivity.this.startActivityForResult(myIntent,1);
+             SynchronizeFromServer sync = new SynchronizeFromServer(0);
+             sync.execute();
+
+         }else{
+             idUSer = tournee.getChauffeur().getId_chauffeur();
+             tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
+             tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
+         }
+
+
+
+
+
+
         idUSer="chauffeur0001";
 
-        SynchronizeFromServer sync = new SynchronizeFromServer();
+        SynchronizeFromServer sync = new SynchronizeFromServer(1);
         sync.execute();
 
         /*new Thread(new Runnable() {
@@ -93,58 +122,118 @@ public class MainActivity extends AppCompatActivity
             }
         }).start();*/
 
-        //todo à mettre en place, pour cas ou pas encore app installé ->sans bdd
-        /*TourneeManager tourneeManager = new TourneeManager(this);
-        tourneeManager.open();
-        Tournee tournee=tourneeManager.getTournee();
-        tourneeManager.close();
-
-
-         if(tournee==null){
-             //si premier chargement lancer avec id user saisie
-             idUSer="chauffeur0001";
-            // tvIdChauffeur.setText(idUSer);
-            // tvIdCamion.setText("Mon camion");
-             SynchronizeFromServer sync = new SynchronizeFromServer(this);
-             sync.execute();
-
-         }else{
-             idUSer = tournee.getChauffeur().getId_chauffeur();
-             tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
-             tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
-         }*/
-
-
-
-
         // Lancement du background toute les x intervalles de temps
        Background background = new Background(this);
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        pageChangeListener = new ViewPager.OnPageChangeListener() {
 
-            // This method will be invoked when a new page becomes selected.
             @Override
             public void onPageSelected(int position) {
-                Log.d("pageSelect", "page select : "+position);
-                switch (position){
+                //Log.d("pageSelect", "page select : "+position);
+                /*switch (position){
                     case 0 : ((FragmentNavigation)adapterViewPager.getItem(position)).setVisible(true);
-                    default: ((FragmentNavigation)adapterViewPager.getItem(0)).setVisible(false);
-                }
+                    case 1 : ((FragmentColis)adapterViewPager.getItem(position)).loadData();
+                    //default: ((FragmentNavigation)adapterViewPager.getItem(0)).setVisible(false);
+                }*/
             }
 
-            // This method will be invoked when the current page is scrolled
-            @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // Code goes here
             }
 
-            // Called when the scroll state changes:
-            // SCROLL_STATE_IDLE, SCROLL_STATE_DRAGGING, SCROLL_STATE_SETTLING
             @Override
             public void onPageScrollStateChanged(int state) {
                 // Code goes here
             }
+
+
+        };
+
+        viewPager.setOnPageChangeListener(pageChangeListener);
+        pageChangeListener.onPageSelected(viewPager.getCurrentItem());
+        // do this in a runnable to make sure the viewPager's views are already instantiated before triggering the onPageSelected call
+        viewPager.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                pageChangeListener.onPageSelected(viewPager.getCurrentItem());
+            }
         });
+    }
+
+    public static class MyPagerAdapter extends FragmentPagerAdapter {
+        private static int NUM_ITEMS = 3;
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
+        }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        // Returns the fragment to display for that page
+        @Override
+        public Fragment getItem(int position) {
+            Log.d("pageSelect", "get item : "+position);
+            switch (position) {
+                case 0:
+                    return FragmentNavigation.newInstance(0, "NAVIGATION");
+                case 1:
+                    return FragmentColis.newInstance(1, "COLIS");
+                case 2:
+                    return FragmentFeuilleRoute.newInstance(2, "ROADMAP");
+                default:
+                    return null;
+            }
+        }
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "NAVIGATION";
+                case 1:
+                    return "COLIS";
+                case 2:
+                    return "ROADMAP";
+                default:
+                    return null;
+            }
+        }
+
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                idUSer=data.getStringExtra("user");
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
     }
 
     @Override
@@ -158,8 +247,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle fragment_navigation view item clicks here.
@@ -167,25 +254,15 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_gallery) {
-            Log.d("resultat", "sync.synchronizeToServer ");
+           //force update
+            SynchronizeFromServer sync = new SynchronizeFromServer(1);
+            sync.execute();
 
-
-            Colis colis0 = new Colis(3,"Mac",1782,0.25f,47,22,80,null,null,null,null,null);
-            Latlng latlng = new Latlng(1,47.481991f, 6.356643f);
-            PositionColis positionColis = new PositionColis(1,Calendar.getInstance().getTime(),colis0,latlng);
-
-            PositionColisManager positionColisManager = new PositionColisManager(this);
-            positionColisManager.open();
-            positionColisManager.addPositionColis(positionColis);
-            positionColisManager.close();
-
-            Communication sync=new Communication(this,idUSer);
-            sync.synchronizeToServer();
             viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
+           //force create
             deleteDatabase("db.sqlite");
-
-            SynchronizeFromServer sync = new SynchronizeFromServer();
+            SynchronizeFromServer sync = new SynchronizeFromServer(0);
             sync.execute();
 
             viewPager.setCurrentItem(2);
@@ -209,59 +286,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPause() {
         super.onPause();
+        dialog.dismiss();
     }
 
-    public static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 3;
-
-        public MyPagerAdapter(FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        // Returns total number of pages
-        @Override
-        public int getCount() {
-            return NUM_ITEMS;
-        }
-
-        // Returns the fragment to display for that page
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
-                    return FragmentNavigation.newInstance(0, "NAVIGATION");
-                case 1: // Fragment # 0 - This will show FirstFragment different title
-                    return FragmentColis.newInstance(1, "COLIS");
-                case 2: // Fragment # 1 - This will show SecondFragment
-                    return FragmentFeuilleRoute.newInstance(2, "ROADMAP");
-                default:
-                    return null;
-            }
-        }
-
-
-
-        // Returns the page title for the top indicator
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "NAVIGATION";
-                case 1:
-                    return "COLIS";
-                case 2:
-                    return "ROADMAP";
-                default:
-                    return null;
-            }
-        }
-
-    }
 
     public class SynchronizeFromServer extends AsyncTask<Void, Void, Void> {
-        private ProgressDialog dialog = new ProgressDialog(MainActivity.this);
 
-        public SynchronizeFromServer() {
+        int type; // 0-> create 1->update
+        public SynchronizeFromServer(int type) {
+            this.type=type;
         }
 
         protected void onPreExecute() {
@@ -273,7 +306,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Void[] params) {
-            Communication sync=new Communication(MainActivity.this,idUSer);
+            Communication sync=new Communication(MainActivity.this,idUSer,type);
             sync.synchronizeFromServerSynchrone();
             return null;
         }
@@ -293,7 +326,4 @@ public class MainActivity extends AppCompatActivity
             dialog.dismiss();
         }
     }
-
-
-
-    }
+}

@@ -249,4 +249,30 @@ public class TourneeManager {
         this.open();
         return db.insert(TABLE_NAME,null,values);
     }
+
+    public long updateAllOfTournee(Tournee tournee) {
+        ContentValues values = new ContentValues();
+
+        String date_debut = df.format(tournee.getDate_debut());
+        values.put(KEY_DATE_DEBUT, date_debut);
+
+        ChauffeurManager chauffeurManager= new ChauffeurManager(context);
+        chauffeurManager.open();
+        chauffeurManager.updateAllOfChauffeur(tournee.getChauffeur());
+        chauffeurManager.close();
+
+        CamionManager camionManager = new CamionManager(context);
+        camionManager.open();
+        camionManager.updateCamion(tournee.getCamion());
+        camionManager.close();
+
+        values.put(KEY_ID_CHAUFFEUR, tournee.getChauffeur().getId_chauffeur());
+        values.put(KEY_ID_CAMION, tournee.getCamion().getId_camion());
+
+        this.open();
+        String where = KEY_ID_TOURNEE+" = ?";
+        String[] whereArgs = {tournee.getId_tournee()+""};
+
+        return db.update(TABLE_NAME, values, where, whereArgs);
+    }
 }

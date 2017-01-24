@@ -33,10 +33,12 @@ public class Communication {
     Context context;
     MyApiEndpointInterface apiService;
     String idUser;
+    int type; // 0-> create 1->update
 
-    public Communication(final Context context, String idUser){
+    public Communication(final Context context, String idUser, int type){
         this.context=context;
         this.idUser=idUser;
+        this.type=type;
         apiService= ServiceGenerator.init();
 
 
@@ -71,7 +73,8 @@ public class Communication {
                             monColis.setTournee(tournee);
                             ColisManager colisManager = new ColisManager(context);
                             colisManager.open();
-                            colisManager.addAllOfColis(monColis);
+                            colisManager.updateAllOfColis(monColis);
+                            //colisManager.addAllOfColis(monColis);
                             colisManager.close();
                         }
 
@@ -95,7 +98,7 @@ public class Communication {
     }
 
     public void synchronizeFromServerSynchrone(){
-        Log.d("retour", " debut synchronize : "+idUser);
+
         Call<Tournee> call0 = apiService.getTournee(idUser);
         try {
             tournee =call0.execute().body();
@@ -106,7 +109,8 @@ public class Communication {
             Log.d("test fonction"," resultat tournee :"+tournee.toString());
             TourneeManager tourneeManager= new TourneeManager(context);
             tourneeManager.open();
-            tourneeManager.addAllOfTournee(tournee);
+            if(type==0)tourneeManager.addAllOfTournee(tournee);
+            else tourneeManager.updateAllOfTournee(tournee);
             tourneeManager.close();
 
 
@@ -120,7 +124,8 @@ public class Communication {
                 monColis.setTournee(tournee);
                 ColisManager colisManager = new ColisManager(context);
                 colisManager.open();
-                colisManager.addAllOfColis(monColis);
+                if(type==0)colisManager.addAllOfColis(monColis);
+                else colisManager.updateAllOfColis(monColis);
                 colisManager.close();
             }
 

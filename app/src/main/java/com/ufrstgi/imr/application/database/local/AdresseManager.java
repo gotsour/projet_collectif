@@ -179,4 +179,24 @@ public class AdresseManager {
     }
 
 
+    public long updateAllOfAdresse(Adresse adresse) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_RUE, adresse.getRue());
+        values.put(KEY_CODE_POSTAL, adresse.getCode_postal());
+        values.put(KEY_VILLE, adresse.getVille());
+        values.put(KEY_PAYS, adresse.getPays());
+
+        LatlngManager latlongManager = new LatlngManager(context);
+        latlongManager.open();
+        latlongManager.updateLatlng(adresse.getLatlng());
+        latlongManager.close();
+
+        values.put(KEY_ID_LATLNG, adresse.getLatlng().getId_latlng());
+
+        this.open();
+        String where = KEY_ID_ADRESSE+" = ?";
+        String[] whereArgs = {adresse.getId_adresse()+""};
+
+        return db.update(TABLE_NAME, values, where, whereArgs);
+    }
 }

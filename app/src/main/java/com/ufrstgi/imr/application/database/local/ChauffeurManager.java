@@ -166,4 +166,24 @@ public class ChauffeurManager {
 
         return db.insert(TABLE_NAME,null,values);
     }
+
+    public long updateAllOfChauffeur(Chauffeur chauffeur) {
+        ContentValues values = new ContentValues();
+        values.put(KEY_MOT_DE_PASSE, chauffeur.getMot_de_passe());
+        values.put(KEY_NIVEAU_BATTERIE_TERMINAL, chauffeur.getNiveau_batterie_terminal());
+
+        PersonneManager personneManager = new PersonneManager(context);
+        personneManager.open();
+        personneManager.updatePersonne(chauffeur.getPersonne());
+        personneManager.close();
+
+        values.put(KEY_ID_PERSONNE, chauffeur.getPersonne().getId_personne());
+
+        // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
+        this.open();
+        String where = KEY_ID_CHAUFFEUR+" = ?";
+        String[] whereArgs = {chauffeur.getId_chauffeur()+""};
+
+        return db.update(TABLE_NAME, values, where, whereArgs);
+    }
 }

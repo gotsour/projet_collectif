@@ -113,7 +113,6 @@ public class ColisManager {
         ContentValues values = new ContentValues();
         values.put(KEY_ID_COLIS, colis.getId_colis());
         values.put(KEY_ADRESSE_MAC, colis.getAdresse_mac());
-        Log.d("adresseMAC","insert adresse mac : "+colis.getAdresse_mac());
         values.put(KEY_POIDS_COLIS, colis.getPoids_colis());
         values.put(KEY_VOLUME_COLIS, colis.getVolume_colis());
         values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
@@ -151,6 +150,51 @@ public class ColisManager {
 
         // insert() retourne l'id du nouvel enregistrement inséré, ou -1 en cas d'erreur
         return db.insert(TABLE_NAME,null,values);
+    }
+
+    public long updateAllOfColis(Colis colis) {
+        // Ajout d'un enregistrement dans la table
+        this.close();
+        NiveauManager niveauManager = new NiveauManager(context);
+        niveauManager.open();
+        niveauManager.updateNiveau(colis.getNiveau());
+        niveauManager.close();
+
+        OperationManager operationManager= new OperationManager(context);
+        operationManager.open();
+        operationManager.updateAllOfOperation(colis.getLivraison());
+        operationManager.updateAllOfOperation(colis.getReception());
+        operationManager.close();
+
+        /*TourneeManager tourneeManager = new TourneeManager(context);
+        tourneeManager.open();
+        long idTournee = tourneeManager.addAllOfTournee(colis.getTournee());
+        tourneeManager.close();*/
+        long idTournee=colis.getTournee().getId_tournee();
+
+        ClientManager clientManager = new ClientManager(context);
+        clientManager.open();
+        clientManager.updateAllOfClient(colis.getClient());
+        clientManager.close();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ADRESSE_MAC, colis.getAdresse_mac());
+        values.put(KEY_POIDS_COLIS, colis.getPoids_colis());
+        values.put(KEY_VOLUME_COLIS, colis.getVolume_colis());
+        values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
+        values.put(KEY_TEMPERATURE_COLIS, colis.getTemperature_colis());
+        values.put(KEY_CAPACITE_CHOC_COLIS, colis.getCapacite_choc_colis());
+        values.put(KEY_ID_NIVEAU, colis.getNiveau().getId_niveau());
+        values.put(KEY_ID_LIVRAISON, colis.getLivraison().getId_operation());
+        values.put(KEY_ID_RECEPTION, colis.getReception().getId_operation());
+        values.put(KEY_ID_TOURNEE, idTournee);
+        values.put(KEY_ID_CLIENT, colis.getClient().getId_client());
+
+        this.open();
+        String where = KEY_ID_COLIS+" = ?";
+        String[] whereArgs = {colis.getId_colis()+""};
+
+        return db.update(TABLE_NAME, values, where, whereArgs);
     }
 
     public int updateColis(Colis colis) {

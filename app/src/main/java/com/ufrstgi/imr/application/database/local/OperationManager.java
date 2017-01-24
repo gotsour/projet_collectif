@@ -314,4 +314,45 @@ public class OperationManager {
         return db.insert(TABLE_NAME,null,values);
 
     }
+
+    public long updateAllOfOperation(Operation operation) {
+        ClientManager clientManager = new ClientManager(context);
+        clientManager.open();
+        clientManager.updateAllOfClient(operation.getClient());
+        clientManager.close();
+
+        AdresseManager adresseManager = new AdresseManager(context);
+        adresseManager.open();
+        adresseManager.updateAllOfAdresse(operation.getAdresse());
+        adresseManager.close();
+
+        String date_theorique = df.format(operation.getDate_theorique());
+        String date_reelle;
+        if(operation.getDate_reelle() != null)
+            date_reelle = df.format(operation.getDate_reelle());
+        else
+            date_reelle="";
+        String date_limite = df.format(operation.getDate_limite());
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_DATE_THEORIQUE, date_theorique);
+        values.put(KEY_DATE_REELLE, date_reelle);
+        values.put(KEY_DATE_LIMITE, date_limite);
+        if (operation instanceof Livraison) {
+            values.put(KEY_EST_LIVRAISON, "1");
+        } else if (operation instanceof Reception) {
+            values.put(KEY_EST_LIVRAISON, "0");
+        }
+        values.put(KEY_QUAI, operation.getQuai());
+        values.put(KEY_BATIMENT, operation.getBatiment());
+        values.put(KEY_ID_ADRESSE, operation.getAdresse().getId_adresse());
+        values.put(KEY_ID_CLIENT, operation.getClient().getId_client());
+
+
+        this.open();
+        String where = KEY_ID_OPERATION+" = ?";
+        String[] whereArgs = {operation.getId_operation()+""};
+
+        return db.update(TABLE_NAME, values, where, whereArgs);
+    }
 }

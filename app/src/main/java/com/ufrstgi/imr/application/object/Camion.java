@@ -13,7 +13,7 @@ public class Camion {
 
     @SerializedName("id_camion")
     public String id_camion; // Numéro d'immatriculation
-    @SerializedName("nom_camion")
+    @SerializedName("nom")
     public String nom_camion; // Marque
     @SerializedName("volume_camion")
     public float volume_camion;
