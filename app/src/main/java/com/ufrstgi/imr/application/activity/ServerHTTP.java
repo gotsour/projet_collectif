@@ -90,9 +90,10 @@ public class ServerHTTP extends NanoHTTPD {
      */
     private void handleRequest(String postBody) {
         try {
-            String message = getRequest("message", postBody);
-            String fichier = getRequest("fichier", postBody);
+            String temperature = getRequest("temperature", postBody);
+            String niveau_batterie = getRequest("niveauBatterie", postBody);
             String latitude = getRequest("latitude", postBody);
+            String longitude = getRequest("longitude", postBody);
         } catch (UnsupportedEncodingException e) {
             Log.d("ERROR", "L'URL a mal été décodée");
             e.printStackTrace();
