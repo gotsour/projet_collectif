@@ -2,9 +2,11 @@ package com.ufrstgi.imr.application.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,24 +17,26 @@ import com.ufrstgi.imr.application.R;
 import com.ufrstgi.imr.application.database.local.TourneeManager;
 import com.ufrstgi.imr.application.database.server.Communication;
 import com.ufrstgi.imr.application.object.Chauffeur;
+import com.ufrstgi.imr.application.object.Exist;
 
 /**
  * Created by Duduf on 23/01/2017.
  */
 
-public class LoginActivity extends Activity{
+public class LoginActivity extends Activity implements AsyncResponse{
     Button btLogin;
     Button btCancel;
     EditText etLogin;
     EditText etPassword;
     ProgressDialog dialog;
     String login;
-    Chauffeur chauffeur;
+    public AsyncResponse delegate=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        delegate = this;
         btLogin = (Button)findViewById(R.id.btLogin);
         btCancel = (Button)findViewById(R.id.btCancel);
         etLogin = (EditText)findViewById(R.id.etLogin);
@@ -41,20 +45,9 @@ public class LoginActivity extends Activity{
 
         btLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent returnIntent = new Intent();
                 login=etLogin.getText().toString();
-
-                //verification mot de passe existe dans bdd sur serveur
-               /* Log.d("loginChauffeur", "login envoyé : "+login);
                 VerificationServer verif= new VerificationServer();
                 verif.execute();
-                Log.d("loginChauffeur", "chauffeur recu : "+chauffeur.toString());
-                if(chauffeur.getMot_de_passe()== etPassword.getText().toString()){*/
-                Log.d("loginChauffeur", "user put extra : "+etLogin.getText().toString());
-                returnIntent.putExtra("user",etLogin.getText().toString());
-                    setResult(Activity.RESULT_OK,returnIntent);
-                    finish();
-                //}
             }
         });
 
@@ -68,30 +61,62 @@ public class LoginActivity extends Activity{
         });
     }
 
-    public class VerificationServer extends AsyncTask<Void, Void, Void> {
+    @Override
+    public void processFinish(Chauffeur output) {
+        Intent returnIntent = new Intent();
 
+        if(output!=null) {
+            if (output.getMot_de_passe().equals(etPassword.getText().toString())) {
+                Log.d("loginChauffeur", "user put extra : " + etLogin.getText().toString());
+                returnIntent.putExtra("user", etLogin.getText().toString());
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle("Erreur")
+                        .setMessage("Mot de passe incorect ")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        }
+        else{
+
+            new AlertDialog.Builder(this)
+                    .setTitle("Erreur")
+                    .setMessage("Login inconnu")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+        }
+    }
+
+    public class VerificationServer extends AsyncTask<Void, Void, Chauffeur> {
+        Chauffeur chauffeurRes;
         public VerificationServer() {
         }
 
         protected void onPreExecute() {
 
             super.onPreExecute();
-            dialog.setMessage("chargement des données ...");
+            dialog.setMessage("Connexion en cours");
             dialog.show();
             dialog.setCanceledOnTouchOutside(false);
         }
 
         @Override
-        protected Void doInBackground(Void[] params) {
+        protected Chauffeur doInBackground(Void[] params) {
             Communication sync=new Communication(LoginActivity.this);
-            Log.d("loginChauffeur","lancement thread ");
-            chauffeur =sync.getChauffeurFromLogin(login);
-            return null;
+            Exist exist = sync.chauffeurExist(login);
+
+            if (exist.isExit()) chauffeurRes =sync.getChauffeurFromLogin(login);
+            else chauffeurRes=null;
+
+            return chauffeurRes;
         }
 
         @Override
-        protected void onPostExecute(Void message) {
-            super.onPostExecute(message);
+        protected void onPostExecute(Chauffeur Res) {
+            super.onPostExecute(Res);
+            delegate.processFinish(Res);
             dialog.dismiss();
         }
     }

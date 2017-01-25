@@ -12,6 +12,7 @@ import com.ufrstgi.imr.application.database.local.TourneeManager;
 import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Colis;
 
+import com.ufrstgi.imr.application.object.Exist;
 import com.ufrstgi.imr.application.object.PositionColis;
 import com.ufrstgi.imr.application.object.Tournee;
 
@@ -34,25 +35,21 @@ public class Communication {
     Context context;
     MyApiEndpointInterface apiService;
     Chauffeur chauffeur;
+    Exist res;
 
 
     public Communication(final Context context){
         this.context=context;
         apiService= ServiceGenerator.init();
-
-
     }
 
     public void synchronizeFromServer(String idUser){
-
-        Log.d("retour", " debut synchronize : "+idUser);
         Call<Tournee> call0 = apiService.getTournee(idUser);
         call0.enqueue(new Callback<Tournee>() {
             @Override
             public void onResponse(Call<Tournee> call, Response<Tournee> response) {
                 int statusCode = response.code();
                 tournee = response.body();
-                Log.d("retour", " tournee recup : "+tournee.toString());
                 TourneeManager tourneeManager= new TourneeManager(context);
                 tourneeManager.open();
                 tourneeManager.addAllOfTournee(tournee);
@@ -66,7 +63,6 @@ public class Communication {
                     public void onResponse(Call<List<Colis>> call, Response<List<Colis>> response) {
                         int statusCode = response.code();
                         mesColis = response.body();
-                        Log.d("resultats", " ereur :"+response.errorBody());
                         for(int i=0; i<mesColis.size();i++) {
                             Colis monColis = mesColis.get(i);
 
@@ -74,11 +70,8 @@ public class Communication {
                             ColisManager colisManager = new ColisManager(context);
                             colisManager.open();
                             colisManager.updateAllOfColis(monColis);
-                            //colisManager.addAllOfColis(monColis);
                             colisManager.close();
                         }
-
-
                     }
 
                     @Override
@@ -86,7 +79,6 @@ public class Communication {
                         Log.d("resultats", "2 / failed onfailure "+ t.getMessage());
                     }
                 });
-
             }
 
             @Override
@@ -108,13 +100,10 @@ public class Communication {
             else tourneeManager.updateAllOfTournee(tournee);
             tourneeManager.close();
 
-
-
             Call<List<Colis>> call1 = apiService.getAllColis(Integer.toString(tournee.getId_tournee()));
             mesColis = call1.execute().body();
             for(int i=0; i<mesColis.size();i++) {
                 Colis monColis = mesColis.get(i);
-
                 monColis.setTournee(tournee);
                 ColisManager colisManager = new ColisManager(context);
                 colisManager.open();
@@ -129,16 +118,47 @@ public class Communication {
 
     }
 
-    public Chauffeur getChauffeurFromLogin(String login){
+   /* public Chauffeur getChauffeurFromLoginAsync(String login){
 
         Call<Chauffeur> call0 = apiService.getChauffeur(login);
-        try {
-            Log.d("loginChauffeur", " avant execute() ");
-            Response<Chauffeur> res= call0.execute();
+        call0.enqueue(new Callback<Chauffeur>() {
+            @Override
+            public void onResponse(Call<Chauffeur> call, Response<Chauffeur> response) {
+                int statusCode = response.code();
+                chauffeur = response.body();
+                Log.d("loginChauffeur", " ereur :"+response.errorBody());
+                Log.d("loginChauffeur", " ereur :"+chauffeur.toString());
+            }
 
-           // chauffeur =call0.execute().body();
-            Log.d("loginChauffeur", " dans getCjauffeur, recpetion : "+res.message());
-            Log.d("loginChauffeur", " dans getCjauffeur, recpetion : "+res.errorBody());
+            @Override
+            public void onFailure(Call<Chauffeur> call, Throwable t) {
+                Log.d("loginChauffeur", "2 / failed onfailure "+ t.getMessage());
+            }
+        });
+
+
+        return chauffeur;
+
+    }*/
+
+
+    //verifie que le chauffeur existe en bdd
+    public Exist chauffeurExist(String login){
+        Call<Exist> call0 = apiService.chauffeurExist(login);
+        try {
+            res =call0.execute().body();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        return res;
+
+    }
+
+    public Chauffeur getChauffeurFromLogin(String login){
+        Call<Chauffeur> call0 = apiService.getChauffeur(login);
+         try {
+             chauffeur =call0.execute().body();
+                Log.d("resultt","resultat : "+res.toString());
 
             } catch (IOException e1) {
             e1.printStackTrace();
@@ -148,7 +168,6 @@ public class Communication {
     }
 
     public void synchronizeToServer(){
-
 
         /*PositionColisManager positionColisManager=new PositionColisManager(context);
         positionColisManager.open();
@@ -168,21 +187,13 @@ public class Communication {
             @Override
             public void onResponse(Call<PositionColis> call, Response<PositionColis> response) {
                 int statusCode = response.code();
-                Log.d("resultatColis", " resultat colis : "+response.body());
-                PositionColis pc = response.body();
-                Log.d("resultatColis", " resultat colis : "+pc.toString());
-              /*Log.d("resultatColis", " resultat colis : "+response.message());
-                Log.d("resultatColis", String.valueOf(response.code()));
-                Log.d("resultatColis", response.errorBody().toString());*/
-
 
             }
 
             @Override
             public void onFailure(Call<PositionColis> call, Throwable t) {
                 Log.d("resultats", "2 / failed onfailure "+ t.getMessage());
-                Log.d("resultats", "2 / failed onfailure "+ t.toString());
-                Log.d("resultats", "2 / failed onfailure "+ t.getStackTrace());
+
             }
         });
     }

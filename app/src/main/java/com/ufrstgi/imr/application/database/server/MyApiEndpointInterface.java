@@ -4,6 +4,7 @@ package com.ufrstgi.imr.application.database.server;
 import com.ufrstgi.imr.application.object.ArrayPosition;
 import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Colis;
+import com.ufrstgi.imr.application.object.Exist;
 import com.ufrstgi.imr.application.object.Niveau;
 import com.ufrstgi.imr.application.object.PositionColis;
 import com.ufrstgi.imr.application.object.Tournee;
@@ -20,27 +21,24 @@ import retrofit2.http.Path;
  */
 public interface MyApiEndpointInterface {
 
-    //récuperation de la tournee depuis le chauffeur
+
+    //recupere le tournee du chauffeur
     @GET("tournee/{idChauffeur}")
     Call<Tournee> getTournee(@Path("idChauffeur") String idChauffeur);
+
+    //verifie que l'user exist en bdd
+    @GET("userExist/{loginChauffeur}")
+    Call<Exist> chauffeurExist(@Path("loginChauffeur") String loginChauffeur);
 
     //récuperation du chauffeur avec le login
     @GET("user/{loginChauffeur}")
     Call<Chauffeur> getChauffeur(@Path("loginChauffeur") String loginChauffeur);
 
-    //colis
-
-    @GET("colis/{colis}")
-    Call<Colis> getColis(@Path("colis") String idColis);
-
+    //recupere tous les colis de la tournee idcolis
     @GET("allColis/{colis}")
-    Call<List<Colis>> getAllColis(@Path("colis") String idColis);
+    Call<List<Colis>> getAllColis(@Path("colis") String idTournee);
 
-    /*@GET("niveaux")
-    Call<List<Niveau>> getAllNiveaux(@Path("niveau") String nomNiveau);*/
 
-    /*@GET("group/{id}/users")
-    Call<List<Niveau>> groupList(@Path("id") int groupId, @Query("sort") String sort);*/
 
     @POST("positionColis")
     Call<PositionColis> createPositionColis(@Body PositionColis position);

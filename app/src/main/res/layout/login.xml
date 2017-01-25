@@ -15,13 +15,29 @@
         android:textAlignment="center"
         android:textSize="36sp" />
 
+    <TextView
+        android:text="Login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvLogin"
+        android:textAlignment="center"
+        android:textSize="14sp" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:text="Login"
+        android:text=""
         android:ems="10"
         android:id="@+id/etLogin" />
+
+    <TextView
+        android:text="Password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvPassword"
+        android:textAlignment="center"
+        android:textSize="14sp" />
 
     <EditText
         android:layout_width="match_parent"
@@ -29,7 +45,7 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/etPassword"
-        android:text="Password" />
+        android:text="" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -50,4 +66,11 @@
             android:id="@+id/btCancel"
             android:layout_weight="1" />
     </LinearLayout>
+    <TextView
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvErreur"
+        android:textAlignment="center"
+        android:textSize="14sp" />
 </LinearLayout>
