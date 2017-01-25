@@ -37,14 +37,8 @@ public class FragmentFeuilleRoute extends Fragment {
     private String title;
     private int page;
 
-    // newInstance constructor for creating fragment with arguments
-    public static FragmentFeuilleRoute newInstance(int page, String title) {
-        FragmentFeuilleRoute fragmentFeuilleRoute = new FragmentFeuilleRoute();
-        Bundle args = new Bundle();
-        args.putInt("someInt", page);
-        args.putString("someTitle", title);
-        fragmentFeuilleRoute.setArguments(args);
-        return fragmentFeuilleRoute;
+    public FragmentFeuilleRoute () {
+
     }
 
 
@@ -55,9 +49,7 @@ public class FragmentFeuilleRoute extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        page = getArguments().getInt("someInt", 0);
-        title = getArguments().getString("someTitle");
-        setRetainInstance(true);
+
     }
 
     @Override

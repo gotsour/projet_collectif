@@ -8,4 +8,5 @@ import com.ufrstgi.imr.application.object.Chauffeur;
 
 public interface AsyncResponse {
     void processFinish(Chauffeur output);
+    void processFinish();
 }

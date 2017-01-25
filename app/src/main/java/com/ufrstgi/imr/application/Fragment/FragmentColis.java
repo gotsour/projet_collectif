@@ -41,13 +41,8 @@ public class FragmentColis extends Fragment{
     private int page;
 
     // newInstance constructor for creating fragment with arguments
-    public static FragmentColis newInstance(int page, String title) {
-        FragmentColis fragmentColis = new FragmentColis();
-        Bundle args = new Bundle();
-        args.putInt("someInt", page);
-        args.putString("someTitle", title);
-        fragmentColis.setArguments(args);
-        return fragmentColis;
+    public FragmentColis () {
+
     }
 
 
@@ -58,9 +53,7 @@ public class FragmentColis extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        page = getArguments().getInt("someInt", 0);
-        title = getArguments().getString("someTitle");
-        setRetainInstance(true);
+
     }
 
     @Override

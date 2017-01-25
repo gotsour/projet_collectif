@@ -107,7 +107,7 @@ public class TourneeManager {
     public Tournee getTournee() {
         // Retourne le niveau dont l'id est passé en paramètre
 
-        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM "+TABLE_NAME  , null); //" ORDER BY Date(substr(date_debut, 7, 4) || '-' || substr(date_debut, 1, 2) || '-' || substr(date_debut, 4, 2) || substr(date_debut, 11, 9)) DESC Limit 1 ", null);
         if (c.moveToFirst() && c.getCount()>0) {
             int idTournee =c.getInt(c.getColumnIndex(KEY_ID_TOURNEE));
             Date date_debut=new Date();

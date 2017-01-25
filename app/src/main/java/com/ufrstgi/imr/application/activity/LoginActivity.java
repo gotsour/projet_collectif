@@ -18,6 +18,7 @@ import com.ufrstgi.imr.application.database.local.TourneeManager;
 import com.ufrstgi.imr.application.database.server.Communication;
 import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Exist;
+import com.ufrstgi.imr.application.object.Tournee;
 
 /**
  * Created by Duduf on 23/01/2017.
@@ -43,8 +44,25 @@ public class LoginActivity extends Activity implements AsyncResponse{
         etPassword = (EditText)findViewById(R.id.etPassword);
         dialog = new ProgressDialog(LoginActivity.this);
 
+
+        Log.d("loginChauffeur", "oncreate : chargement tournée");
+        //verification tournee
+        TourneeManager tourneeManager = new TourneeManager(this);
+        tourneeManager.open();
+        Tournee tournee=tourneeManager.getTournee();
+        tourneeManager.close();
+
+        if(tournee!=null){
+            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+            finish();
+            startActivity(i);
+
+        }
+
+
         btLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Log.d("loginChauffeur", "Clique bouton verification serveur login : " +login);
                 login=etLogin.getText().toString();
                 VerificationServer verif= new VerificationServer();
                 verif.execute();
@@ -67,10 +85,12 @@ public class LoginActivity extends Activity implements AsyncResponse{
 
         if(output!=null) {
             if (output.getMot_de_passe().equals(etPassword.getText().toString())) {
-                Log.d("loginChauffeur", "user put extra : " + etLogin.getText().toString());
-                returnIntent.putExtra("user", etLogin.getText().toString());
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
+                //insertion des données
+                Log.d("loginChauffeur", "lancement insertion depuis serveur ");
+                SynchronizeFromServer sync = new SynchronizeFromServer(0);
+                sync.execute();
+                Log.d("loginChauffeur", "fin telechargement données du serveur ");
+
             } else {
                 new AlertDialog.Builder(this)
                         .setTitle("Erreur")
@@ -87,6 +107,14 @@ public class LoginActivity extends Activity implements AsyncResponse{
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         }
+    }
+
+    @Override
+    public void processFinish() {
+        Log.d("loginChauffeur", "insertion terminéee");
+        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+        finish();
+        startActivity(i);
     }
 
     public class VerificationServer extends AsyncTask<Void, Void, Chauffeur> {
@@ -117,6 +145,35 @@ public class LoginActivity extends Activity implements AsyncResponse{
         protected void onPostExecute(Chauffeur Res) {
             super.onPostExecute(Res);
             delegate.processFinish(Res);
+            dialog.dismiss();
+        }
+    }
+
+    public class SynchronizeFromServer extends AsyncTask<Void, Void, Void> {
+
+        int type; // 0-> create 1->update
+        public SynchronizeFromServer(int type) {
+            this.type=type;
+        }
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.setMessage("chargement des données ...");
+            dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
+        }
+
+        @Override
+        protected Void doInBackground(Void[] params) {
+            Communication sync=new Communication(LoginActivity.this);
+            sync.synchronizeFromServerSynchrone(login,type);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void message) {
+            super.onPostExecute(message);
+            delegate.processFinish();
             dialog.dismiss();
         }
     }

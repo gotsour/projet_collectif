@@ -33,10 +33,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.ufrstgi.imr.application.MainActivity;
 import com.ufrstgi.imr.application.R;
+import com.ufrstgi.imr.application.activity.SynchronizeFromServerTask;
 import com.ufrstgi.imr.application.database.local.ColisManager;
 import com.ufrstgi.imr.application.database.local.OperationManager;
 import com.ufrstgi.imr.application.database.local.TourneeManager;
+import com.ufrstgi.imr.application.database.server.Communication;
 import com.ufrstgi.imr.application.object.Colis;
 import com.ufrstgi.imr.application.object.Livraison;
 import com.ufrstgi.imr.application.object.Operation;
@@ -77,36 +80,21 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
 
     private String title;
     private int page;
-    public void setVisible(boolean res){
-        this.visible=res;
-    }
-    // newInstance constructor for creating fragment with arguments
-    public static FragmentNavigation newInstance(int page, String title) {
-        FragmentNavigation fragmentNavigation = new FragmentNavigation();
-        Bundle args = new Bundle();
-        args.putInt("someInt", page);
-        args.putString("PAGE 0", title);
-        fragmentNavigation.setArguments(args);
-        return fragmentNavigation;
+
+    public FragmentNavigation() {
+
     }
 
-
-    public void onDetach() {
-        super.onDetach();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        page = getArguments().getInt("someInt", 0);
-        title = getArguments().getString("PAGE 0");
-        setRetainInstance(true);
+        //setRetainInstance(true);
     }
 
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        try {
             rootView = inflater.inflate(R.layout.fragment_navigation, container, false);
             MapsInitializer.initialize(this.getActivity());
             mMapView = (MapView) rootView.findViewById(R.id.map);
@@ -118,10 +106,43 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             tvVille=(TextView) rootView.findViewById(R.id.tvVille);
             tvNombre=(TextView) rootView.findViewById(R.id.tvNombre);
             bValider=(Button) rootView.findViewById(R.id.bValider);
+
+
+            /*Log.d("loginChauffeur", "chargement sync debut fragment");
+
+
+
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("loginChauffeur", "avant lancement thread");
+                    Communication sync=new Communication(getActivity());
+                    sync.synchronizeFromServerSynchrone("chauffeur0001",0);
+                    Log.d("loginChauffeur", "apres lancement thread");
+                }
+            });
+
+            t.start(); // spawn thread
+
+            t.join();
+
+
+
+            Log.d("loginChauffeur", "fin chargement sync debut fragment");
+           /* Log.d("loginChauffeur", "chargement sync debut fragment");
+            SynchronizeFromServerTask sync = new SynchronizeFromServerTask(1,"chauffeur0001",getActivity());
+            sync.execute();
+            Log.d("loginChauffeur", "fin chargement sync debut fragment");*/
+
+
+
+            Log.d("loginChauffeur", "chargement bdd dans fragment navigation");
             TourneeManager tourneeManager = new TourneeManager(getActivity());
             tourneeManager.open();
             idTournee=tourneeManager.getTournee().getId_tournee();
             tourneeManager.close();
+
+            Log.d("loginChauffeur","fin chargement bdd dans fragment navigation");
 
             loadData();
 
@@ -147,11 +168,11 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
 
 
 
-        } catch (InflateException e) {
-            Log.e(TAG, "Inflate exception");
-        }
+
+
         return rootView;
     }
+
     public void valideColis(){
         OperationManager operationManager = new OperationManager(getActivity());
         operationManager.open();
