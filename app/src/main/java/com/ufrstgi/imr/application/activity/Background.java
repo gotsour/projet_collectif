@@ -25,9 +25,11 @@ public class Background {
     Context context;
     Timer timer;
     boolean aClique;
+    ServerHTTP serverHTTP;
 
-    public Background(Context context) {
+    public Background(Context context, ServerHTTP serverHTTP) {
         this.context = context;
+        this.serverHTTP = serverHTTP;
         setRepeatingAsyncTask();
     }
 
@@ -40,7 +42,7 @@ public class Background {
                 handler.post(new Runnable() {
                     public void run() {
                         try {
-                            BackgroundTasks routine = new BackgroundTasks(context);
+                            BackgroundTasks routine = new BackgroundTasks(context, serverHTTP);
                             String result = routine.execute().get();
                             Log.d("Test", result);
                             showDialog(result);
@@ -73,6 +75,18 @@ public class Background {
             new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
                     .setTitleText("Access Point!")
                     .setContentText("Please turn your Access Point!")
+                    .setConfirmText("I will see to it")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+        } else if (result == "temp") {
+            new SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+                    .setTitleText("Temperature!")
+                    .setContentText("It seems that it's too hot there!")
                     .setConfirmText("I will see to it")
                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                         @Override

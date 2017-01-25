@@ -98,8 +98,9 @@ public class MainActivity extends AppCompatActivity
         tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
         tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
 
+        serverHTTP = new ServerHTTP(PORT, getApplicationContext());
         // Lancement du background toute les x intervalles de temps
-        Background background = new Background(this);
+        Background background = new Background(this, serverHTTP);
 
        // use own OnPageChangeListener
         viewPager.addOnPageChangeListener(new MyPageScrollListener(tabLayout));
@@ -247,7 +248,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResume() {
         super.onResume();
-        serverHTTP = new ServerHTTP(PORT, getApplicationContext());
     }
 
     @Override
