@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -31,11 +32,13 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ufrstgi.imr.application.MainActivity;
 import com.ufrstgi.imr.application.R;
 import com.ufrstgi.imr.application.activity.SynchronizeFromServerTask;
+import com.ufrstgi.imr.application.activity.Updateable;
 import com.ufrstgi.imr.application.database.local.ColisManager;
 import com.ufrstgi.imr.application.database.local.OperationManager;
 import com.ufrstgi.imr.application.database.local.TourneeManager;
@@ -60,7 +63,7 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by Duduf on 11/01/2017.
  */
 
-public class FragmentNavigation extends Fragment implements OnMapReadyCallback, LocationListener {
+public class FragmentNavigation extends Fragment implements OnMapReadyCallback, LocationListener, Updateable {
 
     private View rootView;
     GoogleMap myMap;
@@ -77,6 +80,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     Button bValider;
     boolean visible=false;
     int idTournee;
+    LatLngBounds bounds;
 
     private String title;
     private int page;
@@ -155,9 +159,9 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
                         double latitude = gps.getLatitude();
                         double longitude = gps.getLongitude();*/
                         //Log.d("positionLatlong", "latitude : "+latitude+ " longitude : "+longitude);
-
-                        connectAsyncTask test = new connectAsyncTask(makeURL(location.getLatitude(), location.getLongitude(),
-                                colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude()), getActivity());
+                        String url =makeURL(location.getLatitude(), location.getLongitude(),
+                                colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
+                        connectAsyncTask test = new connectAsyncTask(url, getActivity(),true);
                         test.execute();
                     }
                     /*connectAsyncTask test = new connectAsyncTask(makeURL(47.282925, 5.993049, 47.282928, 5.993042), getActivity());
@@ -195,6 +199,8 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     }
 
     public void loadData(){
+        Log.d("loginChauffeur","load data ");
+
         ColisManager colisManager = new ColisManager(getActivity());
         colisManager.open();
         listeColis = colisManager.getNextColis(idTournee);
@@ -262,10 +268,12 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         }
 
         //lancement tracage itinéraire
-        if(colis!=null & visible) {
-            connectAsyncTask test = new connectAsyncTask(makeURL(location.getLatitude(), location.getLongitude(),
-                    colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude()), this.getActivity());
+        if(colis!=null ) {
+            String url =makeURL(location.getLatitude(), location.getLongitude(),
+                    colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
+            connectAsyncTask test = new connectAsyncTask(url, getActivity(),false);
             test.execute();
+
         }
 
     }
@@ -327,10 +335,26 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         try {
             //Tranform the string into a json object
             final JSONObject json = new JSONObject(result);
+            Log.d("location000", "location false "+result.toString());
             JSONArray routeArray = json.getJSONArray("routes");
             JSONObject routes = routeArray.getJSONObject(0);
+            Log.d("location000", "location object 0 "+routeArray.getJSONObject(0).toString());
+            Log.d("location000", "location object bounds "+routeArray.getJSONObject(0).getJSONObject("bounds").toString());
             JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
             String encodedString = overviewPolylines.getString("points");
+
+            Double northLat=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("northeast").getDouble("lat");
+            Double northLng=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("northeast").getDouble("lng");
+            Double southLat=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("southwest").getDouble("lat");
+            Double southLng=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("southwest").getDouble("lng");
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            builder.include(new LatLng(northLat,northLng));
+            builder.include(new LatLng(southLat,southLng));
+            bounds = builder.build();
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+            myMap.moveCamera(cu);
+
+
             List<LatLng> list = decodePoly(encodedString);
             myMap.clear();
             Polyline line = myMap.addPolyline(new PolylineOptions()
@@ -400,22 +424,31 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
 
     }
 
+    @Override
+    public void update() {
+
+    }
+
     public  class connectAsyncTask extends AsyncTask<Void, Void, String> {
         private ProgressDialog progressDialog;
         String url;
         Context context;
-        connectAsyncTask(String urlPass, Context context){
+        boolean dialog;
+
+        connectAsyncTask(String urlPass, Context context, boolean dialog){
             url = urlPass;
             this.context=context;
+            this.dialog=dialog;
         }
         @Override
         protected void onPreExecute() {
-            // TODO Auto-generated method stub
             super.onPreExecute();
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("Fetching route, Please wait...");
-            progressDialog.setIndeterminate(true);
-            progressDialog.show();
+            if(dialog) {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage("Fetching route, Please wait...");
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
+            }
         }
         @Override
         protected String doInBackground(Void... params) {
@@ -426,7 +459,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            progressDialog.dismiss();
+            if(dialog)progressDialog.dismiss();
             if(result!=null){
                 drawPath(result);
             }

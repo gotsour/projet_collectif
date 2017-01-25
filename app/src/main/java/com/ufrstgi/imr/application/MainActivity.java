@@ -31,6 +31,7 @@ import com.ufrstgi.imr.application.activity.Background;
 import com.ufrstgi.imr.application.activity.LoginActivity;
 import com.ufrstgi.imr.application.activity.ServerHTTP;
 import com.ufrstgi.imr.application.activity.SettingsActivity;
+import com.ufrstgi.imr.application.activity.Updateable;
 import com.ufrstgi.imr.application.database.local.*;
 import com.ufrstgi.imr.application.database.server.Communication;
 import com.ufrstgi.imr.application.object.*;
@@ -45,19 +46,14 @@ public class MainActivity extends AppCompatActivity
 
     private ServerHTTP serverHTTP;
     private final static int PORT = 8080;
-    List<Colis> mesColis;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     String idUSer;
     TextView tvIdChauffeur;
     TextView tvIdCamion;
     Tournee tournee;
-    ViewPagerAdapter adapterViewPager;
     ProgressDialog dialog;
-    ViewPager.OnPageChangeListener pageChangeListener;
-    FragmentNavigation mFragmentNavigation;
-    FragmentColis mFragmentColis;
-    FragmentFeuilleRoute mFragmentFeuilleRoute;
+    ViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,15 +82,14 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         tvIdChauffeur = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvIdChauffeur);
         tvIdCamion = (TextView) navigationView.getHeaderView(0).findViewById(R.id.tvIdCamion);
+        dialog = new ProgressDialog(MainActivity.this);
 
         TourneeManager tourneeManager = new TourneeManager(this);
         tourneeManager.open();
         tournee=tourneeManager.getTournee();
         tourneeManager.close();
-
-        Log.d("loginChauffeur", "base deja existante");
         idUSer = tournee.getChauffeur().getId_chauffeur();
-        Log.d("loginChauffeur", "tournee recupérée");
+
 
 
         //update bdd
@@ -104,19 +99,90 @@ public class MainActivity extends AppCompatActivity
         tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
 
         // Lancement du background toute les x intervalles de temps
-          Background background = new Background(this);
+        Background background = new Background(this);
 
+       // use own OnPageChangeListener
+        viewPager.addOnPageChangeListener(new MyPageScrollListener(tabLayout));
 
+       //Manually add tabs, for example:
+     /*   tabLayout.addTab(tabLayout.newTab().setText(viewPager.getAdapter().getPageTitle(0)));
+        tabLayout.addTab(tabLayout.newTab().setText(viewPager.getAdapter().getPageTitle(1)));
+        tabLayout.addTab(tabLayout.newTab().setText(viewPager.getAdapter().getPageTitle(2)));*/
 
+        // use own OnTabSelectedListener
+        tabLayout.setOnTabSelectedListener(new MyOnTabSelectedListener());
 
     }
 
+    private class MyPageScrollListener implements ViewPager.OnPageChangeListener {
+        private TabLayout mTabLayout;
+
+        public MyPageScrollListener(TabLayout tabLayout) {
+            this.mTabLayout = tabLayout;
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if(mTabLayout != null) {
+                mTabLayout.getTabAt(position).select();
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    }
+
+    private class MyOnTabSelectedListener implements TabLayout.OnTabSelectedListener {
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            int position = tab.getPosition();
+            if (viewPager.getCurrentItem() != position) {
+                viewPager.setCurrentItem(position, true);
+                //Log.d("loginChauffeur", "item selected ################## "+position);
+               /* Updateable fragment = (Updateable)mAdapter.getItem(position);
+                if (fragment != null) {
+                    fragment. update();
+                }*/
+                Updateable fragment = (Updateable)adapter.getItem(position);
+                if (fragment != null) {
+                    Log.d("loginChauffeur", "item selected ################## "+position);
+                    fragment.update();
+                }
+                /*if(position==0){
+                    FragmentNavigation fragment =(FragmentNavigation)adapter.getItem(0);
+                    fragment.loadData();
+                }*/
+
+
+            }
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
+        }
+    }
+
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new FragmentNavigation(), "Navigation");
         adapter.addFragment(new FragmentColis(), "Colis");
         adapter.addFragment(new FragmentFeuilleRoute(), "roadMap");
         viewPager.setAdapter(adapter);
+        //viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+       // onTabSelectedListener(viewPager);
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -147,9 +213,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-
-
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -167,19 +230,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             viewPager.setCurrentItem(0);
         } else if (id == R.id.nav_gallery) {
-            //force update
-            SynchronizeFromServer sync = new SynchronizeFromServer(1);
-            sync.execute();
-            mFragmentColis.loadData();
-
             viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
-            //force create
-            deleteDatabase("db.sqlite");
-            SynchronizeFromServer sync = new SynchronizeFromServer(0);
-            sync.execute();
-            mFragmentNavigation.loadData();
-
             viewPager.setCurrentItem(2);
 
         } else if (id == R.id.nav_manage) {
