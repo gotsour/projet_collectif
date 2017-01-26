@@ -3,7 +3,6 @@ package com.ufrstgi.imr.application.Fragment;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Criteria;
@@ -12,12 +11,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.provider.SyncStateContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,16 +31,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.ufrstgi.imr.application.MainActivity;
 import com.ufrstgi.imr.application.R;
-import com.ufrstgi.imr.application.activity.SynchronizeFromServerTask;
 import com.ufrstgi.imr.application.activity.Updateable;
 import com.ufrstgi.imr.application.database.local.ColisManager;
 import com.ufrstgi.imr.application.database.local.OperationManager;
 import com.ufrstgi.imr.application.database.local.TourneeManager;
-import com.ufrstgi.imr.application.database.server.Communication;
 import com.ufrstgi.imr.application.object.Colis;
-import com.ufrstgi.imr.application.object.Livraison;
 import com.ufrstgi.imr.application.object.Operation;
 import com.ufrstgi.imr.application.object.Reception;
 
@@ -56,7 +48,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.content.ContentValues.TAG;
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
@@ -78,25 +71,18 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     TextView tvVille;
     TextView tvNombre;
     Button bValider;
-    boolean visible=false;
     int idTournee;
     LatLngBounds bounds;
-
-    private String title;
-    private int page;
+    String infoOperation;
+    boolean allreadyOpen;
 
     public FragmentNavigation() {
-
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setRetainInstance(true);
     }
-
-
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             rootView = inflater.inflate(R.layout.fragment_navigation, container, false);
@@ -111,71 +97,33 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             tvNombre=(TextView) rootView.findViewById(R.id.tvNombre);
             bValider=(Button) rootView.findViewById(R.id.bValider);
 
-
-            /*Log.d("loginChauffeur", "chargement sync debut fragment");
-
-
-
-            Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("loginChauffeur", "avant lancement thread");
-                    Communication sync=new Communication(getActivity());
-                    sync.synchronizeFromServerSynchrone("chauffeur0001",0);
-                    Log.d("loginChauffeur", "apres lancement thread");
-                }
-            });
-
-            t.start(); // spawn thread
-
-            t.join();
-
-
-
-            Log.d("loginChauffeur", "fin chargement sync debut fragment");
-           /* Log.d("loginChauffeur", "chargement sync debut fragment");
-            SynchronizeFromServerTask sync = new SynchronizeFromServerTask(1,"chauffeur0001",getActivity());
-            sync.execute();
-            Log.d("loginChauffeur", "fin chargement sync debut fragment");*/
-
-
-
-            Log.d("loginChauffeur", "chargement bdd dans fragment navigation");
             TourneeManager tourneeManager = new TourneeManager(getActivity());
             tourneeManager.open();
             idTournee=tourneeManager.getTournee().getId_tournee();
             tourneeManager.close();
 
-            Log.d("loginChauffeur","fin chargement bdd dans fragment navigation");
-
-            loadData();
+            update();
 
             bValider.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     valideColis();
-                    loadData();
-                    if(colis!=null){
-                        /*GPSTracker gps = new GPSTracker(getActivity());
-                        double latitude = gps.getLatitude();
-                        double longitude = gps.getLongitude();*/
-                        //Log.d("positionLatlong", "latitude : "+latitude+ " longitude : "+longitude);
-                        String url =makeURL(location.getLatitude(), location.getLongitude(),
+                    update();
+                    allreadyOpen =false;
+                    if(colis!=null) {
+                        String url = makeURL(location.getLatitude(), location.getLongitude(),
                                 colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
-                        connectAsyncTask test = new connectAsyncTask(url, getActivity(),true);
+                        connectAsyncTask test = new connectAsyncTask(url, getActivity(), true);
                         test.execute();
+
+
                     }
-                    /*connectAsyncTask test = new connectAsyncTask(makeURL(47.282925, 5.993049, 47.282928, 5.993042), getActivity());
-                    test.execute();*/
 
                 }
             });
 
-
-
-
-
         return rootView;
     }
+
 
     public void valideColis(){
         OperationManager operationManager = new OperationManager(getActivity());
@@ -184,23 +132,61 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
            //valide l'operation en mettant une date reelle
             Operation operation=  listeColis.get(i).getCurrentOperation();
             operation.setDate_reelle(Calendar.getInstance().getTime());
-
             operationManager.updateOperation(operation);
             Log.d("resultat","valide colis : "+i);
-
         }
         if(listeColis.size()==0){
             colis=null;
         }
 
-
-
         operationManager.close();
     }
 
-    public void loadData(){
-        Log.d("loginChauffeur","load data ");
+    public void onMapReady(GoogleMap googleMap) {
+        myMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+        }
+        myMap.setMyLocationEnabled(true);
+
+        //affiche bouton + - zoom
+        myMap.getUiSettings().setZoomControlsEnabled(true);
+
+        //récupération position
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+
+        //affiche bousolle en haut à gauche
+        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);//locationManager.getBestProvider(criteria, false));
+        if (location != null) {
+            myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                    .zoom(18)                   // Sets the zoom
+                    // .bearing(90)                // Sets the orientation of the camera to east
+                    //.tilt(40)                   // Sets the tilt of the camera to 30 degrees
+                    .build();                   // Creates a CameraPosition from the builder
+            myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            Log.d("localisation", "location false : "+location.toString());
+
+        } else {
+            Log.d("location", "location false");
+        }
+
+        //lancement tracage itinéraire
+        if(colis!=null) {
+            String url = makeURL(location.getLatitude(), location.getLongitude(),
+                    colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
+            connectAsyncTask test = new connectAsyncTask(url, getActivity(), false);
+            test.execute();
+
+
+        }
+    }
+
+    @Override
+    public void update() {
         ColisManager colisManager = new ColisManager(getActivity());
         colisManager.open();
         listeColis = colisManager.getNextColis(idTournee);
@@ -234,49 +220,48 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         tvNombre.setText(nbLivraison+ " colis à livrer \n"+ nbReception + " colis à récuperer");
     }
 
-    public void onMapReady(GoogleMap googleMap) {
-        //googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        myMap = googleMap;
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-        }
-        myMap.setMyLocationEnabled(true);
+    public  class connectAsyncTask extends AsyncTask<Void, Void, String> {
+        private ProgressDialog progressDialog;
+        String url;
+        Context context;
+        boolean dialog;
 
-        //affiche bouton + - zoom
-        myMap.getUiSettings().setZoomControlsEnabled(true);
-
-        //récupération position
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        //affiche bousolle en haut à gauche
-        location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);//locationManager.getBestProvider(criteria, false));
-        if (location != null) {
-            myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
-
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
-                    .zoom(18)                   // Sets the zoom
-                    // .bearing(90)                // Sets the orientation of the camera to east
-                    //.tilt(40)                   // Sets the tilt of the camera to 30 degrees
-                    .build();                   // Creates a CameraPosition from the builder
-           // myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            Log.d("localisation", "location false : "+location.toString());
-
-        } else {
-            Log.d("location", "location false");
+        connectAsyncTask(String urlPass, Context context, boolean dialog) {
+            url = urlPass;
+            this.context = context;
+            this.dialog = dialog;
         }
 
-        //lancement tracage itinéraire
-        if(colis!=null ) {
-            String url =makeURL(location.getLatitude(), location.getLongitude(),
-                    colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
-            connectAsyncTask test = new connectAsyncTask(url, getActivity(),false);
-            test.execute();
-
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (dialog) {
+                progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage("Fetching route, Please wait...");
+                progressDialog.setIndeterminate(true);
+                progressDialog.show();
+            }
         }
 
+        @Override
+        protected String doInBackground(Void... params) {
+            JSONParser jParser = new JSONParser();
+            String json = jParser.getJSONFromUrl(url);
+            return json;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if(dialog)progressDialog.dismiss();
+            if(result!=null){
+                drawPath(result);
+            }
+
+        }
     }
+
 
     public String makeURL(double sourcelat, double sourcelog, double destlat, double destlog) {
         StringBuilder urlString = new StringBuilder();
@@ -339,9 +324,39 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             JSONArray routeArray = json.getJSONArray("routes");
             JSONObject routes = routeArray.getJSONObject(0);
             Log.d("location000", "location object 0 "+routeArray.getJSONObject(0).toString());
-            Log.d("location000", "location object bounds "+routeArray.getJSONObject(0).getJSONObject("bounds").toString());
+            //Log.d("location000", "location object bounds "+routeArray.getJSONObject(0).getJSONObject("bounds").toString());
             JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
             String encodedString = overviewPolylines.getString("points");
+
+          /*  Log.d("location000","distance "+routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("distance").getString("text"));
+            Log.d("location000","depart "+routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getString("start_address"));
+            Log.d("location000","depart "+routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("start_address").toString());
+*/
+            String depart =routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getString("start_address");
+            String arrivee =routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getString("end_address");
+            String distance =routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("distance").getString("text");
+            String temps =routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("duration").getString("text");
+            infoOperation="Départ : "+depart+"\n Arrivé : "+arrivee+"\n Distance :"+distance+"\n Durée :"+temps;
+            Log.d("location000", " info operation :"+infoOperation);
+            Log.d("location000","apres thread ");
+
+            if(!allreadyOpen){
+                new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("Nouvelle opération :")
+                        .setContentText(infoOperation)
+                        .setConfirmText("ok")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+            }
+            allreadyOpen =true;
+            Log.d("location000","apres thread ");
+
+
 
             Double northLat=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("northeast").getDouble("lat");
             Double northLng=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("northeast").getDouble("lng");
@@ -422,48 +437,6 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
     @Override
     public void onProviderDisabled(String provider) {
 
-    }
-
-    @Override
-    public void update() {
-
-    }
-
-    public  class connectAsyncTask extends AsyncTask<Void, Void, String> {
-        private ProgressDialog progressDialog;
-        String url;
-        Context context;
-        boolean dialog;
-
-        connectAsyncTask(String urlPass, Context context, boolean dialog){
-            url = urlPass;
-            this.context=context;
-            this.dialog=dialog;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            if(dialog) {
-                progressDialog = new ProgressDialog(context);
-                progressDialog.setMessage("Fetching route, Please wait...");
-                progressDialog.setIndeterminate(true);
-                progressDialog.show();
-            }
-        }
-        @Override
-        protected String doInBackground(Void... params) {
-            JSONParser jParser = new JSONParser();
-            String json = jParser.getJSONFromUrl(url);
-            return json;
-        }
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if(dialog)progressDialog.dismiss();
-            if(result!=null){
-                drawPath(result);
-            }
-        }
     }
 
 }

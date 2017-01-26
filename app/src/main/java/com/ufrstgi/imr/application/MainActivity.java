@@ -90,24 +90,18 @@ public class MainActivity extends AppCompatActivity
         tourneeManager.close();
         idUSer = tournee.getChauffeur().getId_chauffeur();
 
-
-
         //update bdd
        /* SynchronizeFromServer sync = new SynchronizeFromServer(1);
         sync.execute();*/
+
         tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
         tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
 
         // Lancement du background toute les x intervalles de temps
-        Background background = new Background(this);
+        Background background = new Background(this,idUSer);
 
        // use own OnPageChangeListener
         viewPager.addOnPageChangeListener(new MyPageScrollListener(tabLayout));
-
-       //Manually add tabs, for example:
-     /*   tabLayout.addTab(tabLayout.newTab().setText(viewPager.getAdapter().getPageTitle(0)));
-        tabLayout.addTab(tabLayout.newTab().setText(viewPager.getAdapter().getPageTitle(1)));
-        tabLayout.addTab(tabLayout.newTab().setText(viewPager.getAdapter().getPageTitle(2)));*/
 
         // use own OnTabSelectedListener
         tabLayout.setOnTabSelectedListener(new MyOnTabSelectedListener());

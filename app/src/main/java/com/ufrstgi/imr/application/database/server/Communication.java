@@ -118,29 +118,6 @@ public class Communication {
 
     }
 
-   /* public Chauffeur getChauffeurFromLoginAsync(String login){
-
-        Call<Chauffeur> call0 = apiService.getChauffeur(login);
-        call0.enqueue(new Callback<Chauffeur>() {
-            @Override
-            public void onResponse(Call<Chauffeur> call, Response<Chauffeur> response) {
-                int statusCode = response.code();
-                chauffeur = response.body();
-                Log.d("loginChauffeur", " ereur :"+response.errorBody());
-                Log.d("loginChauffeur", " ereur :"+chauffeur.toString());
-            }
-
-            @Override
-            public void onFailure(Call<Chauffeur> call, Throwable t) {
-                Log.d("loginChauffeur", "2 / failed onfailure "+ t.getMessage());
-            }
-        });
-
-
-        return chauffeur;
-
-    }*/
-
 
     //verifie que le chauffeur existe en bdd
     public Exist chauffeurExist(String login){
@@ -167,12 +144,8 @@ public class Communication {
 
     }
 
+    //pas utilisé
     public void synchronizeToServer(){
-
-        /*PositionColisManager positionColisManager=new PositionColisManager(context);
-        positionColisManager.open();
-        ArrayPosition array = new ArrayPosition(positionColisManager.getAllPositionColis());
-        positionColisManager.close();**/
 
         PositionColisManager positionColisManager=new PositionColisManager(context);
         positionColisManager.open();
