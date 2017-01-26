@@ -181,8 +181,8 @@ public class ColisManager {
         values.put(KEY_ADRESSE_MAC, colis.getAdresse_mac());
         values.put(KEY_POIDS_COLIS, colis.getPoids_colis());
         values.put(KEY_VOLUME_COLIS, colis.getVolume_colis());
-        values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
-        values.put(KEY_TEMPERATURE_COLIS, colis.getTemperature_colis());
+        //values.put(KEY_NIVEAU_BATTERIE_COLIS, colis.getNiveau_batterie_colis());
+        //values.put(KEY_TEMPERATURE_COLIS, colis.getTemperature_colis());
         values.put(KEY_CAPACITE_CHOC_COLIS, colis.getCapacite_choc_colis());
         values.put(KEY_ID_NIVEAU, colis.getNiveau().getId_niveau());
         values.put(KEY_ID_LIVRAISON, colis.getLivraison().getId_operation());

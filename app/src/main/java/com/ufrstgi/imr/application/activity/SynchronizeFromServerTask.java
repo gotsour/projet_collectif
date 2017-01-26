@@ -25,9 +25,8 @@ public class SynchronizeFromServerTask extends AsyncTask<Void, Void, Void> {
     }
 
     protected void onPreExecute() {
-        Log.d("loginChauffeur", "On preexc thread async task");
         super.onPreExecute();
-        dialog.setMessage("chargement des données ...");
+        dialog.setMessage("Loading data from server ...");
         dialog.show();
         dialog.setCanceledOnTouchOutside(false);
 
@@ -35,7 +34,6 @@ public class SynchronizeFromServerTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void[] params) {
-        Log.d("loginChauffeur", "debut thread async task do in background");
         Communication sync=new Communication(context);
         sync.synchronizeFromServerSynchrone(login,type);
         return null;
@@ -44,7 +42,6 @@ public class SynchronizeFromServerTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void message) {
         super.onPostExecute(message);
-        Log.d("loginChauffeur", "on post thread async task");
         dialog.dismiss();
     }
 }

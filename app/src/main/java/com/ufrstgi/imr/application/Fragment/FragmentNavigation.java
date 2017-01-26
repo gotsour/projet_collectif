@@ -133,7 +133,6 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             Operation operation=  listeColis.get(i).getCurrentOperation();
             operation.setDate_reelle(Calendar.getInstance().getTime());
             operationManager.updateOperation(operation);
-            Log.d("resultat","valide colis : "+i);
         }
         if(listeColis.size()==0){
             colis=null;
@@ -168,7 +167,6 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
                     //.tilt(40)                   // Sets the tilt of the camera to 30 degrees
                     .build();                   // Creates a CameraPosition from the builder
             myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            Log.d("localisation", "location false : "+location.toString());
 
         } else {
             Log.d("location", "location false");

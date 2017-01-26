@@ -61,7 +61,6 @@ public class FragmentFeuilleRoute extends Fragment implements Updateable {
 
     @Override
     public void update() {
-        Log.d("logMessage", "loaddata launch feuille de route");
         OperationManager operationManager = new OperationManager(getActivity());
         operationManager.open();
         mesOperations = operationManager.getAllOperation();

@@ -20,6 +20,8 @@ import com.ufrstgi.imr.application.object.Chauffeur;
 import com.ufrstgi.imr.application.object.Exist;
 import com.ufrstgi.imr.application.object.Tournee;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by Duduf on 23/01/2017.
  */
@@ -92,26 +94,36 @@ public class LoginActivity extends Activity implements AsyncResponse{
                 Log.d("loginChauffeur", "fin telechargement données du serveur ");
 
             } else {
-                new AlertDialog.Builder(this)
-                        .setTitle("Erreur")
-                        .setMessage("Mot de passe incorect ")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                        .setTitleText("Error")
+                        .setContentText("Wrong password")
+                        .setConfirmText("Ok")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
                         .show();
             }
         }
         else{
-
-            new AlertDialog.Builder(this)
-                    .setTitle("Erreur")
-                    .setMessage("Login inconnu")
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+            new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Error")
+                    .setContentText("Unknown login")
+                    .setConfirmText("Ok")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
                     .show();
         }
     }
 
     @Override
     public void processFinish() {
-        Log.d("loginChauffeur", "insertion terminéee");
         Intent i = new Intent(LoginActivity.this, MainActivity.class);
         finish();
         startActivity(i);
@@ -125,7 +137,7 @@ public class LoginActivity extends Activity implements AsyncResponse{
         protected void onPreExecute() {
 
             super.onPreExecute();
-            dialog.setMessage("Connexion en cours");
+            dialog.setMessage("Connexion in progress ...");
             dialog.show();
             dialog.setCanceledOnTouchOutside(false);
         }
@@ -158,7 +170,7 @@ public class LoginActivity extends Activity implements AsyncResponse{
 
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.setMessage("chargement des données ...");
+            dialog.setMessage("Loading ...");
             dialog.show();
             dialog.setCanceledOnTouchOutside(false);
         }

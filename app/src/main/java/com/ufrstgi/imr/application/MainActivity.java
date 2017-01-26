@@ -140,21 +140,10 @@ public class MainActivity extends AppCompatActivity
             int position = tab.getPosition();
             if (viewPager.getCurrentItem() != position) {
                 viewPager.setCurrentItem(position, true);
-                //Log.d("loginChauffeur", "item selected ################## "+position);
-               /* Updateable fragment = (Updateable)mAdapter.getItem(position);
-                if (fragment != null) {
-                    fragment. update();
-                }*/
                 Updateable fragment = (Updateable)adapter.getItem(position);
                 if (fragment != null) {
-                    Log.d("loginChauffeur", "item selected ################## "+position);
                     fragment.update();
                 }
-                /*if(position==0){
-                    FragmentNavigation fragment =(FragmentNavigation)adapter.getItem(0);
-                    fragment.loadData();
-                }*/
-
 
             }
         }
@@ -176,8 +165,6 @@ public class MainActivity extends AppCompatActivity
         adapter.addFragment(new FragmentColis(), "Colis");
         adapter.addFragment(new FragmentFeuilleRoute(), "roadMap");
         viewPager.setAdapter(adapter);
-        //viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-       // onTabSelectedListener(viewPager);
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -228,7 +215,6 @@ public class MainActivity extends AppCompatActivity
             viewPager.setCurrentItem(1);
         } else if (id == R.id.nav_slideshow) {
             viewPager.setCurrentItem(2);
-
         } else if (id == R.id.nav_manage) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
