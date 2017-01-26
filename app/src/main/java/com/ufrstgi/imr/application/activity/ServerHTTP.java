@@ -30,6 +30,10 @@ import fi.iki.elonen.NanoHTTPD;
 public class ServerHTTP extends NanoHTTPD {
 
     private Context context;
+    public String temperature;
+    public String niveauBatterie;
+    public String latitude;
+    public String longitude;
 
     public ServerHTTP(int port, Context context) {
         super(port);
@@ -90,9 +94,10 @@ public class ServerHTTP extends NanoHTTPD {
      */
     private void handleRequest(String postBody) {
         try {
-            String message = getRequest("message", postBody);
-            String fichier = getRequest("fichier", postBody);
-            String latitude = getRequest("latitude", postBody);
+            temperature = getRequest("temperature", postBody);
+            niveauBatterie = getRequest("niveauBatterie", postBody);
+            latitude = getRequest("latitude", postBody);
+            longitude = getRequest("longitude", postBody);
         } catch (UnsupportedEncodingException e) {
             Log.d("ERROR", "L'URL a mal été décodée");
             e.printStackTrace();
@@ -121,12 +126,14 @@ public class ServerHTTP extends NanoHTTPD {
      * @return String correspondant à l'argument souhaité dans l'URL
      * @throws UnsupportedEncodingException
      */
-    private String getRequest(String argument, String postBody) throws UnsupportedEncodingException {
+    public String getRequest(String argument, String postBody) throws UnsupportedEncodingException {
         final Map<String, List<String>> query_pairs = splitQuery(postBody);
         String decoded = query_pairs.get(argument).toString().replaceAll("\\[", "").replaceAll("\\]","");
         Log.d(argument, decoded);
         return decoded;
     }
 
-
+    public String getTemperature() {
+        return temperature;
+    }
 }

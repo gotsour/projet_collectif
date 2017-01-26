@@ -10,8 +10,10 @@ import android.util.Log;
 
 import com.ufrstgi.imr.application.MainActivity;
 import com.ufrstgi.imr.application.database.local.ColisManager;
+import com.ufrstgi.imr.application.database.local.TourneeManager;
 import com.ufrstgi.imr.application.object.ClientScanResult;
 import com.ufrstgi.imr.application.object.Colis;
+import com.ufrstgi.imr.application.object.Tournee;
 import com.ufrstgi.imr.application.object.WifiApManager;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,9 +34,15 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 public class BackgroundTasks  extends AsyncTask<Void, String, String> {
 
     static Context context;
+    ServerHTTP serverHTTP;
 
     public BackgroundTasks(Context context) {
         this.context = context;
+    }
+
+    public BackgroundTasks(Context context, ServerHTTP serverHTTP) {
+        this.context = context;
+        this.serverHTTP = serverHTTP;
     }
 
     @Override
@@ -54,6 +62,12 @@ public class BackgroundTasks  extends AsyncTask<Void, String, String> {
             // Recupération du nombre de Colis dans la base de données
             ArrayList<String> mesAdresseMac = new ArrayList<>();
             // On requêtes les adresses MAC des colis de la base et on les compare à ceux du tableaux de clients
+            int idTournee;
+            TourneeManager tourneeManager = new TourneeManager(context);
+            tourneeManager.open();
+            idTournee = tourneeManager.getTournee().getId_tournee();
+            tourneeManager.close();
+
             ColisManager colisManager = new ColisManager(context);
             colisManager.open();
             // TODO : Prendre l'id de la tournée qui va bien
@@ -83,6 +97,16 @@ public class BackgroundTasks  extends AsyncTask<Void, String, String> {
                 // Il faut alerter le chauffeur
                 Log.d("Test", "Too much Colis : " + adressesMacClient.size());
                 error = "Too Much "+adressesMacClient.size();
+            }
+
+            // On regarde la temperature des colis
+            try {
+                String temperature = serverHTTP.getTemperature();
+                if (Float.parseFloat(temperature) > 40) {
+                    error = "temp";
+                }
+            } catch (NullPointerException e) {
+                Log.d("Test", "Temperature not initialised yet");
             }
 
         } else {
