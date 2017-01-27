@@ -37,6 +37,7 @@ public class LoginActivity extends Activity implements AsyncResponse{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //deleteDatabase("db.sqlite");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         delegate = this;

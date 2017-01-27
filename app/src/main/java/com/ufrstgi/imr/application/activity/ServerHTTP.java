@@ -94,7 +94,12 @@ public class ServerHTTP extends NanoHTTPD {
      */
     private void handleRequest(String postBody) {
         try {
-            temperature = getRequest("temperature", postBody);
+            Float temp = Float.parseFloat(getRequest("temperature", postBody));
+            if (temp > 40) {
+                temperature = String.valueOf(temp);
+            } else {
+                temperature = null;
+            }
             niveauBatterie = getRequest("niveauBatterie", postBody);
             latitude = getRequest("latitude", postBody);
             longitude = getRequest("longitude", postBody);
