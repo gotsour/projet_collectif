@@ -237,7 +237,6 @@ public class OperationManager {
                 o.setId_operation(c.getInt(c.getColumnIndex(KEY_ID_OPERATION)));
                 try {
                     date_theorique = df.parse(c.getString(c.getColumnIndex(KEY_DATE_THEORIQUE)));
-                    Log.d("result","date reelle :"+c.getString(c.getColumnIndex(KEY_DATE_REELLE))+"-");
                     if(c.getString(c.getColumnIndex(KEY_DATE_REELLE)).length()>5){
                         date_reelle = df.parse(c.getString(c.getColumnIndex(KEY_DATE_REELLE)));
                     }else{

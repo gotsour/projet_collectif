@@ -48,7 +48,6 @@ public class LoginActivity extends Activity implements AsyncResponse{
         dialog = new ProgressDialog(LoginActivity.this);
 
 
-        Log.d("loginChauffeur", "oncreate : chargement tournée");
         //verification tournee
         TourneeManager tourneeManager = new TourneeManager(this);
         tourneeManager.open();
@@ -62,10 +61,8 @@ public class LoginActivity extends Activity implements AsyncResponse{
 
         }
 
-
         btLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d("loginChauffeur", "Clique bouton verification serveur login : " +login);
                 login=etLogin.getText().toString();
                 VerificationServer verif= new VerificationServer();
                 verif.execute();
@@ -84,15 +81,12 @@ public class LoginActivity extends Activity implements AsyncResponse{
 
     @Override
     public void processFinish(Chauffeur output) {
-        Intent returnIntent = new Intent();
 
         if(output!=null) {
             if (output.getMot_de_passe().equals(etPassword.getText().toString())) {
                 //insertion des données
-                Log.d("loginChauffeur", "lancement insertion depuis serveur ");
                 SynchronizeFromServer sync = new SynchronizeFromServer(0);
                 sync.execute();
-                Log.d("loginChauffeur", "fin telechargement données du serveur ");
 
             } else {
                 new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE)

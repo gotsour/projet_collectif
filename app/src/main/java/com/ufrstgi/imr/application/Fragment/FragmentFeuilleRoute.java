@@ -37,7 +37,6 @@ public class FragmentFeuilleRoute extends Fragment implements Updateable {
 
     }
 
-
     public void onDetach() {
         super.onDetach();
     }

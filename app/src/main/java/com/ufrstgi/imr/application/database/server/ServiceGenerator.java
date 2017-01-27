@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceGenerator {
 
     public static MyApiEndpointInterface init(){
-        final String authToken = Credentials.basic("cdufay", "univiahxf25;");
+        final String authToken = Credentials.basic("user ent", "mdp ent");
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -44,7 +44,6 @@ public class ServiceGenerator {
         OkHttpClient client = builder.build();
 
         Retrofit retrofit = new Retrofit.Builder()
-                // .baseUrl("http://10.0.2.2/API/example/")
                 .baseUrl(
                         "http://ceram.pu-pm.univ-fcomte.fr:5022/API/example/")
                 .addConverterFactory(GsonConverterFactory.create(gson))

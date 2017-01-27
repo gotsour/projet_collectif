@@ -76,14 +76,12 @@ public class Communication {
 
                     @Override
                     public void onFailure(Call<List<Colis>> call, Throwable t) {
-                        Log.d("resultats", "2 / failed onfailure "+ t.getMessage());
                     }
                 });
             }
 
             @Override
             public void onFailure(Call<Tournee> call, Throwable t) {
-                Log.d("resultats", "1 / failed onfailure "+ t.getMessage());
 
             }
         });
@@ -135,7 +133,6 @@ public class Communication {
         Call<Chauffeur> call0 = apiService.getChauffeur(login);
          try {
              chauffeur =call0.execute().body();
-                Log.d("resultt","resultat : "+res.toString());
 
             } catch (IOException e1) {
             e1.printStackTrace();
@@ -152,8 +149,6 @@ public class Communication {
         PositionColis pos = positionColisManager.getPositionColis(1);
         positionColisManager.close();
 
-        Log.d("resulta", "avant en voie :" +pos.toString());
-
         Call<PositionColis> call0 = apiService.createPositionColis(pos);
 
         call0.enqueue(new Callback<PositionColis>() {
@@ -165,7 +160,6 @@ public class Communication {
 
             @Override
             public void onFailure(Call<PositionColis> call, Throwable t) {
-                Log.d("resultats", "2 / failed onfailure "+ t.getMessage());
 
             }
         });

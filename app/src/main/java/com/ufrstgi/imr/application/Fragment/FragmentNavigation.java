@@ -109,7 +109,7 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
                     valideColis();
                     update();
                     allreadyOpen =false;
-                    if(colis!=null) {
+                    if(colis!=null && location!=null) {
                         String url = makeURL(location.getLatitude(), location.getLongitude(),
                                 colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
                         connectAsyncTask test = new connectAsyncTask(url, getActivity(), true);
@@ -169,11 +169,14 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             myMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,0,this);
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);//locationManager.getBestProvider(criteria, false));
+
             Log.d("location", "location false");
         }
 
         //lancement tracage itinéraire
-        if(colis!=null) {
+        if(colis!=null && location!=null) {
             String url = makeURL(location.getLatitude(), location.getLongitude(),
                     colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
             connectAsyncTask test = new connectAsyncTask(url, getActivity(), false);
@@ -318,25 +321,16 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
         try {
             //Tranform the string into a json object
             final JSONObject json = new JSONObject(result);
-            Log.d("location000", "location false "+result.toString());
             JSONArray routeArray = json.getJSONArray("routes");
             JSONObject routes = routeArray.getJSONObject(0);
-            Log.d("location000", "location object 0 "+routeArray.getJSONObject(0).toString());
-            //Log.d("location000", "location object bounds "+routeArray.getJSONObject(0).getJSONObject("bounds").toString());
             JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
             String encodedString = overviewPolylines.getString("points");
 
-          /*  Log.d("location000","distance "+routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("distance").getString("text"));
-            Log.d("location000","depart "+routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getString("start_address"));
-            Log.d("location000","depart "+routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("start_address").toString());
-*/
             String depart =routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getString("start_address");
             String arrivee =routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getString("end_address");
             String distance =routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("distance").getString("text");
             String temps =routeArray.getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("duration").getString("text");
             infoOperation="Départ : "+depart+"\n Arrivé : "+arrivee+"\n Distance :"+distance+"\n Durée :"+temps;
-            Log.d("location000", " info operation :"+infoOperation);
-            Log.d("location000","apres thread ");
 
             if(!allreadyOpen){
                 new SweetAlertDialog(getActivity(), SweetAlertDialog.NORMAL_TYPE)
@@ -354,8 +348,6 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             allreadyOpen =true;
             Log.d("location000","apres thread ");
 
-
-
             Double northLat=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("northeast").getDouble("lat");
             Double northLng=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("northeast").getDouble("lng");
             Double southLat=routeArray.getJSONObject(0).getJSONObject("bounds").getJSONObject("southwest").getDouble("lat");
@@ -366,7 +358,6 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             bounds = builder.build();
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
             myMap.moveCamera(cu);
-
 
             List<LatLng> list = decodePoly(encodedString);
             myMap.clear();

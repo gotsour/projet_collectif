@@ -236,43 +236,4 @@ public class MainActivity extends AppCompatActivity
         dialog.dismiss();
     }
 
-
-    public class SynchronizeFromServer extends AsyncTask<Void, Void, Void> {
-
-        int type; // 0-> create 1->update
-        public SynchronizeFromServer(int type) {
-            this.type=type;
-            Log.d("loginChauffeur", "lancement thread sync from server type :"+type + "utilisateur : "+idUSer);
-
-        }
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog.setMessage("chargement des données ...");
-            dialog.show();
-            dialog.setCanceledOnTouchOutside(false);
-        }
-
-        @Override
-        protected Void doInBackground(Void[] params) {
-            Communication sync=new Communication(MainActivity.this);
-            sync.synchronizeFromServerSynchrone(idUSer,type);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void message) {
-            super.onPostExecute(message);
-            TourneeManager tourneeManager = new TourneeManager(MainActivity.this);
-            tourneeManager.open();
-            tournee=tourneeManager.getTournee();
-            tourneeManager.close();
-            Log.d("retour", " retour requete : "+tournee.toString());
-            idUSer = tournee.getChauffeur().getId_chauffeur();
-            tvIdChauffeur.setText(tournee.getChauffeur().getId_chauffeur());
-            tvIdCamion.setText(tournee.getCamion().getNom_camion() + " " + tournee.getCamion().getId_camion());
-
-            dialog.dismiss();
-        }
-    }
 }

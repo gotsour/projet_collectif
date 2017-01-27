@@ -38,8 +38,7 @@ public interface MyApiEndpointInterface {
     @GET("allColis/{colis}")
     Call<List<Colis>> getAllColis(@Path("colis") String idTournee);
 
-
-
+    //envoie des positions des colis
     @POST("positionColis")
     Call<PositionColis> createPositionColis(@Body PositionColis position);
 }

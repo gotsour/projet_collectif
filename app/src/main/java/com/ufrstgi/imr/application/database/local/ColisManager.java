@@ -306,16 +306,12 @@ public class ColisManager {
         if (c.moveToFirst()) {
             date = c.getString(c.getColumnIndex("date_theorique"));
         }
-        Log.d("resultat","date obetenu pour la 1ere requete colis : "+date + " taille reponse : "+c.getCount());
-
-
 
         c = db.rawQuery("SELECT * FROM colis c, operation o WHERE c.id_tournee=" + id + " and (c.id_reception=o.id_operation " +
                         "or c.id_livraison=o.id_operation)" +
                 " and o.date_theorique='" + date+"' and o.heure_relle_operation='' group by c.id_colis "
                 , null);
 
-        Log.d("resultat","date obetenu pour la 2eme requete colis : "+date + " taille reponse : "+c.getCount());
         mesColis = instancieColis(c);
         c.close();
         return mesColis;

@@ -37,10 +37,6 @@ public class FragmentColis extends Fragment implements Updateable {
 
     ArrayList<Colis> mesColis;
 
-    private String title;
-    private int page;
-
-    // newInstance constructor for creating fragment with arguments
     public FragmentColis () {
 
     }
@@ -56,7 +52,6 @@ public class FragmentColis extends Fragment implements Updateable {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d("macadresse", " oncreate view ");
         View v = inflater.inflate(R.layout.fragment_colis, container, false);
 
         expandableListView = (ExpandableListView) v.findViewById(R.id.expandableListView);
@@ -88,16 +83,8 @@ public class FragmentColis extends Fragment implements Updateable {
         return v;
     }
 
-    public boolean contient(ArrayList<ClientScanResult> list, String id){
-        for(int i=0;i<list.size() ;i++){
-            if(list.get(i).getHWAddr()==id) return true;
-        }
-        return false;
-    }
-
     @Override
     public void update() {
-        Log.d("logMessage", "loaddata launch colis");
         BackgroundTasks bt= new BackgroundTasks(getActivity());
         ArrayList<ClientScanResult> colisIn =bt.scanColis();
 
@@ -108,7 +95,6 @@ public class FragmentColis extends Fragment implements Updateable {
 
         expandableListDetail = new HashMap<String, List<String>>();
         for (int i = 0 ; i < mesColis.size() ; i++) {
-            Log.d("logMessage", "loaddata colis poids "+mesColis.get(i).getId_colis()+ " "+mesColis.get(i).getPoids_colis());
             List<String> list = new ArrayList<String>();
             list.add(mesColis.get(i).getPoids_colis()+" kg");
             list.add(mesColis.get(i).getAdresse_mac());
@@ -135,7 +121,6 @@ public class FragmentColis extends Fragment implements Updateable {
             String title;
             if (mesColis.get(i).getReception().getDate_reelle()!=null && mesColis.get(i).getLivraison().getDate_reelle()==null) title ="Colis num "+mesColis.get(i).getId_colis()+ " dans camion";
             else title ="Colis num "+mesColis.get(i).getId_colis();
-            Log.d("macadresse", " message title : "+title+ " nb colis "+colisIn.size());
             expandableListDetail.put(title, list);
 
             expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
