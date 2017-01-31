@@ -109,10 +109,11 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
                     valideColis();
                     update();
                     allreadyOpen =false;
+                    Log.d("currentOP","curent operation click" +colis.getCurrentOperation().getAdresse().toString() );
                     if(colis!=null && location!=null) {
                         String url = makeURL(location.getLatitude(), location.getLongitude(),
                                 colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
-                        connectAsyncTask test = new connectAsyncTask(url, getActivity(), true);
+                       connectAsyncTask test = new connectAsyncTask(url, getActivity(), true);
                         test.execute();
 
 
@@ -175,10 +176,12 @@ public class FragmentNavigation extends Fragment implements OnMapReadyCallback, 
             Log.d("location", "location false");
         }
 
+        Log.d("currentOP","curent operation " +colis.getCurrentOperation().getAdresse().toString() );
         //lancement tracage itinéraire
         if(colis!=null && location!=null) {
             String url = makeURL(location.getLatitude(), location.getLongitude(),
                     colis.getCurrentOperation().getAdresse().getLatlng().getLatitude(), colis.getCurrentOperation().getAdresse().getLatlng().getLongitude());
+
             connectAsyncTask test = new connectAsyncTask(url, getActivity(), false);
             test.execute();
 

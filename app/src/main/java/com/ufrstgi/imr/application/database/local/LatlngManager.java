@@ -49,6 +49,7 @@ public class LatlngManager {
         // Ajout d'un enregistrement dans la table
 
         ContentValues values = new ContentValues();
+        values.put(KEY_ID_LATLNG, latlng.getId_latlng());
         values.put(KEY_LATITUDE, latlng.getLatitude());
         values.put(KEY_LONGITUDE, latlng.getLongitude());
 
